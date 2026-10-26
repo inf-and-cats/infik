@@ -122,6 +122,7 @@ function finish(){
   const p=LS.p, first=!S.done[p.id]; const clean=LS.mistakes===0;
   if(clean) LS.xp+=20;
   S.xp+=LS.xp; S.done[p.id]=true;
+  leagueXp(LS.xp,p.id);
   const t=today(); if(S.lastDay!==t){ const y=new Date(); y.setDate(y.getDate()-1); const yd=y.getFullYear()+"-"+(y.getMonth()+1)+"-"+y.getDate(); S.streak=S.lastDay===yd?S.streak+1:1; S.lastDay=t; }
   const newB=[]; function give(id){ if(!S.badges[id]){ S.badges[id]=true; newB.push(BADGES.find(b=>b.id===id)); } }
   give("first"); if(LS.bugFound) give("bug"); if(clean) give("clean"); if(S.streak>=3) give("s3"); if(S.streak>=7) give("s7");

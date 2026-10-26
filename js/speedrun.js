@@ -20,15 +20,15 @@ function sprite(name){ let r=""; SPR[name].forEach((row,y)=>[...row].forEach((c,
 function loadScript(src){ return new Promise((ok,fail)=>{ const s=document.createElement("script"); s.src=src; s.onload=ok; s.onerror=fail; document.head.appendChild(s); }); }
 
 /* --- связь с сервером --- */
-async function api(action, payload){
+async function api(action, payload, tries){
   if(!API_URL) return demoApi(action, payload||{});
   const body=JSON.stringify(Object.assign({action, initData:(tg&&tg.initData)||""}, payload||{}));
   let lastErr;
-  for(let i=0;i<3;i++){
+  for(let i=0;i<(tries||3);i++){
     try{
       const r=await fetch(API_URL,{method:"POST",body,headers:{"Content-Type":"text/plain;charset=utf-8"}});
       const j=await r.json(); if(j.error) throw Object.assign(new Error(j.error),{server:true}); return j;
-    }catch(e){ lastErr=e; if(e.server) break; await new Promise(res=>setTimeout(res,700*(i+1))); }
+    }catch(e){ lastErr=e; if(e.server) break; if(i+1<(tries||3)) await new Promise(res=>setTimeout(res,tries?2000:700*(i+1))); }
   }
   throw lastErr;
 }

@@ -57,16 +57,50 @@ function renderPath(app){
   });
   if(!hasLessons(sec)) app.appendChild(courseCta("path_"+sec.id,"Не жди — начни сейчас","На годовом курсе всё это уже есть: разберём все 27 заданий ЕГЭ с преподавателем."));
 }
-const RIVALS=[["Даня К.",412],["Алиса",355],["Тимур",298],["Соня В.",240],["Max_coder",187],["Ева",150],["Артём",96],["Лиза П.",61],["Гоша",24]];
-function renderLeague(app){
-  app.appendChild(h("h1",{class:"page"},"Бронзовая лига"));
-  app.appendChild(h("p",{class:"sub"},"Неделя заканчивается в воскресенье. Первые 3 поднимаются в Серебряную лигу."));
-  const all=RIVALS.map(r=>({n:r[0],xp:r[1]})).concat([{n:TG_USER&&TG_USER.first_name?TG_USER.first_name+" (ты)":"Ты",xp:S.xp,me:true}]).sort((a,b)=>b.xp-a.xp);
-  const box=h("div",{class:"league"}); const cols=["#ecf141","#cfeb62","#a5a9e3","#c9b8f5","#f5b8d1"];
-  all.forEach((r,i)=>{ if(i===3) box.appendChild(h("div",{class:"zone"},"↑ Зона повышения"));
-    box.appendChild(h("div",{class:"row"+(r.me?" me":"")},'<span class="pos">'+(i+1)+'</span><span class="ava" style="background:'+(r.me?"#512da8":cols[i%cols.length])+';color:'+(r.me?"#ecf141":"#262b69")+'">'+r.n[0]+'</span><span class="name">'+esc(r.n)+'</span><span class="xp">'+r.xp+' XP</span>')); });
-  app.appendChild(box);
-  app.appendChild(h("p",{class:"note"},"В прототипе соперники выдуманные. Твой прогресс "+(cloud?"сохраняется в твоём аккаунте Telegram.":"сохраняется в этом браузере. Открой приложение в Telegram, чтобы он привязался к аккаунту.")+" Настоящий рейтинг появится вместе с бэкендом."));
+/* ---------- лига недели (сервер: league_state / league_xp) ---------- */
+let LG_STATE=null; // последняя таблица недели с сервера
+const leagueOn=()=>!!(API_URL&&tg&&tg.initData);
+/* XP за урок в лигу: фоном, без ожидания, один повтор; ошибки молча пропускаем */
+function leagueXp(xp,lesson){
+  if(!leagueOn()||!xp) return;
+  api("league_xp",{xp,lesson},2).then(st=>{ if(st&&st.leaders) LG_STATE=st; }).catch(()=>{});
+}
+function leagueLeft(ms){
+  if(ms<=0) return "неделя подводит итоги";
+  const d=Math.floor(ms/864e5), hh=Math.floor(ms/36e5), m=Math.max(1,Math.floor(ms/6e4));
+  return "осталось "+(d?d+" "+plural(d,"день","дня","дней"):hh?hh+" ч":m+" мин");
+}
+function leagueRow(r){
+  const n=String(r.name||"?"), c=r.me?" me":" c"+([...n].reduce((s,ch)=>s+ch.charCodeAt(0),0)%3);
+  return h("div",{class:"row"+(r.me?" me":"")},'<span class="pos">'+r.rank+'</span><span class="ava'+c+'">'+esc([...n][0].toUpperCase())+'</span><span class="name">'+esc(n)+(r.me?" (ты)":"")+'</span><span class="xp">'+r.xp+' XP</span>');
+}
+function leagueTable(box,st){
+  box.innerHTML="";
+  box.appendChild(h("div",{class:"lg-left"},I.flame+'<span>'+leagueLeft(st.endsAt-Date.now())+'</span>'+(st.players?'<small>'+st.players+' '+plural(st.players,"участник","участника","участников")+'</small>':"")));
+  if(!st.me.rank) box.appendChild(h("div",{class:"sr-note"},"<b>Тебя пока нет в таблице.</b> Пройди урок, чтобы попасть в таблицу этой недели."));
+  if(st.leaders.length){
+    const t=h("div",{class:"league"});
+    st.leaders.forEach(r=>t.appendChild(leagueRow(r)));
+    if(st.me.rank&&!st.leaders.some(r=>r.me)){ t.appendChild(h("div",{class:"row gap"},"…")); t.appendChild(leagueRow(Object.assign({me:true},st.me))); }
+    box.appendChild(t);
+  } else box.appendChild(h("p",{class:"note"},"На этой неделе ещё никто не набрал XP. Стань первым!"));
+}
+async function renderLeague(app){
+  app.appendChild(h("h1",{class:"page"},"Лига недели"));
+  app.appendChild(h("p",{class:"sub"},"Неделя обнуляется в понедельник. XP за уроки идут в таблицу."));
+  const box=h("div",{class:"lg"}); app.appendChild(box);
+  if(!leagueOn()){ box.appendChild(h("div",{class:"sr-note"},"<b>Лига работает внутри Telegram.</b> Открой приложение через бота, чтобы соревноваться с другими."+(API_URL?"":" Сервер не подключён."))); return; }
+  if(LG_STATE) leagueTable(box,LG_STATE); else box.appendChild(h("div",{class:"sr-loading"},"<i></i>Загружаем лигу"));
+  try{
+    const st=await api("league_state");
+    if(S.tab!=="league"||!box.isConnected) return;
+    LG_STATE=st; leagueTable(box,st);
+  }catch(e){
+    if(S.tab!=="league"||!box.isConnected) return;
+    if(LG_STATE) return toast("Не получилось обновить лигу");
+    box.innerHTML=""; box.appendChild(h("div",{class:"sr-note"},"<b>Не получилось загрузить лигу.</b> "+esc(e.message||"Проверь интернет")));
+    const r=h("button",{class:"reset",type:"button"},"Обновить"); r.onclick=render; box.appendChild(r);
+  }
 }
 function renderBadges(app){
   app.appendChild(h("h1",{class:"page"},"Награды"));
