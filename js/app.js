@@ -15,12 +15,15 @@ function renderTop(){
    '<span class="stat" title="Серия дней">'+I.fire+S.streak+'</span>'+
    '<span class="stat" title="Опыт">'+I.xp+S.xp+' XP</span></div></div>';
 }
+/* «Спидран» скрыт, если сервер сказал speedrun:false (ученики платного курса); без ответа — виден */
+function speedOn(){ return !(S.access && S.access.speedrun===false); }
 function render(){
+  if(S.tab==="speed" && !speedOn()) S.tab="path";
   const app=$("#app"); app.innerHTML="";
   app.insertAdjacentHTML("beforeend",renderTop());
   if(S.tab==="path") renderPath(app); else if(S.tab==="speed") renderSpeed(app); else if(S.tab==="league") renderLeague(app); else renderBadges(app);
   const tabs=$("#tabs"); tabs.innerHTML="";
-  [["path","Путь",I.path],["speed","Спидран",I.fire],["league","Лига",I.trophy],["badges","Награды",I.medal]].forEach(([id,name,ic])=>{
+  [["path","Путь",I.path],["speed","Спидран",I.fire],["league","Лига",I.trophy],["badges","Награды",I.medal]].filter(([id])=>id!=="speed"||speedOn()).forEach(([id,name,ic])=>{
     const b=h("button",{role:"tab","aria-selected":String(S.tab===id),type:"button"},ic+name);
     b.onclick=()=>{S.tab=id;save();render();window.scrollTo(0,0);}; tabs.appendChild(b); });
 }
