@@ -38,6 +38,8 @@ function save(){
 }
 const S = Object.assign({ xp:0, streak:0, lastDay:null, done:{}, badges:{}, mode:"blocks", tab:"path", at:0 }, load());
 const TG_USER = (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) || null;
+/* годмод: разработчик из DEV_IDS в Telegram или локальный запуск (localhost) */
+const DEV = (TG_USER && DEV_IDS.includes(TG_USER.id)) || ["localhost","127.0.0.1"].includes(location.hostname);
 if(cloud){ try { cloud.getItem("progress", function(err,val){
   if(err||!val) return; let o; try { o=JSON.parse(val); } catch(e){ return; }
   if((o.at||0)>(S.at||0)){ SYNC_KEYS.forEach(k=>{ if(o[k]!==undefined) S[k]=o[k]; }); try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e){} if(!LS) render(); }

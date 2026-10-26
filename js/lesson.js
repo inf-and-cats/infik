@@ -21,6 +21,8 @@ function footer(state,opts){
     const fb=h("div",{class:"fb"},'<img src="'+CAT+'" alt=""><div><h3>'+opts.head+'</h3>'+(opts.text?'<p>'+opts.text+'</p>':"")+'</div>');
     fi.appendChild(fb);
   }
+  if(DEV && !state && opts.btn==="Проверить"){ // годмод: засчитать задание без ответа
+    const d=h("button",{class:"dev",type:"button"},"⚡ Засчитать"); d.onclick=()=>resolve(true,LS.queue[LS.pos]); fi.appendChild(d); }
   const b=h("button",{class:"main",type:"button"},opts.btn); if(opts.disabled) b.disabled=true; b.onclick=opts.on; fi.appendChild(b);
   return b;
 }
