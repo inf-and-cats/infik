@@ -61,9 +61,10 @@ button:focus-visible,textarea:focus-visible{outline:3px solid var(--lime);outlin
 .node.open .disc{background:var(--purple);color:var(--lime);box-shadow:0 7px 0 #2f1873}
 .node.done .disc{background:var(--lime);color:#262b69;box-shadow:0 7px 0 #a9b62a}
 .node.boss .disc{width:92px;height:84px;border-radius:26px}
-.node .lbl{font-weight:700;font-size:14px;color:var(--ink-soft);max-width:150px;text-align:center;line-height:1.25}
+.node .lbl{font-weight:700;font-size:14px;color:var(--ink-soft);max-width:200px;text-align:center;line-height:1.25}
 .node.open .lbl,.node.done .lbl{color:var(--ink)}
-.node .start{position:absolute;top:-34px;background:var(--surface);border:2px solid var(--purple);color:var(--purple-ink);font-weight:800;font-size:13px;letter-spacing:.06em;text-transform:uppercase;padding:3px 10px;border-radius:10px;white-space:nowrap;animation:bob 1.6s ease-in-out infinite}
+.node.open{margin-top:30px}
+.node .start{position:absolute;top:-36px;background:var(--surface);border:2px solid var(--purple);color:var(--purple-ink);font-weight:800;font-size:13px;letter-spacing:.06em;text-transform:uppercase;padding:3px 10px;border-radius:10px;white-space:nowrap;animation:bob 1.6s ease-in-out infinite}
 @keyframes bob{50%{transform:translateY(-4px)}}
 
 .locked-mod{display:flex;align-items:center;gap:14px;background:var(--surface);border:1px dashed var(--line);border-radius:var(--r);padding:14px 16px;color:var(--ink-soft)}

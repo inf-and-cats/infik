@@ -63,7 +63,8 @@ function demoApi(action,p){
 
 /* --- экран раздела --- */
 let SR_STATE=null;
-function fmtLeft(ms){ if(ms<=0) return "финиш"; const d=Math.floor(ms/864e5), h=Math.floor(ms%864e5/36e5), m=Math.floor(ms%36e5/6e4); return d?d+"д"+h+"ч":h?h+"ч "+m+"м":m+"м"; }
+function fmtLeft(ms){ if(ms<=0) return ["0","игра окончена"]; const d=Math.floor(ms/864e5), h=Math.floor(ms%864e5/36e5), m=Math.floor(ms%36e5/6e4);
+  return d?[String(d),plural(d,"день","дня","дней")+" до финиша"]:h?[String(h),plural(h,"час","часа","часов")+" до финиша"]:[String(m),"мин. до финиша"]; }
 function fmtOpen(ts){ const d=new Date(ts); return d.toLocaleDateString("ru-RU",{day:"numeric",month:"long"}); }
 async function renderSpeed(app){
   const box=h("div",{style:"display:flex;flex-direction:column;gap:20px"}); app.appendChild(box);
@@ -107,10 +108,10 @@ async function renderSpeed(app){
     '<li>Итоги — 2 ноября в канале. Топ-3 получают скидку на курс.</li></ul>'));
 }
 function srHero(st){
-  const left=st?fmtLeft(st.endsAt-Date.now()):"—";
+  const left=st?fmtLeft(st.endsAt-Date.now()):["—","до финиша"];
   return h("section",{class:"sr-hero"},'<img src="'+CAT+'" alt=""><div class="sr-title">СПИДРАН</div>'+
     '<p class="sr-sub">Неделя до старта курса. 4 уровня и финальный босс. <b>Топ-3 забирают скидку.</b></p>'+
-    '<div class="sr-stats"><div class="sr-stat"><b>'+(st?st.me.total:0)+'</b><small>Очки</small></div><div class="sr-stat"><b>'+(st&&st.me.rank?st.me.rank:"—")+'</b><small>Место</small></div><div class="sr-stat"><b>'+left+'</b><small>Финиш</small></div></div>');
+    '<div class="sr-stats"><div class="sr-stat"><b>'+(st?st.me.total:0)+'</b><small>Очки</small></div><div class="sr-stat"><b>'+(st&&st.me.rank?st.me.rank:"—")+'</b><small>Место</small></div><div class="sr-stat"><b>'+left[0]+'</b><small>'+left[1]+'</small></div></div>');
 }
 
 /* --- прохождение уровня --- */
