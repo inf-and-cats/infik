@@ -1,0 +1,59 @@
+{
+ "modules": [
+  {
+   "id": "m1",
+   "title": "Знакомство с Python",
+   "about": "Первая программа, print, строки и отступы.",
+   "lessons": [
+    {
+     "id": "m1l1",
+     "title": "Первая программа",
+     "file": "content/m1/l1.json"
+    },
+    {
+     "id": "m1l2",
+     "title": "Строки и кавычки"
+    },
+    {
+     "id": "m1l3",
+     "title": "Числа в print"
+    },
+    {
+     "id": "m1l4",
+     "title": "sep и end"
+    },
+    {
+     "id": "m1l5",
+     "title": "Комментарии"
+    },
+    {
+     "id": "m1boss",
+     "title": "Задача-босс",
+     "boss": true
+    }
+   ]
+  }
+ ],
+ "upcoming": [
+  {
+   "label": "Модуль 2",
+   "title": "Переменные и ввод",
+   "ege": "input, int, str"
+  },
+  {
+   "label": "Модуль 3",
+   "title": "Арифметика",
+   "ege": "// и % · задача 14"
+  },
+  {
+   "label": "Модуль 4",
+   "title": "Условия",
+   "ege": "if, and, or · задача 2"
+  },
+  {
+   "label": "Модуль 5",
+   "title": "Цикл for",
+   "ege": "range · задача 15"
+  }
+ ]
+}
