@@ -231,3 +231,11 @@ h1.page{font-family:var(--f-display);font-size:34px;line-height:1.05;margin:0;te
 @keyframes shake{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
 @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
 
+
+/* годовой курс: карточка с кнопкой покупки */
+.course-cta{display:flex;flex-direction:column;gap:6px;width:100%;background:#262b69;color:#f3f2ff;border-radius:22px;padding:18px;text-align:left}
+.course-cta small{font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--lime-2)}
+.course-cta b{font-family:var(--f-display);font-size:26px;line-height:1.05;text-transform:uppercase;text-wrap:balance}
+.course-cta p{margin:0 0 6px;font-size:14px;line-height:1.35;color:#d9d6f3}
+.course-cta .main{background:var(--lime);color:#262b69;box-shadow:0 5px 0 #9aa01c}
+.course-cta .main:active{box-shadow:0 2px 0 #9aa01c}

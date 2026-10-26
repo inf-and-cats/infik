@@ -53,3 +53,20 @@ let toastT; function toast(msg){ const t=$("#toast"); t.textContent=msg; t.hidde
 function today(){ const d=new Date(); return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate(); }
 function daysToEge(){ const ege=new Date(2027,5,1); return Math.max(0,Math.ceil((ege-new Date())/864e5)); }
 function plural(n,a,b,c){ n=Math.abs(n)%100; const n1=n%10; if(n>10&&n<20) return c; if(n1>1&&n1<5) return b; if(n1===1) return a; return c; }
+
+/* ---------- годовой курс: кнопка покупки ---------- */
+/* Внутри Telegram ссылка открывается во внешнем браузере, иначе — в новой вкладке. from — где нажали (метка utm_content для аналитики). */
+function openCourse(from){
+  if(!COURSE_URL) return;
+  let url=COURSE_URL;
+  try { const u=new URL(COURSE_URL); if(!u.searchParams.has("utm_source")){ u.searchParams.set("utm_source","infik_app"); u.searchParams.set("utm_content",from||"app"); } url=u.toString(); } catch(e){}
+  try { if(tg&&tg.openLink){ tg.openLink(url); return; } } catch(e){}
+  window.open(url,"_blank","noopener");
+}
+/* карточка-приглашение на курс; title и text — заголовок и пояснение под конкретное место */
+function courseCta(from,title,text){
+  if(!COURSE_URL) return document.createDocumentFragment();
+  const c=h("section",{class:"course-cta"},'<small>'+esc(COURSE_NAME)+'</small><b>'+title+'</b><p>'+text+'</p>');
+  const b=h("button",{class:"main",type:"button"},"Купить курс"); b.onclick=()=>{ haptic("success"); openCourse(from); };
+  c.appendChild(b); return c;
+}

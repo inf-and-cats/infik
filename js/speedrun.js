@@ -172,6 +172,7 @@ function srFinish(){
   b.appendChild(h("h2",null,meta.final?"Босс повержен!":"Уровень пройден!"));
   b.appendChild(h("div",{class:"sr-result"},SR.right+"/"+SR.qs.length));
   b.appendChild(h("p",{class:"txt",style:"text-align:center"},meta.final?"Ты решил задания в духе настоящего ЕГЭ. Итоги забега — 2 ноября в канале.":"Следующий уровень откроется завтра. Загляни в таблицу лидеров!"));
+  if(meta.final) b.appendChild(courseCta("speedrun_final","Готов к настоящему ЕГЭ?","Ты прошёл задания в духе экзамена. На годовом курсе разберём каждое из 27 заданий и выйдем на высокий балл."));
   footer(null,{btn:"К таблице лидеров",on:()=>{ b.classList.remove("finish"); closeSpeed(); }});
 }
 

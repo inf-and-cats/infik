@@ -42,6 +42,7 @@ function renderPath(app){
     path.appendChild(n);
   });
   app.appendChild(path);
+  app.appendChild(courseCta("path","Весь ЕГЭ, а не только Python","Здесь ты знакомишься с Python. На годовом курсе разберём все 27 заданий ЕГЭ с преподавателем — от первого до последнего."));
   COURSE.upcoming.forEach(m=>app.appendChild(h("div",{class:"locked-mod"},I.lock.replace("<svg",'<svg width="26" height="26"')+'<div><small>'+esc(m.label)+'</small><b>'+esc(m.title)+'</b></div><span class="ege">'+esc(m.ege)+'</span>')));
 }
 const RIVALS=[["Даня К.",412],["Алиса",355],["Тимур",298],["Соня В.",240],["Max_coder",187],["Ева",150],["Артём",96],["Лиза П.",61],["Гоша",24]];
