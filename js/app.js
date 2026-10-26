@@ -110,8 +110,10 @@ function renderBadges(app){
   const g=h("div",{class:"badges"});
   BADGES.forEach(b=>g.appendChild(h("div",{class:"badge"+(S.badges[b.id]?" on":"")},'<span class="ic">'+I[b.ic]+'</span><b>'+b.title+'</b><small>'+b.hint+'</small>')));
   app.appendChild(g);
+  /* Кнопка «Сбросить прогресс» временно убрана: она сбрасывала только локальный прогресс, а в лидерборде ученик оставался.
   const r=h("button",{class:"reset",type:"button"},"Сбросить прогресс прототипа");
   r.onclick=()=>{ if(r.dataset.sure){ Object.assign(S,{xp:0,streak:0,lastDay:null,done:{},badges:{}}); save(); render(); toast("Прогресс сброшен"); } else { r.dataset.sure=1; r.textContent="Нажми ещё раз, чтобы сбросить"; } };
   app.appendChild(r);
+  */
 }
 
