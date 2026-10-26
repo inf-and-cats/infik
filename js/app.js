@@ -49,7 +49,7 @@ function renderPath(app){
       const done=!!S.done[p.id]; const open=!done&&(i===0||S.done[PATH[i-1].id]);
       const n=h("button",{class:"node"+(done?" done":open?" open":"")+(p.boss?" boss":""),type:"button",style:"transform:translateX("+offs[i%offs.length]+"px)"});
       n.innerHTML=(open?'<span class="start">'+(i===0?"Начать":"Дальше")+'</span>':"")+'<span class="disc">'+lessonDisc(p,done,open)+'</span><span class="lbl">'+(i+1)+'. '+p.title+'</span>';
-      n.onclick=()=>{ if(p.file&&(open||done)) startLesson(p); else if(open) toast("Этот урок появится в следующей версии прототипа"); else toast("Сначала пройди урок "+i); };
+      n.onclick=()=>{ if(p.file&&(open||done)) startLesson(p); else if(open) toast("Урок в разработке"); else toast("Сначала пройди урок "+i); };
       path.appendChild(n);
     });
     app.appendChild(path);
