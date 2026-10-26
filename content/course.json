@@ -1,59 +1,100 @@
 {
- "modules": [
+ "sections": [
   {
-   "id": "m1",
-   "title": "Знакомство с Python",
-   "about": "Первая программа, print, строки и отступы.",
-   "lessons": [
+   "id": "s1",
+   "title": "Основы Python",
+   "about": "print, переменные, арифметика, условия, циклы",
+   "free": true,
+   "modules": [
     {
-     "id": "m1l1",
-     "title": "Первая программа",
-     "file": "content/m1/l1.json"
+     "id": "m1",
+     "title": "Знакомство с Python",
+     "about": "Первая программа, print, строки и отступы.",
+     "lessons": [
+      {
+       "id": "m1l1",
+       "title": "Первая программа",
+       "file": "content/m1/l1.json",
+       "icon": "screen"
+      },
+      {
+       "id": "m1l2",
+       "title": "Строки и кавычки",
+       "icon": "quotes"
+      },
+      {
+       "id": "m1l3",
+       "title": "Числа в print",
+       "icon": "calc"
+      },
+      {
+       "id": "m1l4",
+       "title": "sep и end",
+       "icon": "sep"
+      },
+      {
+       "id": "m1l5",
+       "title": "Комментарии",
+       "icon": "hash"
+      },
+      {
+       "id": "m1boss",
+       "title": "Задача-босс",
+       "boss": true,
+       "icon": "snake"
+      }
+     ]
     },
     {
-     "id": "m1l2",
-     "title": "Строки и кавычки"
+     "id": "m2",
+     "title": "Переменные и ввод",
+     "ege": "input, int, str"
     },
     {
-     "id": "m1l3",
-     "title": "Числа в print"
+     "id": "m3",
+     "title": "Арифметика",
+     "ege": "// и % · задача 14"
     },
     {
-     "id": "m1l4",
-     "title": "sep и end"
+     "id": "m4",
+     "title": "Условия",
+     "ege": "if, and, or · задача 2"
     },
     {
-     "id": "m1l5",
-     "title": "Комментарии"
-    },
-    {
-     "id": "m1boss",
-     "title": "Задача-босс",
-     "boss": true
+     "id": "m5",
+     "title": "Цикл for",
+     "ege": "range · задача 15"
     }
    ]
-  }
- ],
- "upcoming": [
-  {
-   "label": "Модуль 2",
-   "title": "Переменные и ввод",
-   "ege": "input, int, str"
   },
   {
-   "label": "Модуль 3",
-   "title": "Арифметика",
-   "ege": "// и % · задача 14"
+   "id": "s2",
+   "title": "Python для ЕГЭ",
+   "about": "Строки, списки, функции, файлы",
+   "modules": [
+    {
+     "id": "m6",
+     "title": "Строки"
+    },
+    {
+     "id": "m7",
+     "title": "Списки"
+    },
+    {
+     "id": "m8",
+     "title": "Функции"
+    },
+    {
+     "id": "m9",
+     "title": "Файлы"
+    }
+   ]
   },
   {
-   "label": "Модуль 4",
-   "title": "Условия",
-   "ege": "if, and, or · задача 2"
-  },
-  {
-   "label": "Модуль 5",
-   "title": "Цикл for",
-   "ege": "range · задача 15"
+   "id": "s3",
+   "title": "Задачи ЕГЭ",
+   "about": "Решаем задания экзамена на Python",
+   "modules": []
   }
  ]
 }

@@ -28,22 +28,34 @@ function renderPath(app){
   const d=daysToEge();
   app.appendChild(h("div",{class:"countdown"},'<b>'+d+'</b><span>'+plural(d,"день","дня","дней")+' до ЕГЭ <small style="opacity:.7">(≈ 1 июня)</small><br><em>успеваешь, если по уроку в день</em></span>'));
   if(!COURSE){ app.appendChild(h("div",{class:"sr-loading"},"<i></i>Загружаем курс")); return; }
-  const M=COURSE.modules[0], PATH=M.lessons;
-  const doneN=PATH.filter(p=>S.done[p.id]).length;
-  const mod=h("section",{class:"module"},'<div class="eyebrow">Модуль 1 · '+doneN+' из '+PATH.length+'</div><h2>'+esc(M.title)+'</h2><p>'+esc(M.about)+'</p><div class="bar"><i style="width:'+(doneN/PATH.length*100)+'%"></i></div><img src="'+CAT+'" alt="">');
-  app.appendChild(mod);
-  const path=h("div",{class:"path"});
-  const offs=[0,-60,-80,-30,40,0];
-  PATH.forEach((p,i)=>{
-    const done=!!S.done[p.id]; const open=!done&&(i===0||S.done[PATH[i-1].id]);
-    const n=h("button",{class:"node"+(done?" done":open?" open":"")+(p.boss?" boss":""),type:"button",style:"transform:translateX("+offs[i%offs.length]+"px)"});
-    n.innerHTML=(open?'<span class="start">'+(i===0?"Начать":"Дальше")+'</span>':"")+'<span class="disc">'+(done?I.check:p.boss?I.crown:open?I.play:I.lock)+'</span><span class="lbl">'+(i+1)+'. '+p.title+'</span>';
-    n.onclick=()=>{ if(p.file&&(open||done)) startLesson(p); else if(open) toast("Этот урок появится в следующей версии прототипа"); else toast("Сначала пройди урок "+i); };
-    path.appendChild(n);
+  /* разделы: переключатель сверху. Раздел без уроков пока закрыт («скоро») */
+  const SECS=COURSE.sections, hasLessons=sec=>sec.modules.some(m=>m.lessons);
+  const sec=SECS.find(x=>x.id===S.sec)||SECS[0];
+  const bar=h("div",{class:"secs",role:"tablist","aria-label":"Разделы курса"});
+  SECS.forEach((x,i)=>{
+    const tag=x.free?'<span class="free">Бесплатно</span>':!hasLessons(x)?'<span class="lk">'+I.lock+'</span>':"";
+    const b=h("button",{class:"sec",role:"tab","aria-selected":String(x===sec),type:"button"},'<small>Раздел '+(i+1)+tag+'</small><b>'+esc(x.title)+'</b>');
+    b.onclick=()=>{ S.sec=x.id; save(); render(); }; bar.appendChild(b);
   });
-  app.appendChild(path);
-  app.appendChild(courseCta("path","Весь ЕГЭ, а не только Python","Здесь ты знакомишься с Python. На годовом курсе разберём все 27 заданий ЕГЭ с преподавателем — от первого до последнего."));
-  COURSE.upcoming.forEach(m=>app.appendChild(h("div",{class:"locked-mod"},I.lock.replace("<svg",'<svg width="26" height="26"')+'<div><small>'+esc(m.label)+'</small><b>'+esc(m.title)+'</b></div><span class="ege">'+esc(m.ege)+'</span>')));
+  app.appendChild(bar);
+  if(!hasLessons(sec)) app.appendChild(h("section",{class:"sec-soon"},'<span class="ic">'+I.lock+'</span><div><b>'+esc(sec.title)+'</b><p>'+esc(sec.about)+'. Раздел скоро откроется.</p></div>'));
+  sec.modules.forEach((M,mi)=>{
+    if(!M.lessons){ app.appendChild(h("div",{class:"locked-mod"},I.lock.replace("<svg",'<svg width="26" height="26"')+'<div><small>Модуль '+(mi+1)+'</small><b>'+esc(M.title)+'</b></div>'+(M.ege?'<span class="ege">'+esc(M.ege)+'</span>':""))); return; }
+    const PATH=M.lessons, doneN=PATH.filter(p=>S.done[p.id]).length;
+    app.appendChild(h("section",{class:"module"},'<div class="eyebrow">Модуль '+(mi+1)+' · '+doneN+' из '+PATH.length+'</div><h2>'+esc(M.title)+'</h2><p>'+esc(M.about||"")+'</p><div class="bar"><i style="width:'+(doneN/PATH.length*100)+'%"></i></div><img src="'+CAT+'" alt="">'));
+    const path=h("div",{class:"path"});
+    const offs=[0,-60,-80,-30,40,0];
+    PATH.forEach((p,i)=>{
+      const done=!!S.done[p.id]; const open=!done&&(i===0||S.done[PATH[i-1].id]);
+      const n=h("button",{class:"node"+(done?" done":open?" open":"")+(p.boss?" boss":""),type:"button",style:"transform:translateX("+offs[i%offs.length]+"px)"});
+      n.innerHTML=(open?'<span class="start">'+(i===0?"Начать":"Дальше")+'</span>':"")+'<span class="disc">'+lessonDisc(p,done,open)+'</span><span class="lbl">'+(i+1)+'. '+p.title+'</span>';
+      n.onclick=()=>{ if(p.file&&(open||done)) startLesson(p); else if(open) toast("Этот урок появится в следующей версии прототипа"); else toast("Сначала пройди урок "+i); };
+      path.appendChild(n);
+    });
+    app.appendChild(path);
+    if(mi===0) app.appendChild(courseCta("path_"+sec.id,"Весь ЕГЭ, а не только Python","Здесь ты знакомишься с Python. На годовом курсе разберём все 27 заданий ЕГЭ с преподавателем — от первого до последнего."));
+  });
+  if(!hasLessons(sec)) app.appendChild(courseCta("path_"+sec.id,"Не жди — начни сейчас","На годовом курсе всё это уже есть: разберём все 27 заданий ЕГЭ с преподавателем."));
 }
 const RIVALS=[["Даня К.",412],["Алиса",355],["Тимур",298],["Соня В.",240],["Max_coder",187],["Ева",150],["Артём",96],["Лиза П.",61],["Гоша",24]];
 function renderLeague(app){

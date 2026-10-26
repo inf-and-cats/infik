@@ -1,0 +1,13 @@
+/* ИНФиК: пиксельные иконки уроков на «Пути» */
+:root{--lock-dim:.7}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--lock-dim:1}}
+:root[data-theme="dark"]{--lock-dim:1}
+.node .disc{position:relative}
+.node .disc>svg[viewBox="0 0 10 10"]{width:40px;height:40px;image-rendering:pixelated}
+.node.boss .disc>svg[viewBox="0 0 10 10"]{width:50px;height:50px}
+.node:not(.open):not(.done) .disc>svg[viewBox="0 0 10 10"]{filter:grayscale(1) brightness(var(--lock-dim));opacity:.6}
+.node .badge{position:absolute;right:-4px;bottom:-4px;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:var(--surface);border:2px solid var(--line);color:var(--ink-soft)}
+.node.done .badge{background:#512da8;border-color:#512da8;color:#ecf141}
+.node .badge svg{width:16px;height:16px}
+.node .crown{position:absolute;top:-14px;left:50%;transform:translateX(-50%);width:30px;height:24px;color:#ecf141;filter:drop-shadow(0 2px 0 #262b69)}
+.node .crown svg{width:30px;height:24px}
