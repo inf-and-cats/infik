@@ -3,5 +3,5 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxO_UZyVcMMhZrGSyz8kJ1o
 /* Telegram ID разработчиков: у них в уроках есть кнопка «Засчитать» (годмод). Свой ID можно узнать у бота @userinfobot. */
 const DEV_IDS = [528295387];
 /* Годовой курс подготовки к ЕГЭ: ссылка на страницу покупки и текст карточки. Пустая ссылка — кнопка «Купить курс» не показывается. */
-const COURSE_URL = "https://infandcats.ru/intensiv";
+const COURSE_URL = "https://infandcats.ru/intensiv?utm_source=tg&utm_medium=botduolingo&utm_campaign=zapusk&utm_content=sale&utm_term=infik";
 const COURSE_NAME = "Годовой курс подготовки к ЕГЭ по информатике";
