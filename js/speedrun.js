@@ -110,7 +110,7 @@ async function renderSpeed(app){
 function srHero(st){
   const left=st?fmtLeft(st.endsAt-Date.now()):["—","до финиша"];
   return h("section",{class:"sr-hero"},'<img src="'+CAT+'" alt=""><div class="sr-title">СПИДРАН</div>'+
-    '<p class="sr-sub">Неделя до старта курса. 4 уровня и финальный босс. <b>Топ-3 забирают скидку.</b></p>'+
+    '<p class="sr-sub">Пройди все уровни и стань лучшим! <b>Топ-3 забирают скидку.</b></p>'+
     '<div class="sr-stats"><div class="sr-stat"><b>'+(st?st.me.total:0)+'</b><small>Очки</small></div><div class="sr-stat"><b>'+(st&&st.me.rank?st.me.rank:"—")+'</b><small>Место</small></div><div class="sr-stat"><b>'+left[0]+'</b><small>'+left[1]+'</small></div></div>');
 }
 
