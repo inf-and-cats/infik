@@ -44,7 +44,7 @@
       {
        "id": "m1boss",
        "title": "Задача-босс",
-       "file": "content/m1/l5.json",
+       "file": "content/m1/boss.json",
        "boss": true,
        "icon": "snake"
       }
