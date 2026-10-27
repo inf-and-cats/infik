@@ -26,21 +26,25 @@
       {
        "id": "m1l3",
        "title": "Числа в print",
+       "file": "content/m1/l3.json",
        "icon": "calc"
       },
       {
        "id": "m1l4",
        "title": "sep и end",
+       "file": "content/m1/l4.json",
        "icon": "sep"
       },
       {
        "id": "m1l5",
        "title": "Комментарии",
+       "file": "content/m1/l5.json",
        "icon": "hash"
       },
       {
        "id": "m1boss",
        "title": "Задача-босс",
+       "file": "content/m1/l5.json",
        "boss": true,
        "icon": "snake"
       }
