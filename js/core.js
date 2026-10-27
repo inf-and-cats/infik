@@ -63,8 +63,11 @@ function openCourse(from){
   try { if(tg&&tg.openLink){ tg.openLink(url); return; } } catch(e){}
   window.open(url,"_blank","noopener");
 }
+/* ученик платного курса (признак приходит с сервера, см. js/main.js) */
+function isStudent(){ return !!(S.access && S.access.student); }
 /* карточка-приглашение на курс; title и text — заголовок и пояснение под конкретное место */
 function courseCta(from,title,text){
+  if(isStudent()) return document.createDocumentFragment();
   if(!COURSE_URL) return document.createDocumentFragment();
   const c=h("section",{class:"course-cta"},'<small>'+esc(COURSE_NAME)+'</small><b>'+title+'</b><p>'+text+'</p>');
   const b=h("button",{class:"main",type:"button"},"Купить курс"); b.onclick=()=>{ haptic("success"); openCourse(from); };

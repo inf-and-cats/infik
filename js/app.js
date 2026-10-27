@@ -36,7 +36,7 @@ function renderPath(app){
   const sec=SECS.find(x=>x.id===S.sec)||SECS[0];
   const bar=h("div",{class:"secs",role:"tablist","aria-label":"Разделы курса"});
   SECS.forEach((x,i)=>{
-    const tag=x.free?'<span class="free">Бесплатно</span>':!hasLessons(x)?'<span class="lk">'+I.lock+'</span>':"";
+    const tag=x.free&&!isStudent()?'<span class="free">Бесплатно</span>':!hasLessons(x)?'<span class="lk">'+I.lock+'</span>':"";
     const b=h("button",{class:"sec",role:"tab","aria-selected":String(x===sec),type:"button"},'<small>Раздел '+(i+1)+tag+'</small><b>'+esc(x.title)+'</b>');
     b.onclick=()=>{ S.sec=x.id; save(); render(); }; bar.appendChild(b);
   });
