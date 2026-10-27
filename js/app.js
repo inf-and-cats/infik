@@ -42,10 +42,14 @@ function renderPath(app){
   });
   app.appendChild(bar);
   if(!hasLessons(sec)) app.appendChild(h("section",{class:"sec-soon"},'<span class="ic">'+I.lock+'</span><div><b>'+esc(sec.title)+'</b><p>'+esc(sec.about)+'. Раздел скоро откроется.</p></div>'));
+  /* модули сворачиваются: по умолчанию открыт только текущий, выбор ученика запоминаем в S.fold */
+  const fold=S.fold||(S.fold={}), curM=sec.modules.find(m=>m.lessons&&m.lessons.some(p=>!S.done[p.id]));
   sec.modules.forEach((M,mi)=>{
     if(!M.lessons){ app.appendChild(h("div",{class:"locked-mod"},I.lock.replace("<svg",'<svg width="26" height="26"')+'<div><small>Модуль '+(mi+1)+'</small><b>'+esc(M.title)+'</b></div>'+(M.ege?'<span class="ege">'+esc(M.ege)+'</span>':""))); return; }
     const PATH=M.lessons, doneN=PATH.filter(p=>S.done[p.id]).length;
-    const mod=h("section",{class:"module"},'<div class="eyebrow">Модуль '+(mi+1)+' · '+doneN+' из '+PATH.length+'</div><h2>'+esc(M.title)+'</h2><p>'+esc(M.about||"")+'</p><div class="bar"><i style="width:'+(doneN/PATH.length*100)+'%"></i></div><img src="'+CAT+'" alt="">');
+    const shut=M.id in fold?fold[M.id]:M!==curM;
+    const mod=h("section",{class:"module"+(shut?" shut":"")},'<button class="fold" type="button" aria-expanded="'+!shut+'" aria-label="'+(shut?"Развернуть":"Свернуть")+' модуль"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button><div class="eyebrow">Модуль '+(mi+1)+' · '+doneN+' из '+PATH.length+'</div><h2>'+esc(M.title)+'</h2><p>'+esc(M.about||"")+'</p><div class="bar"><i style="width:'+(doneN/PATH.length*100)+'%"></i></div><img src="'+CAT+'" alt="">');
+    mod.onclick=e=>{ if(e.target.closest(".cheat")) return; fold[M.id]=!shut; try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e){} render(); }; // без save(): сворачивание не прогресс, метку синхронизации не сдвигаем
     const cheat=PATH.filter(p=>S.done[p.id]&&p.file);
     if(cheat.length){ const cb=h("button",{class:"cheat",type:"button"},"📖 Шпаргалка"); cb.onclick=()=>openCheatSheet(M,cheat); mod.insertBefore(cb,mod.querySelector("img")); }
     app.appendChild(mod);
@@ -58,7 +62,7 @@ function renderPath(app){
       n.onclick=()=>{ if(p.file&&(open||done)) startLesson(p); else if(open) toast("Урок в разработке"); else toast("Сначала пройди урок "+i); };
       path.appendChild(n);
     });
-    app.appendChild(path);
+    if(!shut) app.appendChild(path);
     if(mi===0) app.appendChild(courseCta("path_"+sec.id,"Весь ЕГЭ, а не только Python","Здесь ты знакомишься с Python. На годовом курсе разберём все 27 заданий ЕГЭ с преподавателем — от первого до последнего."));
   });
   if(!hasLessons(sec)) app.appendChild(courseCta("path_"+sec.id,"Не жди — начни сейчас","На годовом курсе всё это уже есть: разберём все 27 заданий ЕГЭ с преподавателем."));
