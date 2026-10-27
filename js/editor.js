@@ -8,8 +8,7 @@ function ideView(code,opts){
   const body=h("div",{class:"code"}); const gut=h("div",{class:"gut"}); const lines=h("div",{class:"lines"});
   const src=code.split("\n");
   src.forEach((l,i)=>{ gut.appendChild(h("div",null,String(i+1)));
-    let html=hl(l).replace("@@BLANK@@",'<span class="blank">?</span>');
-    if(l.includes("@@BLANK@@")) html=hl(l.replace("@@BLANK@@","")).replace(/^/,'<span class="blank">?</span>');
+    const html=l.split("@@BLANK@@").map(hl).join('<span class="blank">?</span>');
     const ln=h("div",{class:"ln"},html||" "); if(opts.onTap){ ln.classList.add("tap"); ln.tabIndex=0; ln.setAttribute("role","button"); ln.addEventListener("click",()=>opts.onTap(i,ln)); ln.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();opts.onTap(i,ln);}}); }
     lines.appendChild(ln); });
   body.append(gut,lines); w.appendChild(body);
