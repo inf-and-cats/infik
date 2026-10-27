@@ -13,7 +13,7 @@ function ideView(code,opts){
     lines.appendChild(ln); });
   body.append(gut,lines); w.appendChild(body);
   const term=h("div",{class:"term"}); term.hidden=true; w.appendChild(term);
-  w.showRun=function(c){ const r=runPy(c==null?code:c); showTerm(term,r); return r; };
+  w.showRun=function(c){ const r=runPy(c==null?code:c,opts.input); showTerm(term,r); return r; };
   if(opts.run){ const b=h("button",{class:"run",type:"button"},I.play+"Запустить"); b.onclick=()=>w.showRun(); bar.appendChild(b); }
   w.lineEls=[...lines.children];
   return w;
@@ -43,7 +43,7 @@ function codeEntry(b,st,onChange){
   mK.onclick=()=>{ if(S.mode!=="kbd"){ api.code=blocksCode(); setMode("kbd"); } };
   function blocksCode(){ return lines.map(l=>" ".repeat(l.ind*4)+joinTokens(l.t.map(x=>x.t))).join("\n").replace(/\s+$/,""); }
   function shell(){ const w=h("div",{class:"ide"}); const bar=h("div",{class:"ide-bar"},'<span class="dots"><i></i><i></i><i></i></span><span class="file">main.py</span>');
-    const run=h("button",{class:"run",type:"button"},I.play+"Запустить"); run.onclick=()=>{ const r=runPy(api.code); showTerm(term,r); }; bar.appendChild(run); w.appendChild(bar);
+    const run=h("button",{class:"run",type:"button"},I.play+"Запустить"); run.onclick=()=>{ const r=runPy(api.code,st.input); showTerm(term,r); }; bar.appendChild(run); w.appendChild(bar);
     const term=h("div",{class:"term"}); term.hidden=true; api.term=term; return {w,term}; }
   function draw(){
     area.innerHTML="";
@@ -88,6 +88,6 @@ function codeEntry(b,st,onChange){
     onChange&&onChange();
   }
   setMode(S.mode==="kbd"?"kbd":"blocks");
-  api.run=()=>{ const r=runPy(api.code); showTerm(api.term,r); return r; };
+  api.run=()=>{ const r=runPy(api.code,st.input); showTerm(api.term,r); return r; };
   return api;
 }

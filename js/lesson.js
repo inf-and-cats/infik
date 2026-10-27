@@ -42,6 +42,7 @@ function showStep(){
   const st=LS.queue[LS.pos], b=$("#lbody"); b.innerHTML=""; b.scrollTop=0;
   b.appendChild(h("div",{class:"kind"},st.kind+(st._again?' <span class="again">Повторим</span>':"")));
   b.appendChild(h("h2",{class:"q"},st.title));
+  if(st.input&&st.type!=="theory") b.appendChild(inputBlock(st.input));
   if(st.expectOut) b.appendChild(expectBlock(st.expectOut));
   ({theory,choice,build,bug,indent,parsons,write})[st.type](st,b);
 }
@@ -50,7 +51,8 @@ function showStep(){
 function theoryCard(st){
   const f=document.createDocumentFragment();
   (st.text||[]).forEach(t=>f.appendChild(h("p",{class:"txt"},t)));
-  if(st.code) f.appendChild(ideView(st.code,{run:st.run}));
+  if(st.input) f.appendChild(inputBlock(st.input));
+  if(st.code) f.appendChild(ideView(st.code,{run:st.run,input:st.input}));
   if(st.tip) f.appendChild(h("div",{class:"tip"},'<img src="'+CAT+'" alt="ИНФиК"><p>'+st.tip+'</p>'));
   return f;
 }
@@ -68,7 +70,7 @@ function theory(st,b){
   footer(null,{btn:"Дальше",on:()=>{ LS.xp+=0; nextStep(); }});
 }
 function choice(st,b){
-  if(st.code){ const v=ideView(st.code,{}); b.appendChild(v); if(st.showRun) v.showRun(); }
+  if(st.code){ const v=ideView(st.code,{input:st.input}); b.appendChild(v); if(st.showRun) v.showRun(); }
   const box=h("div",{class:"opts"}); let sel=null, done=false;
   const order=st.options.map((o,i)=>i);
   const btns=order.map((oi,k)=>{ const o=st.options[oi];
@@ -82,7 +84,7 @@ function choice(st,b){
 }
 function bug(st,b){
   let sel=null, done=false;
-  const v=ideView(st.code,{onTap:(i,ln)=>{ if(done) return; sel=i; v.lineEls.forEach(x=>x.classList.remove("sel")); ln.classList.add("sel"); chk.disabled=false; }});
+  const v=ideView(st.code,{input:st.input,onTap:(i,ln)=>{ if(done) return; sel=i; v.lineEls.forEach(x=>x.classList.remove("sel")); ln.classList.add("sel"); chk.disabled=false; }});
   b.appendChild(v);
   b.appendChild(h("div",{class:"tip"},'<img src="'+CAT+'" alt="ИНФиК"><p>Смотри внимательно на кавычки и скобки. <em>Баги любят прятаться.</em></p>'));
   const chk=footer(null,{btn:"Проверить",disabled:true,on:()=>{ done=true; const ok=sel+1===st.bug;
@@ -97,7 +99,7 @@ function indent(st,b){
   const ind=h("button",{class:"tool",type:"button"},"<code>⇥</code> Добавить отступ");
   tools.append(dedent,ind); b.appendChild(tools);
   b.appendChild(h("p",{class:"note"},"Нажми на строку, потом на кнопку."));
-  function draw(){ wrap.innerHTML=""; const v=ideView(lines.join("\n"),{run:true,onTap:(i)=>{ if(done) return; sel=i; draw(); }}); if(sel!=null) v.lineEls[sel].classList.add("sel"); wrap.appendChild(v); wrap.v=v; }
+  function draw(){ wrap.innerHTML=""; const v=ideView(lines.join("\n"),{run:true,input:st.input,onTap:(i)=>{ if(done) return; sel=i; draw(); }}); if(sel!=null) v.lineEls[sel].classList.add("sel"); wrap.appendChild(v); wrap.v=v; }
   dedent.onclick=()=>{ if(sel==null||done) return toast("Сначала выбери строку"); lines[sel]=lines[sel].replace(/^ {1,4}/,""); draw(); };
   ind.onclick=()=>{ if(sel==null||done) return toast("Сначала выбери строку"); lines[sel]="    "+lines[sel]; draw(); };
   draw();
@@ -111,7 +113,7 @@ function parsons(st,b){
   function draw(){
     out.innerHTML="";
     const src=ans.length?ans.map(a=>a.l).join("\n"):"";
-    const v=ideView(src||" ",{run:ans.length>0,onTap:(i)=>{ if(!ans.length) return; ans.splice(i,1); draw(); }});
+    const v=ideView(src||" ",{run:ans.length>0,input:st.input,onTap:(i)=>{ if(!ans.length) return; ans.splice(i,1); draw(); }});
     if(!ans.length){ v.lineEls[0].innerHTML='<span style="color:var(--ide-dim)">Сюда встанут строки…</span>'; v.querySelector(".gut").innerHTML="<div>1</div>"; }
     out.appendChild(v); out.v=v;
     bank.innerHTML="";
@@ -162,6 +164,10 @@ function finish(){
 /* блок «Программа должна вывести» — как терминал */
 function expectBlock(text){
   return h("div",{class:"expect"},'<div class="th">Программа должна вывести</div><pre>'+esc(text)+'</pre>');
+}
+/* блок «Пользователь вводит»: что программа получит через input(), по строке на каждый ввод */
+function inputBlock(lines){
+  return h("div",{class:"expect inp"},'<div class="th">Пользователь вводит</div><pre>'+esc(lines.join("\n"))+'</pre>');
 }
 /* проверка вывода по описанию из файла урока: {lines: N, equals: {"номер строки": "текст"}} */
 function checkOutput(c,r){

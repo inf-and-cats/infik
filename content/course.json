@@ -3,7 +3,7 @@
   {
    "id": "s1",
    "title": "Основы Python",
-   "about": "print, переменные, арифметика, условия, циклы",
+   "about": "print, переменные, условия, циклы, строки, списки, функции",
    "free": true,
    "modules": [
     {
@@ -53,22 +53,80 @@
     {
      "id": "m2",
      "title": "Переменные и ввод",
-     "ege": "input, int, str"
+     "about": "Переменные, ввод с клавиатуры, типы данных.",
+     "lessons": [
+      {
+       "id": "m2l1",
+       "title": "Что такое переменная",
+       "file": "content/m2/l1.json",
+       "icon": "box"
+      },
+      {
+       "id": "m2l2",
+       "title": "Имена и перезапись",
+       "file": "content/m2/l2.json",
+       "icon": "tag"
+      },
+      {
+       "id": "m2l3",
+       "title": "Типы данных",
+       "file": "content/m2/l3.json",
+       "icon": "types"
+      },
+      {
+       "id": "m2l4",
+       "title": "Ввод с клавиатуры",
+       "file": "content/m2/l4.json",
+       "icon": "kbd"
+      },
+      {
+       "id": "m2l5",
+       "title": "Текст в число",
+       "file": "content/m2/l5.json",
+       "icon": "convert"
+      },
+      {
+       "id": "m2l6",
+       "title": "Изменяем переменные",
+       "file": "content/m2/l6.json",
+       "icon": "plus"
+      },
+      {
+       "id": "m2boss",
+       "title": "Задача-босс",
+       "file": "content/m2/boss.json",
+       "boss": true,
+       "icon": "snake"
+      }
+     ]
     },
     {
      "id": "m3",
-     "title": "Арифметика",
-     "ege": "// и % · задача 14"
+     "title": "Арифметика"
     },
     {
      "id": "m4",
-     "title": "Условия",
-     "ege": "if, and, or · задача 2"
+     "title": "Условия"
     },
     {
      "id": "m5",
-     "title": "Цикл for",
-     "ege": "range · задача 15"
+     "title": "Цикл for"
+    },
+    {
+     "id": "m6",
+     "title": "Цикл while"
+    },
+    {
+     "id": "m7",
+     "title": "Строки"
+    },
+    {
+     "id": "m8",
+     "title": "Списки"
+    },
+    {
+     "id": "m9",
+     "title": "Функции"
     }
    ]
   },
