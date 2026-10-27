@@ -45,7 +45,10 @@ function renderPath(app){
   sec.modules.forEach((M,mi)=>{
     if(!M.lessons){ app.appendChild(h("div",{class:"locked-mod"},I.lock.replace("<svg",'<svg width="26" height="26"')+'<div><small>Модуль '+(mi+1)+'</small><b>'+esc(M.title)+'</b></div>'+(M.ege?'<span class="ege">'+esc(M.ege)+'</span>':""))); return; }
     const PATH=M.lessons, doneN=PATH.filter(p=>S.done[p.id]).length;
-    app.appendChild(h("section",{class:"module"},'<div class="eyebrow">Модуль '+(mi+1)+' · '+doneN+' из '+PATH.length+'</div><h2>'+esc(M.title)+'</h2><p>'+esc(M.about||"")+'</p><div class="bar"><i style="width:'+(doneN/PATH.length*100)+'%"></i></div><img src="'+CAT+'" alt="">'));
+    const mod=h("section",{class:"module"},'<div class="eyebrow">Модуль '+(mi+1)+' · '+doneN+' из '+PATH.length+'</div><h2>'+esc(M.title)+'</h2><p>'+esc(M.about||"")+'</p><div class="bar"><i style="width:'+(doneN/PATH.length*100)+'%"></i></div><img src="'+CAT+'" alt="">');
+    const cheat=PATH.filter(p=>S.done[p.id]&&p.file);
+    if(cheat.length){ const cb=h("button",{class:"cheat",type:"button"},"📖 Шпаргалка"); cb.onclick=()=>openCheatSheet(M,cheat); mod.insertBefore(cb,mod.querySelector("img")); }
+    app.appendChild(mod);
     const path=h("div",{class:"path"});
     const offs=[0,-60,-80,-30,40,0];
     PATH.forEach((p,i)=>{
@@ -59,6 +62,24 @@ function renderPath(app){
     if(mi===0) app.appendChild(courseCta("path_"+sec.id,"Весь ЕГЭ, а не только Python","Здесь ты знакомишься с Python. На годовом курсе разберём все 27 заданий ЕГЭ с преподавателем — от первого до последнего."));
   });
   if(!hasLessons(sec)) app.appendChild(courseCta("path_"+sec.id,"Не жди — начни сейчас","На годовом курсе всё это уже есть: разберём все 27 заданий ЕГЭ с преподавателем."));
+}
+/* ---------- шпаргалка модуля: теория всех пройденных уроков ---------- */
+const LESSON_JSON={}; // файлы уроков в памяти, чтобы не качать повторно
+function lessonJson(file){
+  return LESSON_JSON[file]||(LESSON_JSON[file]=fetch(file,{cache:"no-cache"}).then(r=>{ if(!r.ok) throw new Error(r.status); return r.json(); })
+    .catch(e=>{ delete LESSON_JSON[file]; throw e; }));
+}
+function openCheatSheet(M,lessons){
+  const list=h("div",{class:"sheet-list"},'<div class="sr-loading"><i></i>Загружаем шпаргалку</div>');
+  openSheet("Шпаргалка: "+M.title,list);
+  Promise.all(lessons.map(p=>lessonJson(p.file))).then(all=>{
+    list.innerHTML="";
+    all.forEach((l,k)=>{
+      list.appendChild(h("h3",{class:"sheet-lesson"},lessons[k].title));
+      const th=(l.steps||[]).filter(s=>s.type==="theory");
+      if(th.length) th.forEach(s=>list.appendChild(theoryArticle(s))); else list.appendChild(h("p",{class:"note"},"В этом уроке нет теории."));
+    });
+  }).catch(()=>{ list.innerHTML=""; list.appendChild(h("div",{class:"sr-note"},"Не получилось загрузить, проверь интернет")); });
 }
 /* ---------- лига недели (сервер: league_state / league_xp) ---------- */
 let LG_STATE=null; // последняя таблица недели с сервера

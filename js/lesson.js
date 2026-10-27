@@ -8,8 +8,9 @@ async function startLesson(p){
   p=Object.assign({},p,{steps:lesson.steps});
   LS={p, queue:p.steps.map((s,i)=>Object.assign({_i:i},s)), pos:0, mistakes:0, redo:new Set(), xp:0, t0:Date.now(), bugFound:false};
   const el=$("#lesson"); el.hidden=false; document.body.style.overflow="hidden";
-  el.innerHTML='<div class="lesson-in"><div class="lhead"><button class="x" type="button" aria-label="Выйти из урока">'+I.close+'</button><div class="prog"><i></i></div></div><div class="lbody" id="lbody"></div></div><div class="lfoot" id="lfoot"><div class="lfoot-in" id="lfoot-in"></div></div>';
+  el.innerHTML='<div class="lesson-in"><div class="lhead"><button class="x" type="button" aria-label="Выйти из урока">'+I.close+'</button><div class="prog"><i></i></div><button class="x book" type="button" aria-label="Теория урока" hidden>'+I.book+'</button></div><div class="lbody" id="lbody"></div></div><div class="lfoot" id="lfoot"><div class="lfoot-in" id="lfoot-in"></div></div>';
   el.querySelector(".x").onclick=closeLesson;
+  el.querySelector(".book").onclick=openLessonTheory;
   showStep();
 }
 function closeLesson(){ $("#lesson").hidden=true; document.body.style.overflow=""; LS=null; render(); }
@@ -37,6 +38,7 @@ function nextStep(){ LS.pos++; if(LS.pos>=LS.queue.length) finish(); else showSt
 
 function showStep(){
   setProg();
+  $("#lesson .book").hidden=!LS.queue.slice(0,LS.pos).some(s=>s.type==="theory");
   const st=LS.queue[LS.pos], b=$("#lbody"); b.innerHTML=""; b.scrollTop=0;
   b.appendChild(h("div",{class:"kind"},st.kind+(st._again?' <span class="again">Повторим</span>':"")));
   b.appendChild(h("h2",{class:"q"},st.title));
@@ -44,10 +46,25 @@ function showStep(){
   ({theory,choice,build,bug,indent,parsons,write})[st.type](st,b);
 }
 
+/* тело карточки теории: абзацы, код с «Запустить», совет котика. Заголовок рисует тот, кто вызывает */
+function theoryCard(st){
+  const f=document.createDocumentFragment();
+  (st.text||[]).forEach(t=>f.appendChild(h("p",{class:"txt"},t)));
+  if(st.code) f.appendChild(ideView(st.code,{run:st.run}));
+  if(st.tip) f.appendChild(h("div",{class:"tip"},'<img src="'+CAT+'" alt="ИНФиК"><p>'+st.tip+'</p>'));
+  return f;
+}
+/* карточка теории с заголовком — для панели «Теория урока» и шпаргалки модуля */
+function theoryArticle(st){ const a=h("article",{class:"tcard"}); a.appendChild(h("h3",null,st.title)); a.appendChild(theoryCard(st)); return a; }
+/* книжка в уроке: пройденная теория по порядку, без повторов */
+function openLessonTheory(){
+  if(!LS) return;
+  const list=h("div",{class:"sheet-list"}), seen=new Set();
+  LS.queue.slice(0,LS.pos).forEach(s=>{ if(s.type!=="theory"||seen.has(s._i)) return; seen.add(s._i); list.appendChild(theoryArticle(s)); });
+  openSheet("Теория урока",list);
+}
 function theory(st,b){
-  st.text.forEach(t=>b.appendChild(h("p",{class:"txt"},t)));
-  if(st.code) b.appendChild(ideView(st.code,{run:st.run}));
-  if(st.tip) b.appendChild(h("div",{class:"tip"},'<img src="'+CAT+'" alt="ИНФиК"><p>'+st.tip+'</p>'));
+  b.appendChild(theoryCard(st));
   footer(null,{btn:"Дальше",on:()=>{ LS.xp+=0; nextStep(); }});
 }
 function choice(st,b){

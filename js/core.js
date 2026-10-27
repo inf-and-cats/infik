@@ -22,6 +22,7 @@ const I = {
   trophy:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4h10v5a5 5 0 0 1-10 0Z"/><path d="M7 6H4a3 3 0 0 0 3 4M17 6h3a3 3 0 0 1-3 4M12 14v4M8 21h8"/></svg>',
   close:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>',
   blocks:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="4" width="8" height="6" rx="2"/><rect x="13" y="4" width="8" height="6" rx="2"/><rect x="3" y="14" width="12" height="6" rx="2"/></svg>',
+  book:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6.5C10 5 7 4.5 3.5 5v13c3.5-.5 6.5 0 8.5 1.5 2-1.5 5-2 8.5-1.5V5C17 4.5 14 5 12 6.5Z" fill="currentColor" fill-opacity=".15"/><path d="M12 6.5v13"/></svg>',
   kbd:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="2.5" y="6" width="19" height="12" rx="2.5"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M8 14h8"/></svg>'
 };
 
@@ -72,4 +73,45 @@ function courseCta(from,title,text){
   const c=h("section",{class:"course-cta"},'<small>'+esc(COURSE_NAME)+'</small><b>'+title+'</b><p>'+text+'</p>');
   const b=h("button",{class:"main",type:"button"},"Купить курс"); b.onclick=()=>{ haptic("success"); openCourse(from); };
   c.appendChild(b); return c;
+}
+
+/* Нижняя панель поверх экрана (теория урока, шпаргалка модуля).
+   Закрывается крестиком, тапом по фону, свайпом вниз, Esc и кнопкой «Назад» Telegram. Что под ней — не трогает. */
+function openSheet(title, content){
+  const wrap=h("div",{class:"sheet-wrap"}), bg=h("div",{class:"sheet-bg"});
+  const sh=h("div",{class:"sheet",role:"dialog","aria-modal":"true","aria-label":title});
+  const head=h("div",{class:"sheet-head"},'<span class="grip" aria-hidden="true"></span><h2></h2><button class="x" type="button" aria-label="Закрыть">'+I.close+'</button>');
+  head.querySelector("h2").textContent=title;
+  const body=h("div",{class:"sheet-body"}); body.appendChild(content);
+  sh.append(head,body); wrap.append(bg,sh); document.body.appendChild(wrap);
+  const prevFocus=document.activeElement, prevOverflow=document.body.style.overflow;
+  document.body.style.overflow="hidden";
+  const bb=(tg&&tg.BackButton&&tg.isVersionAtLeast&&tg.isVersionAtLeast("6.1"))?tg.BackButton:null, bbWas=!!(bb&&bb.isVisible);
+  if(bb){ try{ bb.onClick(close); bb.show(); }catch(e){} }
+  const onKey=e=>{ if(e.key==="Escape") close(); };
+  document.addEventListener("keydown",onKey);
+  let closed=false;
+  function close(){
+    if(closed) return; closed=true;
+    document.removeEventListener("keydown",onKey);
+    if(bb){ try{ bb.offClick(close); if(!bbWas) bb.hide(); }catch(e){} }
+    wrap.classList.remove("on"); sh.style.transition=""; sh.style.transform="";
+    const done=()=>{ wrap.remove(); document.body.style.overflow=prevOverflow; if(prevFocus&&prevFocus.isConnected&&prevFocus.focus) prevFocus.focus({preventScroll:true}); };
+    if(matchMedia("(prefers-reduced-motion: reduce)").matches) done(); else setTimeout(done,230);
+  }
+  head.querySelector(".x").onclick=close; bg.onclick=close;
+  /* свайп вниз: за шапку всегда, за содержимое — только когда оно прокручено к началу */
+  let x0=null, y0=null, dy=0, t0=0, drag=false;
+  sh.addEventListener("touchstart",e=>{ y0=null; drag=false; if(e.touches.length!==1) return;
+    if(body.contains(e.target)&&body.scrollTop>0) return;
+    x0=e.touches[0].clientX; y0=e.touches[0].clientY; dy=0; t0=Date.now(); },{passive:true});
+  sh.addEventListener("touchmove",e=>{ if(y0==null) return;
+    const dx=e.touches[0].clientX-x0; dy=e.touches[0].clientY-y0;
+    if(!drag){ if(Math.abs(dx)>Math.abs(dy)||dy<0){ if(Math.abs(dx)>6||dy<-6) y0=null; return; } if(dy<6) return; drag=true; }
+    e.preventDefault(); sh.style.transition="none"; sh.style.transform="translateY("+Math.max(0,dy)+"px)"; },{passive:false});
+  sh.addEventListener("touchend",()=>{ if(!drag){ y0=null; return; } drag=false; y0=null; sh.style.transition="";
+    if(dy>120||(dy>40&&dy/(Date.now()-t0)>.5)) close(); else sh.style.transform=""; });
+  requestAnimationFrame(()=>requestAnimationFrame(()=>wrap.classList.add("on")));
+  head.querySelector(".x").focus({preventScroll:true});
+  return {close, body};
 }
