@@ -817,7 +817,7 @@ function hl(line){
   const m=line.match(/^( *)/)[1].length; let html="";
   const full=Math.floor(m/4); for(let i=0;i<full;i++) html+='<span class="ind">    </span>';
   let rest=line.slice(full*4);
-  const re=/(#.*$)|([fF]?"[^"]*"?|[fF]?'[^']*'?)|(\b\d+(?:\.\d+)?\b)|([A-Za-zА-Яа-яЁё_][\wА-Яа-яЁё]*)|([()\[\]{}])|([^#"'\w()\[\]{}А-Яа-яЁё]+)/g;
+  const re=/(#.*$)|([fF]?"[^"]*"?|[fF]?'[^']*'?)|(\d+(?:\.\d+)?)|([A-Za-zА-Яа-яЁё_][\wА-Яа-яЁё]*)|([()\[\]{}])|([^#"'\w()\[\]{}А-Яа-яЁё]+|[\s\S])/g;
   let mm; while((mm=re.exec(rest))){
     if(mm[1]) html+='<span class="t-com">'+esc(mm[1])+'</span>';
     else if(mm[2]) html+='<span class="t-str">'+esc(mm[2])+'</span>';
