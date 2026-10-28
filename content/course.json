@@ -146,7 +146,53 @@
     },
     {
      "id": "m4",
-     "title": "Условия"
+     "title": "Условия",
+     "about": "Сравнения, if, elif и else, and, or и not, вложенные условия и типовые задачи.",
+     "lessons": [
+      {
+       "id": "m4l1",
+       "title": "Сравнения",
+       "file": "content/m4/l1.json",
+       "icon": "compare"
+      },
+      {
+       "id": "m4l2",
+       "title": "if и else",
+       "file": "content/m4/l2.json",
+       "icon": "branch"
+      },
+      {
+       "id": "m4l3",
+       "title": "elif: несколько вариантов",
+       "file": "content/m4/l3.json",
+       "icon": "ladder"
+      },
+      {
+       "id": "m4l4",
+       "title": "and, or, not",
+       "file": "content/m4/l4.json",
+       "icon": "logic"
+      },
+      {
+       "id": "m4l5",
+       "title": "Условие внутри условия",
+       "file": "content/m4/l5.json",
+       "icon": "nest"
+      },
+      {
+       "id": "m4l6",
+       "title": "Типовые задачи",
+       "file": "content/m4/l6.json",
+       "icon": "max3"
+      },
+      {
+       "id": "m4boss",
+       "title": "Задача-босс",
+       "file": "content/m4/boss.json",
+       "boss": true,
+       "icon": "snake"
+      }
+     ]
     },
     {
      "id": "m5",

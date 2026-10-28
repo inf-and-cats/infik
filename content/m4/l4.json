@@ -1,0 +1,251 @@
+{
+ "id": "m4l4",
+ "title": "and, or, not",
+ "steps": [
+  {
+   "type": "theory",
+   "kind": "Теория",
+   "title": "Два условия сразу: and",
+   "text": [
+    "Иногда одного условия мало. Например, число двузначное, если оно не меньше 10 <b>и</b> не больше 99.",
+    "<code>and</code> («и») даёт <code>True</code>, только когда оба условия <code>True</code>. Хватит одного <code>False</code> — и всё выражение <code>False</code>."
+   ],
+   "code": "n = 42\nprint(n >= 10 and n <= 99)\nn = 142\nprint(n >= 10 and n <= 99)",
+   "run": true,
+   "tip": "По обе стороны от <code>and</code> пишут полные условия: <code>n &gt;= 10 and n &lt;= 99</code>. Так, как говорим вслух, «n &gt;= 10 and &lt;= 99», не получится."
+  },
+  {
+   "type": "choice",
+   "kind": "Что выведет программа?",
+   "title": "Что выведет программа?",
+   "code": "a = 5\nprint(a > 0 and a < 3)",
+   "options": [
+    {
+     "out": "True"
+    },
+    {
+     "out": "False"
+    },
+    {
+     "out": "5"
+    },
+    {
+     "out": "True False"
+    }
+   ],
+   "answer": 1,
+   "why": "5 больше 0 — да. Но 5 меньше 3 — нет. Для <code>and</code> одного <code>False</code> достаточно."
+  },
+  {
+   "type": "theory",
+   "kind": "Теория",
+   "title": "Хотя бы одно: or",
+   "text": [
+    "<code>or</code> («или») даёт <code>True</code>, если верно хотя бы одно из условий. <code>False</code> будет, только когда оба <code>False</code>.",
+    "Пример: в выходные котик спит до обеда. Выходной — это суббота или воскресенье."
+   ],
+   "code": "day = \"суббота\"\nif day == \"суббота\" or day == \"воскресенье\":\n    print(\"Спим до обеда\")\nelse:\n    print(\"Подъём!\")",
+   "run": true,
+   "tip": "Справа от <code>or</code> тоже нужно полное сравнение: <code>day == \"воскресенье\"</code>, а не просто <code>\"воскресенье\"</code>."
+  },
+  {
+   "type": "choice",
+   "kind": "Что выведет программа?",
+   "title": "Что выведет программа?",
+   "code": "x = 15\nprint(x < 10 or x > 12)",
+   "options": [
+    {
+     "out": "False"
+    },
+    {
+     "out": "15"
+    },
+    {
+     "out": "True"
+    },
+    {
+     "out": "False True"
+    }
+   ],
+   "answer": 2,
+   "why": "15 меньше 10 — нет. Зато 15 больше 12 — да. Для <code>or</code> хватит одного <code>True</code>."
+  },
+  {
+   "type": "theory",
+   "kind": "Теория",
+   "title": "not: наоборот",
+   "text": [
+    "<code>not</code> переворачивает значение: <code>not True</code> — это <code>False</code>, а <code>not False</code> — <code>True</code>.",
+    "Его удобно ставить, когда условие проще сказать через «не». Например, «не делится на 3» — это <code>not n % 3 == 0</code>."
+   ],
+   "code": "n = 10\nprint(not n > 5)\nprint(not n % 3 == 0)",
+   "run": true,
+   "tip": "Часто вместо <code>not</code> можно написать обратное сравнение: <code>not n &gt; 5</code> — то же, что <code>n &lt;= 5</code>, а <code>not n % 3 == 0</code> — то же, что <code>n % 3 != 0</code>."
+  },
+  {
+   "type": "choice",
+   "kind": "Что выведет программа?",
+   "title": "Что выведет программа?",
+   "code": "print(not 4 == 4)",
+   "options": [
+    {
+     "out": "False"
+    },
+    {
+     "out": "True"
+    },
+    {
+     "out": "4"
+    },
+    {
+     "out": "not True"
+    }
+   ],
+   "answer": 0,
+   "why": "<code>4 == 4</code> — это <code>True</code>, а <code>not</code> переворачивает его в <code>False</code>."
+  },
+  {
+   "type": "theory",
+   "kind": "Теория",
+   "title": "Кто сильнее: and или or",
+   "text": [
+    "Когда в условии и <code>and</code>, и <code>or</code>, Python сначала считает сравнения, потом <code>not</code>, потом <code>and</code> и только в конце <code>or</code>.",
+    "Это как <code>*</code> и <code>+</code> в арифметике: <code>and</code> сильнее. Если сомневаешься, ставь скобки."
+   ],
+   "code": "a = 7\nprint(a > 5 or a > 1 and a < 2)\nprint((a > 5 or a > 1) and a < 2)",
+   "run": true,
+   "tip": "Скобки поменяли ответ. В первой строке сначала <code>a &gt; 1 and a &lt; 2</code>, во второй — сначала <code>or</code> в скобках."
+  },
+  {
+   "type": "choice",
+   "kind": "Дополни код",
+   "title": "Котику можно гулять, если теплее 15 градусов и нет дождя. Что вписать в условие?",
+   "code": "t = 20\nrain = False\nif @@BLANK@@:\n    print(\"Гулять!\")\nelse:\n    print(\"Сидим дома\")",
+   "options": [
+    {
+     "code": "t > 15 or rain"
+    },
+    {
+     "code": "t > 15 and not rain"
+    },
+    {
+     "code": "t > 15 and rain"
+    },
+    {
+     "code": "not t > 15"
+    }
+   ],
+   "answer": 1,
+   "why": "Нужны оба условия сразу, значит <code>and</code>. «Нет дождя» — это <code>not rain</code>: в <code>rain</code> лежит <code>False</code>, а <code>not</code> делает из него <code>True</code>."
+  },
+  {
+   "type": "bug",
+   "kind": "Найди баг",
+   "title": "Программа должна проверять, двузначное ли число. Но для 5 она пишет «двузначное». Где ошибка?",
+   "code": "n = 5\nif n >= 10 or n <= 99:\n    print(\"двузначное\")\nelse:\n    print(\"не двузначное\")",
+   "bug": 2,
+   "why": "С <code>or</code> условие верно почти для любого числа: 5 меньше 99, и этого хватает. Нужно <code>and</code>, чтобы оба условия выполнялись сразу."
+  },
+  {
+   "type": "choice",
+   "kind": "Разбери ошибку",
+   "title": "Что означает эта ошибка?",
+   "code": "n = 50\nif n >= 10 and <= 99:\n    print(\"да\")",
+   "showRun": true,
+   "options": [
+    "and нельзя писать внутри if",
+    "Число 50 не подходит под условие",
+    "Нужны скобки вокруг 10",
+    "После and нужно полное сравнение: n <= 99"
+   ],
+   "answer": 3,
+   "why": "Python не понимает, что сравнивать с 99. После <code>and</code> снова пишут переменную: <code>n &gt;= 10 and n &lt;= 99</code>."
+  },
+  {
+   "type": "parsons",
+   "kind": "Расставь строки",
+   "title": "Расставь строки: дети до 7 лет и люди от 65 едут бесплатно",
+   "lines": [
+    "    print(\"Бесплатно\")",
+    "else:",
+    "age = int(input())",
+    "    print(\"100 рублей\")",
+    "if age < 7 or age >= 65:"
+   ],
+   "input": [
+    "70"
+   ],
+   "expect": "70\nБесплатно\n",
+   "why": "Бесплатно, если выполнено хотя бы одно из двух условий, поэтому в <code>if</code> стоит <code>or</code>.",
+   "expectOut": "70\nБесплатно"
+  },
+  {
+   "type": "build",
+   "kind": "Собери код",
+   "title": "Собери программу: выведи True, если n чётное и больше 10",
+   "expect": "True\n",
+   "bank": [
+    "n",
+    "=",
+    "12",
+    "print",
+    "(",
+    "n",
+    "%",
+    "2",
+    "==",
+    "0",
+    "and",
+    "n",
+    ">",
+    "10",
+    ")",
+    "or"
+   ],
+   "why": "Правильно: <code>print(n % 2 == 0 and n &gt; 10)</code>. Чётное — это остаток от деления на 2, равный 0.",
+   "expectOut": "True"
+  },
+  {
+   "type": "write",
+   "kind": "Напиши сам",
+   "title": "Магазин котика",
+   "text": "Котик продаёт рыбу с 9 до 18 часов. Прочитай час (целое от 0 до 23). Выведи «Открыто», если час не меньше 9 и меньше 18, иначе «Закрыто».",
+   "input": [
+    "20"
+   ],
+   "bank": [
+    "h",
+    "=",
+    "int",
+    "input",
+    "if",
+    "h",
+    ">=",
+    "9",
+    "and",
+    "h",
+    "<",
+    "18",
+    ":",
+    "else",
+    ":",
+    "\"Открыто\"",
+    "\"Закрыто\"",
+    "or"
+   ],
+   "reuse": [
+    "print",
+    "(",
+    ")"
+   ],
+   "check": {
+    "lines": 2,
+    "equals": {
+     "2": "Закрыто"
+    }
+   },
+   "why": "Например: <code>if h &gt;= 9 and h &lt; 18:</code> — «Открыто», <code>else:</code> — «Закрыто». В 18:00 магазин уже закрыт, поэтому <code>&lt; 18</code>, а не <code>&lt;= 18</code>.",
+   "expectOut": "20\nЗакрыто"
+  }
+ ]
+}

@@ -200,7 +200,11 @@ function parse(src){
   }
   function condition(){
     const e=expr();
-    if(isOp("=")) throw err("invalid syntax. Maybe you meant '==' or ':=' instead of '='?",e.line);
+    if(isOp("=")){ // тексты как в Python 3.13: if n % 2 = 0 → cannot assign to expression here
+      if(e.k==="name"||e.k==="sub"||e.k==="attr") throw err("invalid syntax. Maybe you meant '==' or ':=' instead of '='?",e.line);
+      if(e.k==="bool"||e.k==="not") throw err("invalid syntax",e.line);
+      throw err("cannot assign to "+describe(e)+" here. Maybe you meant '==' instead of '='?",e.line);
+    }
     return e;
   }
   function defStmt(){
@@ -463,20 +467,21 @@ function runPy(code,input){
     if(a instanceof PyRange&&b instanceof PyRange) return a.a===b.a&&a.b===b.b&&a.s===b.s;
     return a===b;
   }
-  function lt(a,b,op){
+  function lt(a,b,op,sw){
     if(isNum(a)&&isNum(b)){ if(isInt(a)&&isInt(b)) return toBig(a)<toBig(b); return toF(a)<toF(b); }
     if(typeof a==="string"&&typeof b==="string") return a<b;
     if((a instanceof PyList&&b instanceof PyList)||(a instanceof PyTuple&&b instanceof PyTuple)){
       const n=Math.min(a.items.length,b.items.length);
-      for(let i=0;i<n;i++){ if(!eq(a.items[i],b.items[i])) return lt(a.items[i],b.items[i],op); }
+      for(let i=0;i<n;i++){ if(!eq(a.items[i],b.items[i])) return lt(a.items[i],b.items[i],op,sw); }
       return a.items.length<b.items.length;
     }
-    throw E("TypeError","'"+op+"' not supported between instances of '"+tname(a)+"' and '"+tname(b)+"'");
+    // для > и >= операнды переставлены, в тексте ошибки возвращаем их порядок
+    throw E("TypeError","'"+op+"' not supported between instances of '"+tname(sw?b:a)+"' and '"+tname(sw?a:b)+"'");
   }
   function compare(op,a,b){
     switch(op){
       case "==": return eq(a,b); case "!=": return !eq(a,b);
-      case "<": return lt(a,b,"<"); case ">": return lt(b,a,">"); case "<=": return lt(a,b,"<=")||eq(a,b); case ">=": return lt(b,a,">=")||eq(a,b);
+      case "<": return lt(a,b,"<"); case ">": return lt(b,a,">",true); case "<=": return lt(a,b,"<=")||eq(a,b); case ">=": return lt(b,a,">=",true)||eq(a,b);
       case "in": return contains(b,a); case "not in": return !contains(b,a);
       case "is": return a===b||(a===null&&b===null); case "is not": return !(a===b);
     }

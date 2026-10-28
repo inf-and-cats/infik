@@ -193,6 +193,7 @@ h1.page{font-family:var(--f-display);font-size:34px;line-height:1.05;margin:0;te
 .chip{border:2px solid var(--line);border-bottom-width:4px;background:var(--surface);border-radius:12px;padding:6px 12px;font-family:var(--f-code);font-size:15px;color:var(--ink);transition:transform .08s}
 .chip:active{transform:translateY(2px)}
 .chip.used{visibility:hidden}
+.bank .ide-chip{white-space:pre}
 .chip.ide-chip{background:#2a2e6e;border-color:#3a3f8a;color:var(--ide-text)}
 .ln .chip{padding:0 6px;font-size:14px;border-width:1px 1px 3px;margin-right:4px;line-height:20px;vertical-align:middle}
 .ln.cur{background:rgba(165,169,227,.07)}
@@ -406,3 +407,4 @@ button.stat{cursor:pointer;color:var(--ink)}
 .cp-card.now{outline:3px solid #ff6b9a;outline-offset:-3px}
 .cp-now{position:absolute;right:12px;top:14px;background:#ff6b9a;color:#fff;font-size:10px;font-weight:900;border-radius:7px;padding:2px 7px}
 .cp-hint{margin:0 18px;font-size:12px;font-weight:700;color:#a5a9e3}
+html,textarea,input,button{font-variant-ligatures:none}

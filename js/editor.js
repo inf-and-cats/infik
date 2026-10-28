@@ -28,7 +28,7 @@ function showTerm(term,r){
 
 
 /* shared code-entry block: blocks mode or keyboard mode, with toggle */
-function joinTokens(ts){ let s=""; ts.forEach((t,i)=>{ if(i>0){ const p=ts[i-1]; if(!(p==="("||t===")"||t===","||t==="("||p==="'"||t==="'")) s+=" "; } s+=t; }); return s; }
+function joinTokens(ts){ let s=""; ts.forEach((t,i)=>{ if(i>0){ const p=ts[i-1]; if(!(p==="("||t===")"||t===","||t==="("||t===":"||p==="'"||t==="'")) s+=" "; } s+=t; }); return s; }
 function codeEntry(b,st,onChange){
   const host=h("div",{style:"display:flex;flex-direction:column;gap:12px"}); b.appendChild(host);
   const mode=h("div",{class:"mode",role:"group","aria-label":"Способ ввода"});
@@ -59,7 +59,7 @@ function codeEntry(b,st,onChange){
       body.append(gut,ls); w.appendChild(body); w.appendChild(term); area.appendChild(w);
       const tools=h("div",{class:"btools"});
       const nl=h("button",{class:"tool",type:"button"},"<code>↵</code> Новая строка"); nl.onclick=()=>{ lines.splice(cur+1,0,{ind:lines[cur].ind,t:[]}); cur++; draw(); };
-      const tb=h("button",{class:"tool",type:"button"},"<code>⇥</code> Отступ"); tb.onclick=()=>{ lines[cur].ind=lines[cur].ind?0:1; draw(); };
+      const tb=h("button",{class:"tool",type:"button"},"<code>⇥</code> Отступ"); tb.onclick=()=>{ lines[cur].ind=(lines[cur].ind+1)%3; draw(); }; // 0 → 1 → 2 → 0: для вложенных if
       const del=h("button",{class:"tool",type:"button"},"<code>⌫</code> Стереть"); del.onclick=()=>{ const l=lines[cur]; if(l.t.length){ const x=l.t.pop(); if(x.id!=null) bankItems[x.id].used=false; } else if(lines.length>1){ lines.splice(cur,1); cur=Math.max(0,cur-1); } draw(); };
       tools.append(nl,tb,del); area.appendChild(tools);
       const bank=h("div",{class:"bank"});
