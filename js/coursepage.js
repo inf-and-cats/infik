@@ -13,12 +13,7 @@ function renderCoursePage(app){
     vids.forEach(v=>{ const b=h("button",{class:"cp-video",type:"button"},'<span class="pl">'+I.play+'</span><b>'+e(v.title)+'</b>'); b.onclick=()=>openVideo({title:v.title,video:v.url}); s.appendChild(b); });
     app.appendChild(s);
   }
-  if(c.program&&c.program.length){
-    const s=h("section",{class:"cp-sec"},'<h2>Программа</h2>');
-    const ol=h("ol",{class:"cp-prog"});
-    c.program.forEach((m,i)=>ol.appendChild(h("li",null,'<span class="n">'+(i+1)+'</span><div><b>'+e(m.title)+'</b><p>'+e(m.about)+'</p>'+(m.tasks?'<small>Задания ЕГЭ: '+e(m.tasks)+'</small>':"")+'</div>')));
-    s.appendChild(ol); app.appendChild(s);
-  }
+  if(c.program&&c.program.length) app.appendChild(programBlock(c));
   const vr=c.videoReviews||[], tr=c.reviews||[];
   if(vr.length||tr.length){
     const s=h("section",{class:"cp-sec"},'<h2>Отзывы учеников</h2>');
@@ -32,6 +27,7 @@ function renderCoursePage(app){
       if(r.proof){ const pb=h("button",{class:"reset",type:"button"},"Результат с Госуслуг"); pb.onclick=()=>openSheet("Результат ЕГЭ",h("img",{class:"cp-proof",src:r.proof,alt:"Результат ЕГЭ: "+r.score+" баллов"})); card.appendChild(pb); }
       s.appendChild(card);
     });
+    if(c.reviewsUrl){ const rl=h("button",{class:"cp-more",type:"button"},"Все отзывы в Telegram-канале →"); rl.onclick=()=>{ try{ if(tg&&tg.openTelegramLink&&/^https:\/\/t\.me\//.test(c.reviewsUrl)){ tg.openTelegramLink(c.reviewsUrl); return; } }catch(e){} openLinkOut(c.reviewsUrl); }; s.appendChild(rl); }
     app.appendChild(s);
   }
   if(COURSE_URL){
@@ -39,4 +35,27 @@ function renderCoursePage(app){
     b.onclick=()=>{ haptic("success"); openCourse("course_tab"); };
     app.appendChild(b);
   }
+}
+
+/* программа: шкала месяцев и карточки модулей, которые листаются вбок */
+function programBlock(c){
+  const e=v=>escA(v), now=Date.now(), day=s=>new Date(s+"T00:00:00+03:00").getTime();
+  const t0=day(c.programStart||"2026-10-01"), t1=day(c.programEnd||"2027-05-31");
+  const pct=Math.max(0,Math.min(100,(now-t0)/(t1-t0)*100));
+  let cur=-1; c.program.forEach((m,i)=>{ if(m.from&&day(m.from)<=now) cur=i; });
+  const months=["окт","ноя","дек","янв","фев","мар","апр","май"], mi=Math.floor(pct/100*months.length);
+  const sec=h("section",{class:"cp-prog2"},'<h2>Программа на год</h2>'+
+    '<div class="cp-months">'+months.map((m,i)=>'<span'+(now>=t0&&now<=t1&&i===Math.min(mi,7)?' class="on"':'')+'>'+m+'</span>').join("")+'</div>'+
+    '<div class="cp-tl"><i style="width:'+pct+'%"></i>'+(now>=t0&&now<=t1?'<span style="left:'+pct+'%">сейчас</span>':"")+'</div>');
+  const row=h("div",{class:"cp-cards"});
+  c.program.forEach((m,i)=>{
+    const tasks=String(m.tasks||"").split(",").map(x=>x.trim()).filter(Boolean);
+    row.appendChild(h("div",{class:"cp-card"+(i===cur?" now":""),style:"--c:"+e(m.color||"#ecf141")},
+      (i===cur?'<span class="cp-now">идёт сейчас</span>':"")+'<div class="ic">'+e(m.icon||"📘")+'</div><small>Модуль '+(i+1)+(m.months?' · '+e(m.months):"")+'</small><b>'+e(m.title)+'</b><p>'+e(m.about)+'</p>'+
+      (tasks.length?'<div class="tk">'+tasks.map(x=>'<span>№'+e(x)+'</span>').join("")+'</div>':"")));
+  });
+  sec.appendChild(row);
+  sec.appendChild(h("p",{class:"cp-hint"},"Листай карточки →"));
+  if(cur>0) requestAnimationFrame(()=>{ const el=row.children[cur]; if(el) row.scrollLeft=el.offsetLeft-row.offsetLeft-4; });
+  return sec;
 }
