@@ -11,7 +11,12 @@ const LESSON_SPR = {
  types:["..........",".WW..LLL..","WWW.L...L.",".WW.L...L.",".WW.LLLLL.",".WW.L...L.",".WW.L...L.","WWWWL...L.","..........",".........."],
  kbd:["..........","..........","WWWWWWWWWW","W.W.W.W.WW","WWWWWWWWWW","WW.W.W.W.W","WWWWWWWWWW","W..LLLL..W","WWWWWWWWWW",".........."],
  convert:["LL.LL.....",".L..L.....","..........",".....L....","LLLLLLL...",".....L....","..........","...WWWW...","..WW..WW..","...WWWW..."],
- plus:["..........","..LL......","..LL......","LLLLLL....","LLLLLL....","..LL..WWWW","..LL......","......WWWW","..........",".........."]
+ plus:["..........","..LL......","..LL......","LLLLLL....","LLLLLL....","..LL..WWWW","..LL......","......WWWW","..........",".........."],
+ paren:["..L....L..",".L......L.","L........L","L...WW...L","L.WWWWWW.L","L.WWWWWW.L","L...WW...L","L........L",".L......L.","..L....L.."],
+ divide:["..........","....LL....","....LL....","..........","WWWWWWWWWW","WWWWWWWWWW","..........","....LL....","....LL....",".........."],
+ digits:["..........","..........",".W.LLL.KKK","WW...L...K",".W.LLL.KKK",".W.L.....K",".W.LLL.KKK","..........","WWWWWWWWWW",".........."],
+ even:["..........",".LL....LL.",".LL....LL.","..........",".LL....LL.",".LL....LL.","..........",".KK.......",".KK.......",".........."],
+ tools:["..........","W........W","W........W","W..L..L..W","W...LL...W","W...LL...W","W..L..L..W","W........W","W........W",".........."]
 };
 const LESSON_SPR_C = {P:"#8e6bff",L:"#ecf141",W:"#f3f2ff",N:"#262b69",K:"#ff6b9a"};
 function lessonSprite(name, swap){ let r=""; LESSON_SPR[name].forEach((row,y)=>[...row].forEach((c,x)=>{ if(c===".") return; const k=(swap&&swap[c])||c; r+='<rect x="'+x+'" y="'+y+'" width="1" height="1" fill="'+LESSON_SPR_C[k]+'"/>'; }));

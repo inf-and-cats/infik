@@ -102,7 +102,47 @@
     },
     {
      "id": "m3",
-     "title": "Арифметика"
+     "title": "Арифметика",
+     "about": "Порядок действий, деление нацело, остаток, цифры числа и полезные функции.",
+     "lessons": [
+      {
+       "id": "m3l1",
+       "title": "Порядок действий",
+       "file": "content/m3/l1.json",
+       "icon": "paren"
+      },
+      {
+       "id": "m3l2",
+       "title": "Деление нацело и остаток",
+       "file": "content/m3/l2.json",
+       "icon": "divide"
+      },
+      {
+       "id": "m3l3",
+       "title": "Цифры числа",
+       "file": "content/m3/l3.json",
+       "icon": "digits"
+      },
+      {
+       "id": "m3l4",
+       "title": "Чётность и делимость",
+       "file": "content/m3/l4.json",
+       "icon": "even"
+      },
+      {
+       "id": "m3l5",
+       "title": "Полезные функции",
+       "file": "content/m3/l5.json",
+       "icon": "tools"
+      },
+      {
+       "id": "m3boss",
+       "title": "Задача-босс",
+       "file": "content/m3/boss.json",
+       "boss": true,
+       "icon": "snake"
+      }
+     ]
     },
     {
      "id": "m4",
