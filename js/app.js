@@ -13,17 +13,21 @@ const BADGES = [
 function renderTop(){
   return '<div class="top"><div class="brand">ИНФиК</div><div class="stats">'+
    '<span class="stat" title="Серия дней">'+I.fire+S.streak+'</span>'+
-   '<span class="stat" title="Опыт">'+I.xp+S.xp+' XP</span></div></div>';
+   '<button class="stat xp'+(S.newBadge?' new':'')+'" type="button" id="xpbtn" aria-label="Опыт и награды" title="Опыт и награды">'+I.xp+S.xp+' XP</button>'+
+   (S.hintRewards||!S.xp?'':'<span class="xp-hint" aria-hidden="true">Награды теперь здесь 👆</span>')+'</div></div>';
 }
-/* «Спидран» скрыт, если сервер сказал speedrun:false (ученики платного курса); без ответа — виден */
-function speedOn(){ return !(S.access && S.access.speedrun===false); }
+/* «Спидран» скрыт, если сервер сказал speedrun:false (ученики платного курса); без ответа — виден.
+   После итогов акции (3 ноября) вкладка пропадает у всех */
+const SPEED_HIDE_AT=new Date("2026-11-03T00:00:00+03:00").getTime();
+function speedOn(){ return Date.now()<SPEED_HIDE_AT && !(S.access && S.access.speedrun===false); }
 function render(){
-  if(S.tab==="speed" && !speedOn()) S.tab="path";
+  if((S.tab==="speed" && !speedOn()) || (S.tab==="course" && !courseOn()) || S.tab==="badges") S.tab="path";
   const app=$("#app"); app.innerHTML="";
   app.insertAdjacentHTML("beforeend",renderTop());
-  if(S.tab==="path") renderPath(app); else if(S.tab==="speed") renderSpeed(app); else if(S.tab==="league") renderLeague(app); else renderBadges(app);
+  const xb=$("#xpbtn"); if(xb) xb.onclick=openRewards;
+  if(S.tab==="speed") renderSpeed(app); else if(S.tab==="league") renderLeague(app); else if(S.tab==="materials") renderMaterials(app); else if(S.tab==="course") renderCoursePage(app); else renderPath(app);
   const tabs=$("#tabs"); tabs.innerHTML="";
-  [["path","Путь",I.path],["speed","Спидран",I.fire],["league","Лига",I.trophy],["badges","Награды",I.medal]].filter(([id])=>id!=="speed"||speedOn()).forEach(([id,name,ic])=>{
+  [["path","Путь",I.path],["speed","Спидран",I.fire],["materials","Материалы",I.book],["league","Лига",I.trophy],["course","Курс",I.cap]].filter(([id])=>(id!=="speed"||speedOn())&&(id!=="course"||courseOn())).forEach(([id,name,ic])=>{
     const b=h("button",{role:"tab","aria-selected":String(S.tab===id),type:"button"},ic+name);
     b.onclick=()=>{S.tab=id;save();render();window.scrollTo(0,0);}; tabs.appendChild(b); });
 }
@@ -49,9 +53,12 @@ function renderPath(app){
     const PATH=M.lessons, doneN=PATH.filter(p=>S.done[p.id]).length;
     const shut=M.id in fold?fold[M.id]:M!==curM;
     const mod=h("section",{class:"module"+(shut?" shut":"")},'<button class="fold" type="button" aria-expanded="'+!shut+'" aria-label="'+(shut?"Развернуть":"Свернуть")+' модуль"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button><div class="eyebrow">Модуль '+(mi+1)+' · '+doneN+' из '+PATH.length+'</div><h2>'+esc(M.title)+'</h2><p>'+esc(M.about||"")+'</p><div class="bar"><i style="width:'+(doneN/PATH.length*100)+'%"></i></div><img src="'+CAT+'" alt="">');
-    mod.onclick=e=>{ if(e.target.closest(".cheat")) return; fold[M.id]=!shut; try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e){} render(); }; // без save(): сворачивание не прогресс, метку синхронизации не сдвигаем
+    mod.onclick=e=>{ if(e.target.closest(".mod-tools")) return; fold[M.id]=!shut; try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e){} render(); }; // без save(): сворачивание не прогресс, метку синхронизации не сдвигаем
     const cheat=PATH.filter(p=>S.done[p.id]&&p.file);
-    if(cheat.length){ const cb=h("button",{class:"cheat",type:"button"},"📖 Шпаргалка"); cb.onclick=()=>openCheatSheet(M,cheat); mod.insertBefore(cb,mod.querySelector("img")); }
+    const tools=h("div",{class:"mod-tools"});
+    if(M.video){ const vb=h("button",{class:"cheat",type:"button"},I.play+"Видео"); vb.onclick=()=>openVideo(M); tools.appendChild(vb); }
+    if(cheat.length){ const cb=h("button",{class:"cheat",type:"button"},"📖 Шпаргалка"); cb.onclick=()=>openCheatSheet(M,cheat); tools.appendChild(cb); }
+    if(tools.children.length) mod.insertBefore(tools,mod.querySelector("img"));
     app.appendChild(mod);
     const path=h("div",{class:"path"});
     const offs=[0,-60,-80,-30,40,0];
@@ -129,16 +136,5 @@ async function renderLeague(app){
     box.innerHTML=""; box.appendChild(h("div",{class:"sr-note"},"<b>Не получилось загрузить лигу.</b> "+esc(e.message||"Проверь интернет")));
     const r=h("button",{class:"reset",type:"button"},"Обновить"); r.onclick=render; box.appendChild(r);
   }
-}
-function renderBadges(app){
-  app.appendChild(h("h1",{class:"page"},"Награды"));
-  const g=h("div",{class:"badges"});
-  BADGES.forEach(b=>g.appendChild(h("div",{class:"badge"+(S.badges[b.id]?" on":"")},'<span class="ic">'+I[b.ic]+'</span><b>'+b.title+'</b><small>'+b.hint+'</small>')));
-  app.appendChild(g);
-  /* Кнопка «Сбросить прогресс» временно убрана: она сбрасывала только локальный прогресс, а в лидерборде ученик оставался.
-  const r=h("button",{class:"reset",type:"button"},"Сбросить прогресс прототипа");
-  r.onclick=()=>{ if(r.dataset.sure){ Object.assign(S,{xp:0,streak:0,lastDay:null,done:{},badges:{}}); save(); render(); toast("Прогресс сброшен"); } else { r.dataset.sure=1; r.textContent="Нажми ещё раз, чтобы сбросить"; } };
-  app.appendChild(r);
-  */
 }
 

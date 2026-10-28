@@ -72,7 +72,9 @@ function courseCta(from,title,text){
   if(!COURSE_URL) return document.createDocumentFragment();
   const c=h("section",{class:"course-cta"},'<small>'+esc(COURSE_NAME)+'</small><b>'+title+'</b><p>'+text+'</p>');
   const b=h("button",{class:"main",type:"button"},"Купить курс"); b.onclick=()=>{ haptic("success"); openCourse(from); };
-  c.appendChild(b); return c;
+  c.appendChild(b);
+  if(typeof courseOn==="function"&&courseOn()&&S.tab!=="course"){ const more=h("button",{class:"cta-more",type:"button"},"Что внутри курса →"); more.onclick=()=>{ if(typeof closeLesson==="function"&&LS) closeLesson(); S.tab="course"; save(); render(); window.scrollTo(0,0); }; c.appendChild(more); }
+  return c;
 }
 
 /* Нижняя панель поверх экрана (теория урока, шпаргалка модуля).

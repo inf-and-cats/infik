@@ -145,6 +145,7 @@ function finish(){
   const t=today(); if(S.lastDay!==t){ const y=new Date(); y.setDate(y.getDate()-1); const yd=y.getFullYear()+"-"+(y.getMonth()+1)+"-"+y.getDate(); S.streak=S.lastDay===yd?S.streak+1:1; S.lastDay=t; }
   const newB=[]; function give(id){ if(!S.badges[id]){ S.badges[id]=true; newB.push(BADGES.find(b=>b.id===id)); } }
   give("first"); if(LS.bugFound) give("bug"); if(clean) give("clean"); if(S.streak>=3) give("s3"); if(S.streak>=7) give("s7");
+  if(newB.length) S.newBadge=true; // значок XP мигает, пока ученик не откроет награды
   save(); haptic("success");
   const sec=Math.round((Date.now()-LS.t0)/1000), acc=Math.round(100*p.steps.filter(s=>s.type!=="theory").length/Math.max(1,p.steps.filter(s=>s.type!=="theory").length+LS.mistakes));
   $("#lesson .prog i").style.width="100%";
@@ -152,6 +153,7 @@ function finish(){
   b.appendChild(h("h2",null,"Урок пройден!"));
   b.appendChild(h("div",{class:"fstats"},'<div><b>+'+LS.xp+'</b><small>XP</small></div><div><b>'+acc+'%</b><small>Точность</small></div><div><b>'+Math.floor(sec/60)+':'+String(sec%60).padStart(2,"0")+'</b><small>Время</small></div>'));
   newB.forEach(x=>b.appendChild(h("div",{class:"unlock"},'<span class="ic">'+I[x.ic]+'</span><div><small>Новая награда</small><b>'+x.title+'</b></div>')));
+  if(newB.length) b.appendChild(h("p",{class:"note"},"Все награды — по нажатию на ⭐ XP вверху экрана."));
   b.appendChild(h("div",{class:"story"},'<div class="s1">я теперь программист</div><div class="s2">Написал первую программу на Python</div><svg class="zz" viewBox="0 0 120 24" fill="none" stroke="#ecf141" stroke-width="5" stroke-linejoin="round" aria-hidden="true"><path d="M2 20 20 4l18 16L56 4l18 16L92 4l18 16"/></svg><div class="s3">ИНФиК · урок 1 из 60</div><img src="'+CAT+'" alt="">'));
   b.appendChild(h("p",{class:"note"},"Такую карточку ученик сможет выложить в сторис. Каждый пост ведёт новых людей в приложение."));
   b.appendChild(courseCta("lesson_"+p.id,"Понравилось? Это только начало","На годовом курсе так же разберём все задания ЕГЭ по информатике и доведём тебя до высокого балла."));
