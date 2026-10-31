@@ -8,7 +8,7 @@
 ## Новые файлы (скопировать как есть)
 - `js/streak.js` — огонёк: `streakNow()`, `streakLit()`, `bumpStreak()`, `streakGive(give)`, шторка `openStreak()` с неделей и переключателем «Напоминать в 18:00», вопрос про класс `maybeAskGrade()` / `askGrade()`.
 - `js/practice.js` — вкладка «Практика»: задача дня (лёгкая и со звёздочкой), задачник с фильтром «Мне по силам / Все задачи», экран задачи с проверкой на тестах. Добавляет иконку `I.code` и награды s14, s30, task1, daily в `BADGES`.
-- `css/practice.css`, `content/practice.json` (31 задача + дейлики на 14 дней).
+- `css/practice.css`, `content/practice.json` (33 задачи + дейлики на 14 дней).
 
 ## Правки в существующих файлах
 1. **index.html**: после `css/speedrun.css` подключить `css/practice.css`. После `js/speedrun.js` подключить `js/streak.js`, затем `js/practice.js` (до `js/main.js`).

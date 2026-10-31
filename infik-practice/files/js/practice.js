@@ -6,7 +6,7 @@ BADGES.push({id:"s14",title:"Серия 14 дней",hint:"Две недели �
 
 /* Практика появляется вместо «Спидрана», когда он закончится. Разработчику видна сразу */
 function practiceOn(){ return DEV || !speedOn(); }
-const PR_XP={1:10,2:20,3:30}, PR_DAILY_XP=[15,30];
+const PR_XP={1:15,2:25,3:40}, PR_DAILY_XP=[20,50];
 let PRACTICE=null, PR=null, PR_ALL=false;
 const PR_DRAFT={}; // недописанный код по задачам, пока приложение открыто
 
@@ -110,8 +110,8 @@ function prFoot(state,opts){
   const b=h("button",{class:"main",type:"button"},opts.btn); b.onclick=opts.on; fi.appendChild(b);
   return b;
 }
-/* сравнение вывода: без лишних пробелов, регистра и точки или «!» в конце строки */
-function prNorm(s){ return String(s).replace(/\r/g,"").split("\n").map(l=>l.trim().replace(/\s+/g," ").replace(/[.!]+$/,"").toLowerCase()).join("\n").replace(/\n+$/,""); }
+/* сравнение вывода: регистр, пробелы в конце строки и точка или «!» в конце не важны. Пробелы в начале строки важны (ёлочка) */
+function prNorm(s){ return String(s).replace(/\r/g,"").split("\n").map(l=>l.replace(/\s+$/,"").replace(/[.!]+$/,"").toLowerCase()).join("\n").replace(/\n+$/,""); }
 function prCheck(t,code){
   for(let i=0;i<t.tests.length;i++){
     const x=t.tests[i], r=runPy(code,x.in,{noEcho:true});
