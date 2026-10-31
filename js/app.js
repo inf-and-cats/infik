@@ -21,14 +21,14 @@ function renderTop(){
 const SPEED_HIDE_AT=new Date("2026-11-03T00:00:00+03:00").getTime();
 function speedOn(){ return Date.now()<SPEED_HIDE_AT && !(S.access && S.access.speedrun===false); }
 function render(){
-  if((S.tab==="speed" && !speedOn()) || (S.tab==="practice" && !practiceOn()) || (S.tab==="course" && !courseOn()) || S.tab==="badges") S.tab="path";
+  if((S.tab==="speed" && !speedOn()) || (S.tab==="practice" && !practiceOn()) || (S.tab==="course" && !courseOn()) || (S.tab==="materials" && !MATERIALS_TAB) || S.tab==="badges") S.tab="path";
   const app=$("#app"); app.innerHTML="";
   app.insertAdjacentHTML("beforeend",renderTop());
   const xb=$("#xpbtn"); if(xb) xb.onclick=openRewards;
   const fb=$("#firebtn"); if(fb) fb.onclick=openStreak;
   if(S.tab==="speed") renderSpeed(app); else if(S.tab==="practice") renderPractice(app); else if(S.tab==="league") renderLeague(app); else if(S.tab==="materials") renderMaterials(app); else if(S.tab==="course") renderCoursePage(app); else renderPath(app);
   const tabs=$("#tabs"); tabs.innerHTML="";
-  [["path","Путь",I.path],["speed","Спидран",I.fire],["practice","Практика",I.code],["materials","Материалы",I.book],["league","Лига",I.trophy],["course","Курс",I.cap]].filter(([id])=>(id!=="speed"||speedOn())&&(id!=="practice"||practiceOn())&&(id!=="course"||courseOn())).forEach(([id,name,ic])=>{
+  [["path","Путь",I.path],["speed","Спидран",I.fire],["practice","Практика",I.code],["materials","Материалы",I.book],["league","Лига",I.trophy],["course","Курс",I.cap]].filter(([id])=>(id!=="speed"||speedOn())&&(id!=="practice"||practiceOn())&&(id!=="course"||courseOn())&&(id!=="materials"||MATERIALS_TAB)).forEach(([id,name,ic])=>{
     const b=h("button",{role:"tab","aria-selected":String(S.tab===id),type:"button"},ic+name);
     b.onclick=()=>{S.tab=id;save();render();window.scrollTo(0,0);}; tabs.appendChild(b); });
 }

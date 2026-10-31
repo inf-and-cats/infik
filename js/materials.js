@@ -11,6 +11,7 @@ const MT_DEMO={items:[
   {id:"demo3",title:"Конспект для учеников курса",desc:"Пример закрытого материала",tag:"ЕГЭ",size:"6 МБ",locked:true}
 ]};
 const matOn=()=>!!(API_URL&&tg&&tg.initData);
+const MATERIALS_TAB=false; // вкладка «Материалы» пока скрыта; чтобы вернуть, поставить true
 
 async function renderMaterials(app){
   app.appendChild(h("h1",{class:"page"},"Материалы"));
