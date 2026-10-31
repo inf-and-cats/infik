@@ -403,7 +403,8 @@ function parse(src){
 class BreakSig{} class ContinueSig{} class ReturnSig{ constructor(v){ this.v=v; } }
 const LIMIT_STEPS=300000, LIMIT_OUT=200000, LIMIT_DEPTH=900;
 
-function runPy(code,input){
+function runPy(code,input,opt){
+  const noEcho=!!(opt&&opt.noEcho); // Практика: подсказку input() и введённый текст в вывод не пишем, сверяем только print
   const out=[]; let outLen=0;
   const inputs=Array.isArray(input)?input.slice():(input==null||input===""?[]:String(input).replace(/\n$/,"").split("\n"));
   let steps=0, depth=0, curLine=1;
@@ -617,7 +618,7 @@ function runPy(code,input){
       if("sep" in kw){ if(kw.sep!==null&&typeof kw.sep!=="string") throw E("TypeError","sep must be None or a string, not "+tname(kw.sep)); if(kw.sep!==null) sep=kw.sep; }
       if("end" in kw){ if(kw.end!==null&&typeof kw.end!=="string") throw E("TypeError","end must be None or a string, not "+tname(kw.end)); if(kw.end!==null) end=kw.end; }
       write(a.map(pyStr).join(sep)+end); return null; },
-    input:(a)=>{ argc("input",a,0,1); if(a.length) write(pyStr(a[0])); if(!inputs.length) throw E("EOFError","EOF when reading a line"); const v=inputs.shift(); write(v+"\n"); return v; },
+    input:(a)=>{ argc("input",a,0,1); if(a.length&&!noEcho) write(pyStr(a[0])); if(!inputs.length) throw E("EOFError","EOF when reading a line"); const v=inputs.shift(); if(!noEcho) write(v+"\n"); return v; },
     len:(a)=>{ argc("len",a,1,1); const v=a[0]; if(typeof v==="string") return BigInt(Array.from(v).length); if(v instanceof PyList||v instanceof PyTuple) return BigInt(v.items.length); if(v instanceof PyRange) return rangeLen(v); throw E("TypeError","object of type '"+tname(v)+"' has no len()"); },
     abs:(a)=>{ argc("abs",a,1,1); const v=a[0]; if(isInt(v)){ const x=toBig(v); return x<0n?-x:x; } if(typeof v==="number") return Math.abs(v); throw E("TypeError","bad operand type for abs(): '"+tname(v)+"'"); },
     min:(a,kw)=>minmax("min",a,kw), max:(a,kw)=>minmax("max",a,kw),

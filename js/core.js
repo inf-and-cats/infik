@@ -31,7 +31,7 @@ const KEY = "infik-proto-v1";
 function load(){ try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch(e){ return {}; } }
 /* Progress lives in localStorage and, inside Telegram, also in Telegram CloudStorage (tied to the account, synced across devices). */
 const cloud = (tg && tg.CloudStorage && tg.isVersionAtLeast && tg.isVersionAtLeast("6.9")) ? tg.CloudStorage : null;
-const SYNC_KEYS=["xp","streak","lastDay","done","badges","mode","at"];
+const SYNC_KEYS=["xp","streak","lastDay","done","badges","mode","at","days","best","pr","grade","gradeAsked"];
 function save(){
   S.at=Date.now();
   try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e){}

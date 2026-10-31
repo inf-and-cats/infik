@@ -33,14 +33,14 @@ function codeEntry(b,st,onChange){
   const host=h("div",{style:"display:flex;flex-direction:column;gap:12px"}); b.appendChild(host);
   const mode=h("div",{class:"mode",role:"group","aria-label":"Способ ввода"});
   const mB=h("button",{type:"button"},I.blocks+"Блоки"), mK=h("button",{type:"button"},I.kbd+"Клавиатура");
-  mode.append(mB,mK); host.appendChild(mode);
+  mode.append(mB,mK); if(!st.kbdOnly) host.appendChild(mode); // Практика: только клавиатура, переключателя нет
   const area=h("div",{style:"display:flex;flex-direction:column;gap:12px"}); host.appendChild(area);
   const api={code:"",term:null};
-  let lines=[{ind:0,t:[]}], cur=0;
+  let lines=[{ind:0,t:[]}], cur=0, md=st.kbdOnly?"kbd":S.mode;
   const bankItems=(st.bank||[]).map((t,i)=>({t,id:i,used:false}));
-  function setMode(m){ S.mode=m; save(); mB.setAttribute("aria-pressed",String(m==="blocks")); mK.setAttribute("aria-pressed",String(m==="kbd")); draw(); }
-  mB.onclick=()=>{ if(S.mode!=="blocks"){ lines=[{ind:0,t:[]}]; cur=0; bankItems.forEach(x=>x.used=false); setMode("blocks"); } };
-  mK.onclick=()=>{ if(S.mode!=="kbd"){ api.code=blocksCode(); setMode("kbd"); } };
+  function setMode(m){ md=m; if(!st.kbdOnly){ S.mode=m; save(); } mB.setAttribute("aria-pressed",String(m==="blocks")); mK.setAttribute("aria-pressed",String(m==="kbd")); draw(); }
+  mB.onclick=()=>{ if(md!=="blocks"){ lines=[{ind:0,t:[]}]; cur=0; bankItems.forEach(x=>x.used=false); setMode("blocks"); } };
+  mK.onclick=()=>{ if(md!=="kbd"){ api.code=blocksCode(); setMode("kbd"); } };
   function blocksCode(){ return lines.map(l=>" ".repeat(l.ind*4)+joinTokens(l.t.map(x=>x.t))).join("\n").replace(/\s+$/,""); }
   function shell(){ const w=h("div",{class:"ide"}); const bar=h("div",{class:"ide-bar"},'<span class="dots"><i></i><i></i><i></i></span><span class="file">main.py</span>');
     const run=h("button",{class:"run",type:"button"},I.play+"Запустить"); run.onclick=()=>{ const r=runPy(api.code,st.input); showTerm(term,r); }; bar.appendChild(run); w.appendChild(bar);
@@ -48,7 +48,7 @@ function codeEntry(b,st,onChange){
   function draw(){
     area.innerHTML="";
     const {w,term}=shell();
-    if(S.mode==="blocks"){
+    if(md==="blocks"){
       const body=h("div",{class:"code"}); const gut=h("div",{class:"gut"}); const ls=h("div",{class:"lines"});
       lines.forEach((l,li)=>{ gut.appendChild(h("div",null,String(li+1)));
         const ln=h("div",{class:"ln tap"+(li===cur?" cur":"")}); ln.onclick=e=>{ if(e.target===ln){ cur=li; draw(); } };
@@ -71,7 +71,7 @@ function codeEntry(b,st,onChange){
       const body=h("div",{class:"code"}); const gut=h("div",{class:"gut"}); const ed=h("div",{class:"ed"});
       const pre=h("pre"); const ta=h("textarea",{id:"code-input",spellcheck:"false",autocapitalize:"off",autocomplete:"off",autocorrect:"off","aria-label":"Код программы"});
       const ph=h("div",{class:"ed-ph"},'Пиши код здесь, например print("…")');
-      ta.value=api.code;
+      ta.value=api.code||st.start||"";
       function sync(){ api.code=ta.value; const ls=ta.value.split("\n"); pre.innerHTML=ls.map(l=>hl(l)||" ").join("\n")+"\n"; gut.innerHTML=ls.map((_,i)=>"<div>"+(i+1)+"</div>").join(""); ph.hidden=!!ta.value; onChange&&onChange(); }
       function ins(txt){ const s=ta.selectionStart,e=ta.selectionEnd; ta.setRangeText(txt,s,e,"end"); sync(); ta.focus(); }
       ta.addEventListener("input",sync);
@@ -81,13 +81,14 @@ function codeEntry(b,st,onChange){
       });
       ed.append(pre,ta,ph); body.append(gut,ed); w.appendChild(body);
       const keys=h("div",{class:"keys"});
-      [["⇥ Tab","    "],["print","print"],["(","("],[")",")"],['"','"'],[":",":"],[",",","],["=","="]].forEach(([l,v])=>{ const k=h("button",{type:"button"},esc(l)); k.onclick=()=>ins(v); keys.appendChild(k); });
+      (st.keys||[["⇥ Tab","    "],["print","print"],["(","("],[")",")"],['"','"'],[":",":"],[",",","],["=","="]]).forEach(([l,v])=>{ const k=h("button",{type:"button"},esc(l)); k.onclick=()=>ins(v); keys.appendChild(k); });
       w.appendChild(keys); w.appendChild(term); area.appendChild(w);
       sync();
     }
     onChange&&onChange();
   }
-  setMode(S.mode==="kbd"?"kbd":"blocks");
+  setMode(md==="kbd"?"kbd":"blocks");
   api.run=()=>{ const r=runPy(api.code,st.input); showTerm(api.term,r); return r; };
+  api.focus=()=>{ const ta=area.querySelector("textarea"); if(ta) ta.focus(); };
   return api;
 }

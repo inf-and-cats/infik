@@ -1,0 +1,84 @@
+/* Практика, огонёк и вопрос про класс */
+.stat.fire{cursor:pointer;color:var(--ink);font:inherit;font-weight:800;font-size:14px}
+.stat.fire.off svg{filter:grayscale(1);opacity:.55}
+
+/* --- вкладка «Практика» --- */
+.pr{display:flex;flex-direction:column;gap:10px}
+.pr-daily{display:flex;flex-direction:column;gap:8px;background:#262b69;color:#f3f2ff;border-radius:22px;padding:16px}
+.pr-dh{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+.pr-dh small{font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--lime-2)}
+.pr-dh span{font-size:13px;opacity:.75}
+.pr-dtask{display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:0;border-radius:16px;padding:10px 12px;background:rgba(243,242,255,.1);color:#f3f2ff}
+.pr-dtask:active{transform:translateY(2px)}
+.pr-dic{width:40px;height:40px;flex:none;border-radius:12px;display:grid;place-items:center;background:var(--lime);color:#262b69}
+.pr-dic svg{width:24px;height:24px}
+.pr-dtask.done .pr-dic{background:var(--good);color:#fff}
+.pr-dtx{flex:1;min-width:0;display:flex;flex-direction:column}
+.pr-dtx small{font-size:12px;opacity:.75}
+.pr-dtx b{font-size:16px;line-height:1.25}
+.pr-xp{flex:none;font-weight:800;font-size:13px;white-space:nowrap}
+.pr-xp svg{width:22px;height:22px;display:block}
+.pr-dtask .pr-xp{color:var(--lime)}
+.pr-h{font-family:var(--f-display);font-size:26px;line-height:1.1;margin:10px 0 0;text-transform:uppercase}
+.pr-mod{font-weight:800;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);margin-top:8px}
+.pr-task{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:var(--surface);color:var(--ink);border:2px solid var(--line);border-bottom-width:4px;border-radius:16px;padding:10px 14px}
+.pr-task:active{transform:translateY(2px)}
+.pr-task .pr-tx{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.pr-task b{font-size:15px;line-height:1.25}
+.pr-task .pr-xp{color:var(--purple-ink)}
+.pr-task.done{border-color:var(--good)}
+.pr-task.done .pr-xp{color:var(--good)}
+.pr-task.lock{opacity:.7}
+.pr-task.lock .pr-xp{color:var(--ink-soft)}
+.pr-stars{display:inline-flex;gap:2px;vertical-align:middle}
+.pr-stars i{width:14px;height:14px;color:var(--line);display:block}
+.pr-stars i.on{color:#f5a524}
+.pr-stars svg{width:100%;height:100%;display:block}
+.kind .pr-stars{margin-left:2px}
+
+/* --- экран задачи --- */
+.pr-top{flex:1;min-width:0;font-weight:800;font-size:13px;color:var(--ink-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pr-ex{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:6px}
+.pr-ex .expect{margin:0;min-width:0}
+.pr-ex .expect pre{margin:0;white-space:pre-wrap;word-break:break-word}
+.pr-exh{grid-column:1/-1;font-weight:800;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft)}
+.pr-fail{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px;margin-top:8px}
+.pr-fail div{min-width:0}
+.pr-fail small{display:block;font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;opacity:.75}
+.pr-fail pre{margin:2px 0 0;background:var(--surface);color:var(--ink);border-radius:8px;padding:6px 8px;font-family:var(--f-code);font-size:13px;line-height:1.4;white-space:pre-wrap;word-break:break-word;max-height:120px;overflow:auto}
+.pr-ok p{margin:2px 0 0;font-size:15px}
+.pr-ok .unlock{margin-top:8px}
+.lfoot .fb>div{min-width:0;flex:1}
+
+/* --- шторка «Огонёк» --- */
+.stk{display:flex;flex-direction:column;gap:14px;align-items:stretch}
+.stk-big{display:flex;align-items:center;justify-content:center;gap:10px;color:#f5a524}
+.stk-big svg{width:auto;height:56px}
+.stk-big b{font-family:var(--f-display);font-size:56px;line-height:1;color:var(--ink);font-variant-numeric:tabular-nums}
+.stk-big span{font-weight:800;color:var(--ink-soft);max-width:7em;line-height:1.2}
+.stk-big.off svg{filter:grayscale(1);opacity:.55}
+.stk-week{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center}
+.stk-week i{display:grid;place-items:center;aspect-ratio:1;max-width:44px;margin:0 auto;width:100%;border-radius:50%;background:var(--surface-2);color:#f5a524}
+.stk-week i svg{width:auto;height:55%}
+.stk-week .on i{background:#fff1d6}
+.stk-week .now i{box-shadow:0 0 0 2px var(--purple-ink)}
+.stk-week small{font-size:11px;color:var(--ink-soft);font-weight:700}
+.stk-tx{margin:0;text-align:center;font-size:15px}
+.stk .note{text-align:center}
+.stk-rem{display:flex;gap:12px;align-items:flex-start;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 14px;cursor:pointer}
+.stk-rem input{width:22px;height:22px;flex:none;margin:2px 0 0;accent-color:var(--purple)}
+.stk-rem span{display:flex;flex-direction:column}
+.stk-rem small{font-size:13px;color:var(--ink-soft)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .stk-week .on i{background:#4a3a1a}}
+:root[data-theme="dark"] .stk-week .on i{background:#4a3a1a}
+
+/* --- вопрос про класс --- */
+.grade{display:flex;flex-direction:column;gap:14px;align-items:center;text-align:center}
+.grade img{width:84px}
+.grade p{margin:0;font-size:15px;color:var(--ink-soft)}
+.grade-list{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;width:100%}
+.grade-list button small{display:block;font-size:11px;font-weight:700;color:var(--ink-soft)}
+.grade-list button{border:2px solid var(--line);border-bottom-width:4px;background:var(--surface);color:var(--ink);border-radius:14px;padding:10px 4px;font-weight:800;font-size:20px;line-height:1.1}
+.grade-list button:last-child{font-size:16px;padding:12px 8px}
+.grade-list button:last-child{grid-column:1/-1}
+.grade-list button:active{transform:translateY(2px)}
