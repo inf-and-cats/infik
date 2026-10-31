@@ -1,7 +1,8 @@
 /* Вкладка «Курс»: продающая страница годового курса. Содержимое — content/course-page.json */
 let CP=null;
 fetch("content/course-page.json",{cache:"no-cache"}).then(r=>r.ok?r.json():null).then(c=>{ if(!c) return; CP=c; if(!LS&&!SR) render(); }).catch(()=>{});
-const courseOn=()=>!!CP && !isStudent();
+const COURSE_TAB=false; // вкладка «Курс» пока скрыта; чтобы вернуть, поставить true
+const courseOn=()=>COURSE_TAB && !!CP && !isStudent();
 
 function renderCoursePage(app){
   const c=CP, e=v=>escA(v);
