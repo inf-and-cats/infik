@@ -196,7 +196,53 @@
     },
     {
      "id": "m5",
-     "title": "Цикл for"
+     "title": "Цикл for",
+     "about": "Повторы с for и range, счётчики и суммы, поиск максимума и вложенные циклы.",
+     "lessons": [
+      {
+       "id": "m5l1",
+       "title": "Повторить N раз",
+       "file": "content/m5/l1.json",
+       "icon": "loop"
+      },
+      {
+       "id": "m5l2",
+       "title": "range подробно",
+       "file": "content/m5/l2.json",
+       "icon": "steps"
+      },
+      {
+       "id": "m5l3",
+       "title": "Счётчик и сумма",
+       "file": "content/m5/l3.json",
+       "icon": "sum"
+      },
+      {
+       "id": "m5l4",
+       "title": "Цикл и условие",
+       "file": "content/m5/l4.json",
+       "icon": "filter"
+      },
+      {
+       "id": "m5l5",
+       "title": "Минимум и максимум",
+       "file": "content/m5/l5.json",
+       "icon": "peak"
+      },
+      {
+       "id": "m5l6",
+       "title": "Цикл в цикле",
+       "file": "content/m5/l6.json",
+       "icon": "grid"
+      },
+      {
+       "id": "m5boss",
+       "title": "Задача-босс",
+       "file": "content/m5/boss.json",
+       "boss": true,
+       "icon": "snake"
+      }
+     ]
     },
     {
      "id": "m6",

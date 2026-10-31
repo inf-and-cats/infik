@@ -2050,10 +2050,10 @@ index 0000000..bf9ed80
 \ No newline at end of file
 diff --git a/css/practice.css b/css/practice.css
 new file mode 100644
-index 0000000..e0cef71
+index 0000000..9895f32
 --- /dev/null
 +++ b/css/practice.css
-@@ -0,0 +1,84 @@
+@@ -0,0 +1,85 @@
 +/* Практика, огонёк и вопрос про класс */
 +.stat.fire{cursor:pointer;color:var(--ink);font:inherit;font-weight:800;font-size:14px}
 +.stat.fire.off svg{filter:grayscale(1);opacity:.55}
@@ -2084,8 +2084,9 @@ index 0000000..e0cef71
 +.pr-task .pr-xp{color:var(--purple-ink)}
 +.pr-task.done{border-color:var(--good)}
 +.pr-task.done .pr-xp{color:var(--good)}
-+.pr-task.lock{opacity:.7}
-+.pr-task.lock .pr-xp{color:var(--ink-soft)}
++.pr-task.ahead{opacity:.6}
++.pr-task.ahead .pr-xp{color:var(--ink-soft)}
++.pr-ahead{font-size:12px;color:var(--ink-soft);font-weight:700}
 +.pr-stars{display:inline-flex;gap:2px;vertical-align:middle}
 +.pr-stars i{width:14px;height:14px;color:var(--line);display:block}
 +.pr-stars i.on{color:#f5a524}
@@ -2292,10 +2293,10 @@ index fc905ec..70d3c43 100644
    const was=speedOn(), wasStudent=isStudent();
 diff --git a/js/practice.js b/js/practice.js
 new file mode 100644
-index 0000000..34442d4
+index 0000000..176bd57
 --- /dev/null
 +++ b/js/practice.js
-@@ -0,0 +1,141 @@
+@@ -0,0 +1,143 @@
 +/* «Практика»: задача дня и общий задачник. Ученик сам пишет программу, проверяем на нескольких вводах.
 +   Задачи лежат в content/practice.json. Любая решённая задача зажигает огонёк (js/streak.js). */
 +I.code='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="4" width="19" height="16" rx="3" fill="currentColor" fill-opacity=".15"/><path d="m7 10 3 2.5L7 15M12.5 15h4.5"/></svg>';
@@ -2318,11 +2319,13 @@ index 0000000..34442d4
 +  const i=Math.round((new Date(now.getFullYear(),now.getMonth(),now.getDate())-new Date(y,m-1,dd))/864e5), n=d.daily.length;
 +  return d.daily[((i%n)+n)%n];
 +}
-+/* модуль пройден, если побеждён босс или пройдены все уроки */
-+function modPassed(id){
++/* «По пройденному»: задачи всех модулей до самого дальнего, где пройден хотя бы один урок.
++   Начал модуль 3 — видишь задачи модулей 1–3 */
++function modReached(id){
 +  if(!COURSE) return false;
-+  for(const sec of COURSE.sections) for(const M of sec.modules) if(M.id===id&&M.lessons) return M.lessons.some(p=>p.boss&&S.done[p.id])||M.lessons.every(p=>S.done[p.id]);
-+  return false;
++  let reached=-1, idx=-1, k=0;
++  for(const sec of COURSE.sections) for(const M of sec.modules){ if(M.id===id) idx=k; if(M.lessons&&M.lessons.some(p=>S.done[p.id])) reached=k; k++; }
++  return idx>=0&&idx<=reached;
 +}
 +function modTitle(id){ if(COURSE) for(const sec of COURSE.sections){ const i=sec.modules.findIndex(M=>M.id===id); if(i>=0) return "Модуль "+(i+1)+" · "+sec.modules[i].title; } return id; }
 +const stars=n=>'<span class="pr-stars" aria-label="Сложность '+n+' из 3">'+[1,2,3].map(i=>'<i class="'+(i<=n?"on":"")+'">'+I.star+'</i>').join("")+'</span>';
@@ -2349,24 +2352,24 @@ index 0000000..34442d4
 +      b.onclick=()=>openTask(t,{daily:v,key}); card.appendChild(b); });
 +    box.appendChild(card);
 +  }
-+  /* задачник: по умолчанию только то, что уже по силам */
++  /* задачник: по умолчанию задачи по пройденным темам, во «Всех задачах» — любые */
 +  box.appendChild(h("h2",{class:"pr-h"},"Задачник"));
 +  const tabs=h("div",{class:"mt-tags",role:"tablist","aria-label":"Какие задачи показать"});
-+  [["Мне по силам",false],["Все задачи",true]].forEach(([t,all])=>{ const b=h("button",{type:"button",role:"tab","aria-selected":String(PR_ALL===all)},t);
++  [["По пройденному",false],["Все задачи",true]].forEach(([t,all])=>{ const b=h("button",{type:"button",role:"tab","aria-selected":String(PR_ALL===all)},t);
 +    b.onclick=()=>{ PR_ALL=all; render(); }; tabs.appendChild(b); });
 +  box.appendChild(tabs);
-+  const can=t=>modPassed(t.need), list=d.tasks.filter(t=>PR_ALL||can(t));
++  const can=t=>modReached(t.need), list=d.tasks.filter(t=>PR_ALL||can(t));
 +  const solved=d.tasks.filter(t=>prDone(t.id)).length;
-+  box.appendChild(h("p",{class:"note"},"Решено "+solved+" из "+d.tasks.length+(PR_ALL?". Задачи с замочком по темам, которые ещё впереди, но попробовать можно.":". Здесь задачи по модулям, которые ты уже прошёл.")));
++  box.appendChild(h("p",{class:"note"},"Решено "+solved+" из "+d.tasks.length+(PR_ALL?". Бледные задачи по темам, до которых ты ещё не дошёл, но решать их можно.":". Здесь задачи по темам модулей, которые ты уже начал.")));
 +  if(!list.length){
-+    box.appendChild(h("div",{class:"sr-note"},"<b>Пока пусто.</b> Пройди первый модуль на Пути, и здесь появятся задачи. Или загляни во все задачи, если уже знаешь Python."));
++    box.appendChild(h("div",{class:"sr-note"},"<b>Пока пусто.</b> Пройди первый урок на Пути, и здесь появятся задачи. Или загляни во все задачи, если уже знаешь Python."));
 +    const all=h("button",{class:"reset",type:"button"},"Показать все задачи"); all.onclick=()=>{ PR_ALL=true; render(); }; box.appendChild(all);
 +  }
 +  let lastNeed=null;
 +  list.forEach(t=>{
 +    if(t.need!==lastNeed){ lastNeed=t.need; box.appendChild(h("div",{class:"pr-mod"},esc(modTitle(t.need)))); }
-+    const done=prDone(t.id), lock=!can(t);
-+    const b=h("button",{class:"pr-task"+(done?" done":"")+(lock?" lock":""),type:"button"},'<span class="pr-tx"><b>'+esc(t.title)+'</b>'+stars(t.lvl)+'</span><span class="pr-xp">'+(done?I.check:lock?I.lock:"+"+PR_XP[t.lvl]+" XP")+'</span>');
++    const done=prDone(t.id), ahead=!can(t);
++    const b=h("button",{class:"pr-task"+(done?" done":"")+(ahead?" ahead":""),type:"button"},'<span class="pr-tx"><b>'+esc(t.title)+'</b>'+stars(t.lvl)+(ahead?'<small class="pr-ahead">тема впереди</small>':'')+'</span><span class="pr-xp">'+(done?I.check:"+"+PR_XP[t.lvl]+" XP")+'</span>');
 +    b.onclick=()=>openTask(t,{}); box.appendChild(b);
 +  });
 +}

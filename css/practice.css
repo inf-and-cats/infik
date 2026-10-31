@@ -28,8 +28,9 @@
 .pr-task .pr-xp{color:var(--purple-ink)}
 .pr-task.done{border-color:var(--good)}
 .pr-task.done .pr-xp{color:var(--good)}
-.pr-task.lock{opacity:.7}
-.pr-task.lock .pr-xp{color:var(--ink-soft)}
+.pr-task.ahead{opacity:.6}
+.pr-task.ahead .pr-xp{color:var(--ink-soft)}
+.pr-ahead{font-size:12px;color:var(--ink-soft);font-weight:700}
 .pr-stars{display:inline-flex;gap:2px;vertical-align:middle}
 .pr-stars i{width:14px;height:14px;color:var(--line);display:block}
 .pr-stars i.on{color:#f5a524}

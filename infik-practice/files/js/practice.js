@@ -20,11 +20,13 @@ function dailyToday(d){
   const i=Math.round((new Date(now.getFullYear(),now.getMonth(),now.getDate())-new Date(y,m-1,dd))/864e5), n=d.daily.length;
   return d.daily[((i%n)+n)%n];
 }
-/* модуль пройден, если побеждён босс или пройдены все уроки */
-function modPassed(id){
+/* «По пройденному»: задачи всех модулей до самого дальнего, где пройден хотя бы один урок.
+   Начал модуль 3 — видишь задачи модулей 1–3 */
+function modReached(id){
   if(!COURSE) return false;
-  for(const sec of COURSE.sections) for(const M of sec.modules) if(M.id===id&&M.lessons) return M.lessons.some(p=>p.boss&&S.done[p.id])||M.lessons.every(p=>S.done[p.id]);
-  return false;
+  let reached=-1, idx=-1, k=0;
+  for(const sec of COURSE.sections) for(const M of sec.modules){ if(M.id===id) idx=k; if(M.lessons&&M.lessons.some(p=>S.done[p.id])) reached=k; k++; }
+  return idx>=0&&idx<=reached;
 }
 function modTitle(id){ if(COURSE) for(const sec of COURSE.sections){ const i=sec.modules.findIndex(M=>M.id===id); if(i>=0) return "Модуль "+(i+1)+" · "+sec.modules[i].title; } return id; }
 const stars=n=>'<span class="pr-stars" aria-label="Сложность '+n+' из 3">'+[1,2,3].map(i=>'<i class="'+(i<=n?"on":"")+'">'+I.star+'</i>').join("")+'</span>';
@@ -51,24 +53,24 @@ async function renderPractice(app){
       b.onclick=()=>openTask(t,{daily:v,key}); card.appendChild(b); });
     box.appendChild(card);
   }
-  /* задачник: по умолчанию только то, что уже по силам */
+  /* задачник: по умолчанию задачи по пройденным темам, во «Всех задачах» — любые */
   box.appendChild(h("h2",{class:"pr-h"},"Задачник"));
   const tabs=h("div",{class:"mt-tags",role:"tablist","aria-label":"Какие задачи показать"});
-  [["Мне по силам",false],["Все задачи",true]].forEach(([t,all])=>{ const b=h("button",{type:"button",role:"tab","aria-selected":String(PR_ALL===all)},t);
+  [["По пройденному",false],["Все задачи",true]].forEach(([t,all])=>{ const b=h("button",{type:"button",role:"tab","aria-selected":String(PR_ALL===all)},t);
     b.onclick=()=>{ PR_ALL=all; render(); }; tabs.appendChild(b); });
   box.appendChild(tabs);
-  const can=t=>modPassed(t.need), list=d.tasks.filter(t=>PR_ALL||can(t));
+  const can=t=>modReached(t.need), list=d.tasks.filter(t=>PR_ALL||can(t));
   const solved=d.tasks.filter(t=>prDone(t.id)).length;
-  box.appendChild(h("p",{class:"note"},"Решено "+solved+" из "+d.tasks.length+(PR_ALL?". Задачи с замочком по темам, которые ещё впереди, но попробовать можно.":". Здесь задачи по модулям, которые ты уже прошёл.")));
+  box.appendChild(h("p",{class:"note"},"Решено "+solved+" из "+d.tasks.length+(PR_ALL?". Бледные задачи по темам, до которых ты ещё не дошёл, но решать их можно.":". Здесь задачи по темам модулей, которые ты уже начал.")));
   if(!list.length){
-    box.appendChild(h("div",{class:"sr-note"},"<b>Пока пусто.</b> Пройди первый модуль на Пути, и здесь появятся задачи. Или загляни во все задачи, если уже знаешь Python."));
+    box.appendChild(h("div",{class:"sr-note"},"<b>Пока пусто.</b> Пройди первый урок на Пути, и здесь появятся задачи. Или загляни во все задачи, если уже знаешь Python."));
     const all=h("button",{class:"reset",type:"button"},"Показать все задачи"); all.onclick=()=>{ PR_ALL=true; render(); }; box.appendChild(all);
   }
   let lastNeed=null;
   list.forEach(t=>{
     if(t.need!==lastNeed){ lastNeed=t.need; box.appendChild(h("div",{class:"pr-mod"},esc(modTitle(t.need)))); }
-    const done=prDone(t.id), lock=!can(t);
-    const b=h("button",{class:"pr-task"+(done?" done":"")+(lock?" lock":""),type:"button"},'<span class="pr-tx"><b>'+esc(t.title)+'</b>'+stars(t.lvl)+'</span><span class="pr-xp">'+(done?I.check:lock?I.lock:"+"+PR_XP[t.lvl]+" XP")+'</span>');
+    const done=prDone(t.id), ahead=!can(t);
+    const b=h("button",{class:"pr-task"+(done?" done":"")+(ahead?" ahead":""),type:"button"},'<span class="pr-tx"><b>'+esc(t.title)+'</b>'+stars(t.lvl)+(ahead?'<small class="pr-ahead">тема впереди</small>':'')+'</span><span class="pr-xp">'+(done?I.check:"+"+PR_XP[t.lvl]+" XP")+'</span>');
     b.onclick=()=>openTask(t,{}); box.appendChild(b);
   });
 }
