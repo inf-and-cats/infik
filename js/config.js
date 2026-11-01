@@ -8,4 +8,4 @@ const COURSE_NAME = "Годовой курс подготовки к ЕГЭ по
 /* Чат учеников в Telegram (ссылка вида https://t.me/…). Пусто — кнопка чата в шапке не показывается. */
 const CHAT_URL = "https://t.me/+sZ3Q14eopIFhNTZi";
 /* Бесплатный демо-доступ к курсу на StudyCats (ссылка на корзину). Пусто — плашка и карточки «Бесплатный урок» не показываются. */
-const DEMO_URL = "https://studycats.ru/cart/UZuBfT";
+const DEMO_URL = "https://studycats.ru/courses?subjectIds=f3a4c17e-b4c9-4842-a44f-ad9771e9db60";
