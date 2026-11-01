@@ -408,3 +408,21 @@ button.stat{cursor:pointer;color:var(--ink)}
 .cp-now{position:absolute;right:12px;top:14px;background:#ff6b9a;color:#fff;font-size:10px;font-weight:900;border-radius:7px;padding:2px 7px}
 .cp-hint{margin:0 18px;font-size:12px;font-weight:700;color:#a5a9e3}
 html,textarea,input,button{font-variant-ligatures:none}
+/* чат учеников: кнопка в шапке и шторка (js/chat.js) */
+.stat{white-space:nowrap}
+@media (max-width:360px){.stats{gap:5px}.top .brand{font-size:26px}}
+.stat.chat{cursor:pointer;padding:4px 7px;position:relative;color:var(--ink);font:inherit}
+.stat.chat svg{width:22px;height:20px}
+.stat.chat.new::after{content:"";position:absolute;top:-2px;right:-2px;width:10px;height:10px;border-radius:50%;background:var(--bad);border:2px solid var(--bg)}
+.sheet.fit{height:auto;max-height:90vh;max-height:90dvh}
+.cht{display:flex;flex-direction:column;gap:14px}
+.cht-hero{display:flex;align-items:center;gap:14px;background:var(--lime);color:#262b69;border-radius:18px;padding:14px 16px}
+.cht-hero img{width:72px;height:72px;flex:none;object-fit:contain}
+.cht-hero b{display:block;font-family:var(--f-display);font-size:24px;line-height:1.05;text-transform:uppercase}
+.cht-hero span{font-size:14px;font-weight:700;line-height:1.3}
+.cht-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.cht-list li{display:flex;gap:12px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:10px 14px;font-size:15px;line-height:1.3}
+.cht-list li i{font-style:normal;font-size:22px;width:28px;text-align:center;flex:none}
+.cht-list li b{display:block}
+.cht-list li small{color:var(--ink-soft);font-size:13px}
+.cht .note{text-align:center}

@@ -12,6 +12,7 @@ const BADGES = [
 /* ---------- views ---------- */
 function renderTop(){
   return '<div class="top"><div class="brand">ИНФиК</div><div class="stats">'+
+   (CHAT_URL?'<button class="stat chat'+(S.chatSeen?'':' new')+'" type="button" id="chatbtn" aria-label="Чат учеников" title="Чат учеников">'+I.chat+'</button>':'')+
    '<button class="stat fire'+(streakLit()?'':' off')+'" type="button" id="firebtn" aria-label="Огонёк: дней подряд" title="Огонёк">'+I.fire+streakNow()+'</button>'+
    '<button class="stat xp'+(S.newBadge?' new':'')+'" type="button" id="xpbtn" aria-label="Опыт и награды" title="Опыт и награды">'+I.xp+S.xp+' XP</button>'+
    (S.hintRewards||!S.xp?'':'<span class="xp-hint" aria-hidden="true">Награды теперь здесь 👆</span>')+'</div></div>';
@@ -26,6 +27,7 @@ function render(){
   app.insertAdjacentHTML("beforeend",renderTop());
   const xb=$("#xpbtn"); if(xb) xb.onclick=openRewards;
   const fb=$("#firebtn"); if(fb) fb.onclick=openStreak;
+  const cb=$("#chatbtn"); if(cb) cb.onclick=openChat;
   if(S.tab==="speed") renderSpeed(app); else if(S.tab==="practice") renderPractice(app); else if(S.tab==="league") renderLeague(app); else if(S.tab==="materials") renderMaterials(app); else if(S.tab==="course") renderCoursePage(app); else renderPath(app);
   const tabs=$("#tabs"); tabs.innerHTML="";
   [["path","Путь",I.path],["speed","Спидран",I.fire],["practice","Практика",I.code],["materials","Материалы",I.book],["league","Лига",I.trophy],["course","Курс",I.cap]].filter(([id])=>(id!=="speed"||speedOn())&&(id!=="practice"||practiceOn())&&(id!=="course"||courseOn())&&(id!=="materials"||MATERIALS_TAB)).forEach(([id,name,ic])=>{
