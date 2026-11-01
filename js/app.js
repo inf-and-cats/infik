@@ -19,7 +19,7 @@ function renderTop(){
 }
 /* «Спидран» скрыт, если сервер сказал speedrun:false (ученики платного курса); без ответа — виден.
    После итогов акции (3 ноября) вкладка пропадает у всех */
-const SPEED_HIDE_AT=new Date("2026-11-03T00:00:00+03:00").getTime();
+const SPEED_HIDE_AT=new Date("2026-11-01T00:00:00+03:00").getTime(); // акция «Спидран» закончилась
 function speedOn(){ return Date.now()<SPEED_HIDE_AT && !(S.access && S.access.speedrun===false); }
 function render(){
   if((S.tab==="speed" && !speedOn()) || (S.tab==="practice" && !practiceOn()) || (S.tab==="course" && !courseOn()) || (S.tab==="materials" && !MATERIALS_TAB) || S.tab==="badges") S.tab="path";
