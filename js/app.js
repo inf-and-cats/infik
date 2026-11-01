@@ -33,6 +33,7 @@ function render(){
   [["path","Путь",I.path],["speed","Спидран",I.fire],["practice","Практика",I.code],["materials","Материалы",I.book],["league","Лига",I.trophy],["course","Курс",I.cap]].filter(([id])=>(id!=="speed"||speedOn())&&(id!=="practice"||practiceOn())&&(id!=="course"||courseOn())&&(id!=="materials"||MATERIALS_TAB)).forEach(([id,name,ic])=>{
     const b=h("button",{role:"tab","aria-selected":String(S.tab===id),type:"button"},ic+name);
     b.onclick=()=>{S.tab=id;save();render();window.scrollTo(0,0);}; tabs.appendChild(b); });
+  demoBar();
 }
 function renderPath(app){
   const d=daysToEge();
@@ -73,7 +74,7 @@ function renderPath(app){
       path.appendChild(n);
     });
     if(!shut) app.appendChild(path);
-    if(mi===0) app.appendChild(courseCta("path_"+sec.id,"Весь ЕГЭ, а не только Python","Здесь ты знакомишься с Python. На годовом курсе разберём все 27 заданий ЕГЭ с преподавателем — от первого до последнего."));
+    if(mi===0) app.appendChild(demoCta("path_"+sec.id,"Python — это половина ЕГЭ","Вторую половину разбираем с преподавателем. Первый урок бесплатно: задание №7 ЕГЭ."));
   });
   if(!hasLessons(sec)) app.appendChild(courseCta("path_"+sec.id,"Не жди — начни сейчас","На годовом курсе всё это уже есть: разберём все 27 заданий ЕГЭ с преподавателем."));
 }

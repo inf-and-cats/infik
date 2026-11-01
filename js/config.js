@@ -7,3 +7,5 @@ const COURSE_URL = "https://infandcats.ru/intensiv?utm_source=tg&utm_medium=botd
 const COURSE_NAME = "Годовой курс подготовки к ЕГЭ по информатике";
 /* Чат учеников в Telegram (ссылка вида https://t.me/…). Пусто — кнопка чата в шапке не показывается. */
 const CHAT_URL = "https://t.me/+sZ3Q14eopIFhNTZi";
+/* Бесплатный демо-доступ к курсу на StudyCats (ссылка на корзину). Пусто — плашка и карточки «Бесплатный урок» не показываются. */
+const DEMO_URL = "https://studycats.ru/cart/vJiLlj";

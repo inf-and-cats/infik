@@ -156,7 +156,7 @@ function finish(){
   if(newB.length) b.appendChild(h("p",{class:"note"},"Все награды — по нажатию на ⭐ XP вверху экрана."));
   b.appendChild(h("div",{class:"story"},'<div class="s1">я теперь программист</div><div class="s2">Написал первую программу на Python</div><svg class="zz" viewBox="0 0 120 24" fill="none" stroke="#ecf141" stroke-width="5" stroke-linejoin="round" aria-hidden="true"><path d="M2 20 20 4l18 16L56 4l18 16L92 4l18 16"/></svg><div class="s3">ИНФиК · урок 1 из 60</div><img src="'+CAT+'" alt="">'));
   b.appendChild(h("p",{class:"note"},"Такую карточку ученик сможет выложить в сторис. Каждый пост ведёт новых людей в приложение."));
-  b.appendChild(courseCta("lesson_"+p.id,"Понравилось? Это только начало","На годовом курсе так же разберём все задания ЕГЭ по информатике и доведём тебя до высокого балла."));
+  b.appendChild(demoCta("lesson_"+p.id,"Понравилось? Попробуй урок ЕГЭ","Преподаватель разберёт задание №7. Бесплатно, нужна только регистрация."));
   b.classList.remove("shake");
   footer(null,{btn:"На карту",on:()=>{ b.classList.remove("finish"); closeLesson(); }});
 }

@@ -1,0 +1,34 @@
+/* Бесплатный урок: плашка над меню, карточка и шторка */
+.dm-bar{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(78px + env(safe-area-inset-bottom,0px));z-index:6;width:calc(100% - 32px);max-width:448px;
+  display:flex;align-items:center;gap:10px;border:0;border-radius:16px;padding:9px 12px;text-align:left;background:var(--lime);color:#262b69;
+  box-shadow:0 4px 0 #b9bd1f,0 8px 22px rgba(38,43,105,.25)}
+.dm-bar:active{transform:translate(-50%,2px);box-shadow:0 2px 0 #b9bd1f}
+.dm-gift{font-size:24px;line-height:1}
+.dm-tx{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.2}
+.dm-tx b{font-size:15px;font-weight:800}
+.dm-tx small{font-size:12px;font-weight:700;opacity:.75}
+.dm-go{flex:none;background:#512da8;color:#fff;border-radius:10px;padding:6px 10px;font-weight:800;font-size:13px}
+body.has-demo .app{padding-bottom:160px}
+body.demo-new .dm-bar .dm-gift{animation:dm-wiggle 1.6s ease-in-out infinite}
+@keyframes dm-wiggle{0%,60%,100%{transform:rotate(0)}70%{transform:rotate(-14deg)}80%{transform:rotate(12deg)}90%{transform:rotate(-6deg)}}
+@media (prefers-reduced-motion:reduce){body.demo-new .dm-bar .dm-gift{animation:none}}
+.lesson:not([hidden])~.dm-bar,.sheet-wrap~.dm-bar{display:none}
+
+.dm-card{display:flex;flex-direction:column;gap:6px;width:100%;background:var(--lime);color:#262b69;border-radius:22px;padding:18px;text-align:left}
+.dm-card small{font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase}
+.dm-card b{font-family:var(--f-display);font-size:26px;line-height:1.05;text-transform:uppercase;text-wrap:balance}
+.dm-card p{margin:0 0 6px;font-size:15px}
+
+.dm{display:flex;flex-direction:column;gap:14px}
+.dm-hero{display:flex;align-items:center;gap:14px;background:var(--lime);color:#262b69;border-radius:18px;padding:14px 16px}
+.dm-hero img{width:72px;height:72px;flex:none;object-fit:contain}
+.dm-hero small{font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase}
+.dm-hero b{display:block;font-family:var(--f-display);font-size:24px;line-height:1.05;text-transform:uppercase}
+.dm-hero span{font-size:14px;font-weight:700;line-height:1.3}
+.dm-steps{margin:0;padding:0;list-style:none;counter-reset:s;display:flex;flex-direction:column;gap:8px}
+.dm-steps li{counter-increment:s;display:flex;gap:12px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:10px 14px;font-size:15px}
+.dm-steps li::before{content:counter(s);flex:none;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:#512da8;color:#fff;font-weight:800}
+
+.dm-cart{margin:0;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:10px;transform:rotate(-1.2deg);box-shadow:0 6px 18px rgba(40,20,90,.12)}
+.dm-cart img{display:block;width:100%;border-radius:8px}
+.dm-cart figcaption{font-size:12px;color:var(--muted,#777);text-align:center;margin-top:6px}
