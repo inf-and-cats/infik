@@ -175,7 +175,7 @@ h1.page{font-family:var(--f-display);font-size:34px;line-height:1.05;margin:0;te
 
 /* keyboard editor */
 .ed{position:relative;min-width:0}
-.ed pre,.ed textarea{margin:0;padding:10px 14px;font-family:var(--f-code);font-size:15px;line-height:26px;white-space:pre;tab-size:4;border:0}
+.ed pre,.ed textarea{margin:0;padding:10px 14px;font-family:var(--f-code);font-size:15px;line-height:26px;white-space:pre-wrap;overflow-wrap:anywhere;word-break:normal;tab-size:4;border:0;letter-spacing:0}
 .ed pre{pointer-events:none;color:var(--ide-text);min-height:132px}
 .ed textarea{position:absolute;inset:0;width:100%;height:100%;resize:none;background:transparent;color:transparent;caret-color:var(--lime);overflow:hidden;outline:none}
 .ed textarea::selection{background:rgba(236,241,65,.3);color:transparent}
@@ -426,3 +426,4 @@ html,textarea,input,button{font-variant-ligatures:none}
 .cht-list li b{display:block}
 .cht-list li small{color:var(--ink-soft);font-size:13px}
 .cht .note{text-align:center}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%} /* Android не должен увеличивать шрифт подсветки отдельно от textarea */

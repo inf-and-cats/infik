@@ -72,9 +72,13 @@ function codeEntry(b,st,onChange){
       const pre=h("pre"); const ta=h("textarea",{id:"code-input",spellcheck:"false",autocapitalize:"off",autocomplete:"off",autocorrect:"off","aria-label":"Код программы"});
       const ph=h("div",{class:"ed-ph"},'Пиши код здесь, например print("…")');
       ta.value=api.code||st.start||"";
-      function sync(){ api.code=ta.value; const ls=ta.value.split("\n"); pre.innerHTML=ls.map(l=>hl(l)||" ").join("\n")+"\n"; gut.innerHTML=ls.map((_,i)=>"<div>"+(i+1)+"</div>").join(""); ph.hidden=!!ta.value; onChange&&onChange(); }
+      // длинные строки переносятся (и в подсветке, и в textarea одинаково), номер строки тянется на всю её высоту
+      function fitGut(){ const rows=pre.children, ns=gut.children; for(let i=0;i<ns.length;i++) ns[i].style.height=rows[i]?rows[i].offsetHeight+"px":""; }
+      function sync(){ api.code=ta.value; const ls=ta.value.split("\n"); pre.innerHTML=ls.map(l=>"<div>"+(hl(l)||" ")+"</div>").join(""); gut.innerHTML=ls.map((_,i)=>"<div>"+(i+1)+"</div>").join(""); fitGut(); ph.hidden=!!ta.value; onChange&&onChange(); }
       function ins(txt){ const s=ta.selectionStart,e=ta.selectionEnd; ta.setRangeText(txt,s,e,"end"); sync(); ta.focus(); }
       ta.addEventListener("input",sync);
+      ta.addEventListener("scroll",()=>{ if(ta.scrollTop||ta.scrollLeft){ ta.scrollTop=0; ta.scrollLeft=0; } }); // textarea не должна уезжать от подсветки
+      if(window.ResizeObserver) new ResizeObserver(fitGut).observe(ed); // поворот экрана, шрифт догрузился
       ta.addEventListener("keydown",e=>{
         if(e.key==="Tab"){ e.preventDefault(); if(e.shiftKey){ const s=ta.selectionStart; const ls=ta.value.lastIndexOf("\n",s-1)+1; if(ta.value.substr(ls,4)==="    "){ ta.setRangeText("",ls,ls+4,"preserve"); sync(); } } else ins("    "); }
         else if(e.key==="Enter"){ e.preventDefault(); const s=ta.selectionStart; const ls=ta.value.lastIndexOf("\n",s-1)+1; const line=ta.value.slice(ls,s); let ind=line.match(/^ */)[0]; if(/:\s*$/.test(line)) ind+="    "; ins("\n"+ind); }
