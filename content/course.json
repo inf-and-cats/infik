@@ -246,7 +246,53 @@
     },
     {
      "id": "m6",
-     "title": "Цикл while"
+     "title": "Цикл while",
+     "about": "Повторы по условию, цифры числа, ввод до нуля, break и двоичная система.",
+     "lessons": [
+      {
+       "id": "m6l1",
+       "title": "Цикл по условию",
+       "file": "content/m6/l1.json",
+       "icon": "wloop"
+      },
+      {
+       "id": "m6l2",
+       "title": "Цифры числа",
+       "file": "content/m6/l2.json",
+       "icon": "cut"
+      },
+      {
+       "id": "m6l3",
+       "title": "Ввод до нуля",
+       "file": "content/m6/l3.json",
+       "icon": "zero"
+      },
+      {
+       "id": "m6l4",
+       "title": "Выход из цикла",
+       "file": "content/m6/l4.json",
+       "icon": "stop"
+      },
+      {
+       "id": "m6l5",
+       "title": "Двоичная система",
+       "file": "content/m6/l5.json",
+       "icon": "binary"
+      },
+      {
+       "id": "m6l6",
+       "title": "Бесконечный цикл",
+       "file": "content/m6/l6.json",
+       "icon": "inf"
+      },
+      {
+       "id": "m6boss",
+       "title": "Задача-босс",
+       "file": "content/m6/boss.json",
+       "boss": true,
+       "icon": "snake"
+      }
+     ]
     },
     {
      "id": "m7",
