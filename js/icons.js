@@ -34,7 +34,13 @@ const LESSON_SPR = {
  zero:["..........", "...LLLL...", "..LL..LL..", "..LL..LL..", "..LL..LL..", "..LL..LL..", "..LL..LL..", "...LLLL...", "..........", "KKKKKKKKKK"],
  stop:["...KKKK...", "..KKKKKK..", ".KKKKKKKK.", "KKKKKKKKKK", "KWWWWWWWWK", "KWWWWWWWWK", "KKKKKKKKKK", ".KKKKKKKK.", "..KKKKKK..", "...KKKK..."],
  binary:["..........", ".L...WWW..", "LL..W...W.", ".L..W...W.", ".L..W...W.", ".L..W...W.", ".L..W...W.", "LLL..WWW..", "..........", ".........."],
- inf:["..........", "..........", ".LLL..LLL.", "L...LL...L", "L....L...L", "L...L....L", "L...LL...L", ".LLL..LLL.", "..........", ".........."]
+ inf:["..........", "..........", ".LLL..LLL.", "L...LL...L", "L....L...L", "L...L....L", "L...LL...L", ".LLL..LLL.", "..........", ".........."],
+ index:["....KK....", "....KK....", "....KK....", "..KKKKKK..", "...KKKK...", "....KK....", "..........", ".WW.LL.WW.", ".WW.LL.WW.", ".WW.LL.WW."],
+ slice:["..........", "WW.LLLL.WW", "WW.LLLL.WW", "..........", "..K....K..", "..KKKKKK..", "..........", "...LLLL...", "...LLLL...", ".........."],
+ ruler:["..........", "LLLLLLLLLL", "LNLNLNLNLL", "LNLLLNLLLL", "LLLLLLLLLL", "..........", ".W......W.", "WWWWWWWWWW", ".W......W.", ".........."],
+ wand:["..K.....L.", ".KKK...LLL", "..K.....L.", "...LL.....", "...LL.....", ".....WW...", "......WW..", ".......WW.", "........WW", ".........W"],
+ lens:["..WWWW....", ".W....W...", "W..LL..W..", "W.LLLL.W..", "W..LL..W..", ".W....W...", "..WWWWKK..", "......KKK.", ".......KKK", "........KK"],
+ mirror:["....WW....", "LL..WW..LL", "L...WW...L", "LLL.WW.LLL", "L...WW...L", "LL..WW..LL", "....WW....", ".K..WW..K.", "KKK.WW.KKK", "....WW...."]
 };
 const LESSON_SPR_C = {P:"#8e6bff",L:"#ecf141",W:"#f3f2ff",N:"#262b69",K:"#ff6b9a"};
 function lessonSprite(name, swap){ let r=""; LESSON_SPR[name].forEach((row,y)=>[...row].forEach((c,x)=>{ if(c===".") return; const k=(swap&&swap[c])||c; r+='<rect x="'+x+'" y="'+y+'" width="1" height="1" fill="'+LESSON_SPR_C[k]+'"/>'; }));

@@ -28,7 +28,8 @@ function showTerm(term,r){
 
 
 /* shared code-entry block: blocks mode or keyboard mode, with toggle */
-function joinTokens(ts){ let s=""; ts.forEach((t,i)=>{ if(i>0){ const p=ts[i-1]; if(!(p==="("||t===")"||t===","||t==="("||t===":"||p==="'"||t==="'")) s+=" "; } s+=t; }); return s; }
+// без пробелов вокруг [ ] и точки, внутри скобок без пробела после «:» (s[1:-1], s.upper())
+function joinTokens(ts){ const OP=/^(in|not|and|or|if|elif|else|while|for|return|print|=|==|!=|<|>|<=|>=|\+|-|\*|\/|\/\/|%|\+=|-=|\*=|\/\/=|%=|,)$/; let s="",d=0; ts.forEach((t,i)=>{ if(i>0){ const p=ts[i-1]; const glue=p==="("||t===")"||t===","||t==="("||t===":"||p==="'"||t==="'"||p==="["||t==="]"||p==="."||t[0]==="."||(t==="["&&!OP.test(p))||(d>0&&p===":"); if(!glue) s+=" "; } s+=t; for(const c of t){ if(c==="[") d++; if(c==="]") d--; } }); return s; }
 function codeEntry(b,st,onChange){
   const host=h("div",{style:"display:flex;flex-direction:column;gap:12px"}); b.appendChild(host);
   const mode=h("div",{class:"mode",role:"group","aria-label":"Способ ввода"});
