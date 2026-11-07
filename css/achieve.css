@@ -54,3 +54,18 @@
 .pr-stars i{width:14px;height:14px;background:currentColor;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 7 7' shape-rendering='crispEdges'%3E%3Cpath d='M3 0h1v2H3zM0 2h7v1H0zM1 3h5v1H1zM2 4h3v1H2zM1 5h2v1H1zM4 5h2v1H4zM0 6h2v1H0zM5 6h2v1H5z'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 7 7' shape-rendering='crispEdges'%3E%3Cpath d='M3 0h1v2H3zM0 2h7v1H0zM1 3h5v1H1zM2 4h3v1H2zM1 5h2v1H1zM4 5h2v1H4zM0 6h2v1H0zM5 6h2v1H5z'/%3E%3C/svg%3E") center/contain no-repeat;image-rendering:pixelated}
 .pr-stars i svg{display:none}
 .pr-stars i:not(.on){color:var(--line)}
+
+/* «дней до ЕГЭ» в пиксельном стиле */
+.countdown{border-radius:0;border:0;box-shadow:0 -4px 0 #3b3f8f,0 4px 0 #3b3f8f,-4px 0 0 #3b3f8f,4px 0 0 #3b3f8f,0 8px 0 #12143f;margin:4px 4px 12px}
+.countdown b{font-family:"Press Start 2P",monospace;font-size:28px;color:var(--lime);text-shadow:3px 3px 0 #512da8;letter-spacing:-1px}
+.countdown span{font-family:"Press Start 2P",monospace;font-size:9px;line-height:1.7;color:#cfd0f5}
+.countdown span small{font-family:inherit;font-size:8px}
+.countdown em{display:inline-block;margin-top:4px;font-family:"Press Start 2P",monospace;font-size:9px;line-height:1.7;color:var(--lime)}
+
+/* карточка сломанного кота на «Пути» в том же пиксельном стиле */
+.cat-card{border-radius:0;border:0;margin:8px 4px 16px;box-shadow:0 -4px 0 #ff6b9a,0 4px 0 #ff6b9a,-4px 0 0 #ff6b9a,4px 0 0 #ff6b9a,0 8px 0 #b8436a}
+.cat-card b{font-family:"Press Start 2P",monospace;font-size:11px;line-height:1.5;margin-bottom:4px}
+.cat-card small{display:block;font-family:"Press Start 2P",monospace;font-size:8px;line-height:1.7}
+.cat-card .cat.sm{flex:none;width:52px;height:52px;border-radius:0;background:#12143f;box-shadow:0 0 0 3px #3b3f8f}
+.cat-card .go{border-radius:0;font-family:"Press Start 2P",monospace;font-size:9px;font-weight:400;padding:10px 10px;box-shadow:0 4px 0 #b8436a}
+.cat-card .go:active{transform:translateY(3px);box-shadow:0 1px 0 #b8436a}
