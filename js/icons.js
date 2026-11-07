@@ -40,7 +40,18 @@ const LESSON_SPR = {
  ruler:["..........", "LLLLLLLLLL", "LNLNLNLNLL", "LNLLLNLLLL", "LLLLLLLLLL", "..........", ".W......W.", "WWWWWWWWWW", ".W......W.", ".........."],
  wand:["..K.....L.", ".KKK...LLL", "..K.....L.", "...LL.....", "...LL.....", ".....WW...", "......WW..", ".......WW.", "........WW", ".........W"],
  lens:["..WWWW....", ".W....W...", "W..LL..W..", "W.LLLL.W..", "W..LL..W..", ".W....W...", "..WWWWKK..", "......KKK.", ".......KKK", "........KK"],
- mirror:["....WW....", "LL..WW..LL", "L...WW...L", "LLL.WW.LLL", "L...WW...L", "LL..WW..LL", "....WW....", ".K..WW..K.", "KKK.WW.KKK", "....WW...."]
+ mirror:["....WW....", "LL..WW..LL", "L...WW...L", "LLL.WW.LLL", "L...WW...L", "LL..WW..LL", "....WW....", ".K..WW..K.", "KKK.WW.KKK", "....WW...."],
+ lbox:["..........", "LL......LL", "L........L", "L........L", "LWW.KK.WWL", "LWW.KK.WWL", "L........L", "L........L", "LL......LL", ".........."],
+ ladd:["......LL..", "......LL..", "....LLLLLL", "....LLLLLL", "......LL..", "......LL..", "..........", "WW.WW.KK..", "WW.WW.KK..", ".........."],
+ lwalk:["..........", "WW.WW.WW..", "WW.WW.WW..", "..........", "KK........", "KK....L...", "LLLLLLLLL.", "......L...", "..........", ".........."],
+ lchart:["........KK", "........KK", "....WW..KK", "....WW..KK", "....WW..KK", "LL..WW..KK", "LL..WW..KK", "LL..WW..KK", "..........", "WWWWWWWWWW"],
+ lsplit:["KK......KK", "K.K....K.K", ".KK....KK.", "...K..K...", "....KK....", "....KK....", "..........", "LLL.LLL.LL", "LLL.LLL.LL", ".........."],
+ ltarget:["....L.....", "..LLLLL...", ".L..L..L..", ".L.....L..", "LLL.K.LLL.", ".L.....L..", ".L..L..L..", "..LLLLL...", "....L.....", ".........."],
+ fdef:["..LL......", ".L........", ".L....K.K.", "LLL..K...K", ".L...K...K", ".L...K...K", ".L....K.K.", ".L........", "L.........", ".........."],
+ farg:["..........", "....WWWWWW", "....W....W", "..L.W....W", "LLLLW.KK.W", "LLLLW.KK.W", "..L.W....W", "....W....W", "....WWWWWW", ".........."],
+ fret:["..........", "WWWWWW....", "W....W....", "W....W.L..", "W.KKLLLLLL", "W.KKLLLLLL", "W....W.L..", "W....W....", "WWWWWW....", ".........."],
+ fhome:["....LL....", "...LLLL...", "..LLLLLL..", ".LLLLLLLL.", "LLLLLLLLLL", ".WWWWWWWW.", ".WKKWWWWW.", ".WKKWWNNW.", ".WWWWWNNW.", ".WWWWWNNW."],
+ fcombo:["..........", "WWW...KKK.", "W.W...K.K.", "W.WLLLK.K.", "W.W...K.K.", "WWW...KKK.", ".......L..", ".......L..", "......LLL.", "......LLL."]
 };
 const LESSON_SPR_C = {P:"#8e6bff",L:"#ecf141",W:"#f3f2ff",N:"#262b69",K:"#ff6b9a"};
 function lessonSprite(name, swap){ let r=""; LESSON_SPR[name].forEach((row,y)=>[...row].forEach((c,x)=>{ if(c===".") return; const k=(swap&&swap[c])||c; r+='<rect x="'+x+'" y="'+y+'" width="1" height="1" fill="'+LESSON_SPR_C[k]+'"/>'; }));
@@ -56,4 +67,23 @@ function lessonDisc(p, done, open){
   } else s = done?I.check:p.boss?I.crown:open?I.play:I.lock;
   if(p.boss) s += '<i class="crown">'+I.crown+'</i>';
   return s;
+}
+
+/* Пиксельные картинки 16×16 на карточках модулей вместо кота. Ключ = id модуля (или поле "art" в course.json) */
+const MOD_ART = {
+ m1:["..........PPP...",".........PNPNP..","NNNNNNNNNPPPPP..","NDDDDDDDDNPPK...","NDWDDDDDDNPP....","NDDWDDDDDNPP....","NDWDDLLLDNPPP...","NDDDDDDDDN.PPP..","NDDDDDDDDN..PPP.","NNNNNNNNNN...PP.","....NN.......PP.","..NNNNNN....PPP.","..........PPPP..","...PPPPPPPPPP...","..PPPPPPPPP.....","................"],
+ m2:["................","..PP........PP..","...PP......PP...","....PNNNNNNP....","..NNNNNNNNNNNN..","..NDDDDDDDDDDN..","..NDDDWWWDDDDN..","..NDDDWDDDDDDN..","..NDDDWWWDDDDN..","..NDDDDDWDDDDN..","..NDDDWWWDDDDN..","..NDDDDDDDDDDN..","..NNNNNNNNNNNN..","................","................","................"],
+ m3:["..NNNNNNNNNNNN..","..NDDDDDDDDDDN..","..NDCCCCCCCCDN..","..NDCCCCCNNCDN..","..NDCCCCCCCCDN..","..NDDDDDDDDDDN..","..NDWWDWWDKKDN..","..NDWWDWWDKKDN..","..NDDDDDDDDDDN..","..NDWWDWWDKKDN..","..NDWWDWWDKKDN..","..NDDDDDDDDDDN..","..NDWWDWWDPPDN..","..NDWWDWWDPPDN..","..NDDDDDDDDDDN..","..NNNNNNNNNNNN.."],
+ m4:["......NN........","..NNNNNNNNNNN...","..NWWWWWWWWWWN..","..NWNNWWWWWWWWN.","..NWWWWWWWWWWN..","..NNNNNNNNNNN...","......NN........","...NNNNNNNNNNN..","..NKKKKKKKKKKN..",".NKKWWKKKKKKKN..","..NKKKKKKKKKKN..","...NNNNNNNNNNN..","......NN........","......NN........","....NNNNNN......","................"],
+ m5:["............D...",".....NNNN..DDD..","....NPPPP..DDDD.","...PPNN....DDDDD","..NPN.......DD..",".NPN...N....NPN.",".NPN..NN....NPN.",".NP....N.....PN.",".NP....N.....PN.",".NPN..NNN...NPN.",".NPN........NPN.","..NPN......NPN..","...PPNN..NNPP...","....NPPPPPPN....",".....NNNNNN.....","................"],
+ m6:["..NNNNNNNNNNNN..","..NDDDDDDDDDDN..","...NWWWWWWWWN...","...NWOOOOOOWN...","....NWOOOOWN....",".....NWOOWN.....","......NWWN......","......NOWN......",".....NWOOWN.....","....NWWOOWWN....","...NWWOOOOWWN...","...NWOOOOOOWN...","...NWOOOOOOWN...","..NDDDDDDDDDDN..","..NNNNNNNNNNNN..","................"],
+ m7:["................","................",".NNNNNNNNNNNNNN.","NWWWWWWWWWWWWWWN","NWWDWWDDWWWDDWWN","NWDWDWDWDWDWWWWN","NWDDDWDDWWDWWWWN","NWDWDWDWDWDWWWWN","NWDWDWDDWWWDDWWN","NWWWWWWWWWWWWWWN","NWWWWWWWWWWWWWWN",".NNNNNNNNNNNNNN.","...NNN..........","...N............","................","................"],
+ m8:["....NNNNNN......","..NNNWWWWNNN....","..NDNNNNNNDN....","..NDWWWWWWDN....","..NDKKWNNNDN....","..NDKKWWWWDN....","..NDWWWWWWDN....","..NDLLWNNNDN....","..NDLLWWWWDN....","..NDWWWWWWDN....","..NDKKWNNNDN....","..NDKKWWWWDN....","..NDWWWWWWDN....","..NDDDDDDDDN....","..NNNNNNNNNN....","................"],
+ m9:["......NNNN......","......NDDN......","..NN.NDDDDN.NN..","..NDNDDDDDDNDN..","...NDDDDDDDDN...","..NDDDNNNNDDDN..","NNDDDNPPPPNDDDNN","NDDDNPPLLPPNDDDN","NDDDNPPLLPPNDDDN","NNDDDNPPPPNDDDNN","..NDDDNNNNDDDN..","...NDDDDDDDDN...","..NDNDDDDDDNDN..","..NN.NDDDDN.NN..","......NDDN......","......NNNN......"]
+};
+const MOD_ART_C = {P:"#8e6bff",D:"#512da8",N:"#262b69",W:"#ffffff",K:"#ff6b9a",L:"#ecf141",C:"#4fd1e8",O:"#ff9b3d"};
+function moduleArt(M){
+  const a=MOD_ART[M.art||M.id]; if(!a) return '<img src="'+CAT+'" alt="">';
+  let r=""; a.forEach((row,y)=>[...row].forEach((c,x)=>{ if(c!==".") r+='<rect x="'+x+'" y="'+y+'" width="1" height="1" fill="'+MOD_ART_C[c]+'"/>'; }));
+  return '<span class="mod-art" aria-hidden="true"><svg viewBox="0 0 16 16" shape-rendering="crispEdges">'+r+'</svg></span>';
 }

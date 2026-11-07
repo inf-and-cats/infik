@@ -346,11 +346,97 @@
     },
     {
      "id": "m8",
-     "title": "Списки"
+     "title": "Списки",
+     "about": "Индексы и срезы, append и pop, перебор, sum, min, max и sorted, split и join, задачи на списки.",
+     "lessons": [
+      {
+       "id": "m8l1",
+       "title": "Что такое список",
+       "file": "content/m8/l1.json",
+       "icon": "lbox"
+      },
+      {
+       "id": "m8l2",
+       "title": "Меняем список",
+       "file": "content/m8/l2.json",
+       "icon": "ladd"
+      },
+      {
+       "id": "m8l3",
+       "title": "Перебор списка",
+       "file": "content/m8/l3.json",
+       "icon": "lwalk"
+      },
+      {
+       "id": "m8l4",
+       "title": "Встроенные помощники",
+       "file": "content/m8/l4.json",
+       "icon": "lchart"
+      },
+      {
+       "id": "m8l5",
+       "title": "Строки и списки",
+       "file": "content/m8/l5.json",
+       "icon": "lsplit"
+      },
+      {
+       "id": "m8l6",
+       "title": "Список в задачах",
+       "file": "content/m8/l6.json",
+       "icon": "ltarget"
+      },
+      {
+       "id": "m8boss",
+       "title": "Задача-босс",
+       "file": "content/m8/boss.json",
+       "boss": true,
+       "icon": "snake"
+      }
+     ]
     },
     {
      "id": "m9",
-     "title": "Функции"
+     "title": "Функции",
+     "about": "Свои команды через def, параметры, return, локальные переменные и большой босс по всему разделу.",
+     "lessons": [
+      {
+       "id": "m9l1",
+       "title": "Своя команда",
+       "file": "content/m9/l1.json",
+       "icon": "fdef"
+      },
+      {
+       "id": "m9l2",
+       "title": "Параметры",
+       "file": "content/m9/l2.json",
+       "icon": "farg"
+      },
+      {
+       "id": "m9l3",
+       "title": "Возврат значения",
+       "file": "content/m9/l3.json",
+       "icon": "fret"
+      },
+      {
+       "id": "m9l4",
+       "title": "Где живут переменные",
+       "file": "content/m9/l4.json",
+       "icon": "fhome"
+      },
+      {
+       "id": "m9l5",
+       "title": "Функции в деле",
+       "file": "content/m9/l5.json",
+       "icon": "fcombo"
+      },
+      {
+       "id": "m9boss",
+       "title": "Босс раздела",
+       "file": "content/m9/boss.json",
+       "boss": true,
+       "icon": "snake"
+      }
+     ]
     }
    ]
   },

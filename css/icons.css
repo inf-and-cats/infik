@@ -11,3 +11,8 @@
 .node .badge svg{width:16px;height:16px}
 .node .crown{position:absolute;top:-14px;left:50%;transform:translateX(-50%);width:30px;height:24px;color:#ecf141;filter:drop-shadow(0 2px 0 #262b69)}
 .node .crown svg{width:30px;height:24px}
+
+/* пиксельная картинка модуля на «Пути» (вместо кота) */
+.module .mod-art{position:absolute;right:16px;bottom:16px;width:34%;max-width:124px;pointer-events:none}
+.module .mod-art svg{display:block;width:100%;height:auto}
+.module.shut .mod-art{width:52px;right:60px;bottom:50%;transform:translateY(50%)}

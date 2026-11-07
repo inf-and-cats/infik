@@ -1,0 +1,279 @@
+{
+ "id": "m9l3",
+ "title": "Возврат значения",
+ "steps": [
+  {
+   "type": "theory",
+   "kind": "Теория",
+   "title": "Функция отдаёт ответ",
+   "text": [
+    "Пока наши функции только печатали. Но часто от функции нужен <b>ответ</b>, чтобы потом с ним что-то сделать: сложить, сравнить, записать в переменную.",
+    "Для этого есть <code>return</code>. Он возвращает значение туда, откуда функцию вызвали."
+   ],
+   "code": "def square(n):\n    return n * n\n\nx = square(4)\nprint(x)\nprint(square(3) + square(4))",
+   "run": true,
+   "tip": "<code>len</code> и <code>max</code> работают так же: они не печатают, а возвращают ответ."
+  },
+  {
+   "type": "choice",
+   "kind": "Что выведет программа?",
+   "title": "Что выведет программа?",
+   "code": "def triple(n):\n    return n * 3\n\ny = triple(2)\nprint(y)",
+   "options": [
+    {
+     "out": "3"
+    },
+    {
+     "out": "6"
+    },
+    {
+     "out": "9"
+    },
+    {
+     "out": "33"
+    }
+   ],
+   "answer": 1,
+   "why": "<code>triple(2)</code> возвращает 6, это значение и записывается в <code>y</code>."
+  },
+  {
+   "type": "theory",
+   "kind": "Теория",
+   "title": "print и return — разные вещи",
+   "text": [
+    "<code>print</code> показывает значение на экране, и всё. <code>return</code> отдаёт значение программе, чтобы его можно было использовать дальше.",
+    "Если функция только печатает, её ответ в переменную не запишешь: там будет <code>None</code>, то есть «ничего»."
+   ],
+   "code": "def a(n):\n    print(n * 2)\n\ndef b(n):\n    return n * 2\n\nx = a(5)\ny = b(5)\nprint(x, y)",
+   "run": true,
+   "tip": "Функция <code>a</code> напечатала 10 сама, но вернула <code>None</code>. А <code>b</code> вернула 10."
+  },
+  {
+   "type": "choice",
+   "kind": "Что выведет программа?",
+   "title": "Что выведет программа?",
+   "code": "def f(n):\n    print(n * 2)\n\nr = f(2)\nprint(r)",
+   "options": [
+    {
+     "out": "8"
+    },
+    {
+     "out": "None"
+    },
+    {
+     "out": "4\nNone"
+    },
+    {
+     "out": "4"
+    }
+   ],
+   "answer": 2,
+   "why": "<code>f(2)</code> сама печатает 4, но ничего не возвращает. Поэтому в <code>r</code> попадает <code>None</code>, и вторая строка — None."
+  },
+  {
+   "type": "theory",
+   "kind": "Теория",
+   "title": "return завершает функцию",
+   "text": [
+    "Как только выполнился <code>return</code>, функция сразу заканчивается. Строки после него в этом вызове уже не выполнятся.",
+    "Поэтому <code>return</code> удобно ставить внутри условий: какой ответ подошёл, тот и вернули."
+   ],
+   "code": "def sign(n):\n    if n > 0:\n        return \"плюс\"\n    if n < 0:\n        return \"минус\"\n    return \"ноль\"\n\nprint(sign(5))\nprint(sign(-2))\nprint(sign(0))",
+   "run": true,
+   "tip": "Последний <code>return</code> срабатывает, только если ни одно условие выше не подошло."
+  },
+  {
+   "type": "choice",
+   "kind": "Что выведет программа?",
+   "title": "Что выведет программа?",
+   "code": "def size(n):\n    if n > 10:\n        return \"большое\"\n    return \"маленькое\"\n\nprint(size(3))",
+   "options": [
+    {
+     "out": "большое"
+    },
+    {
+     "out": "маленькое"
+    },
+    {
+     "out": "большое\nмаленькое"
+    },
+    {
+     "out": "None"
+    }
+   ],
+   "answer": 1,
+   "why": "3 не больше 10, поэтому первый <code>return</code> пропускается, и срабатывает второй."
+  },
+  {
+   "type": "choice",
+   "kind": "Дополни код",
+   "title": "Функция должна вернуть большее из двух чисел. Что вписать вместо пропуска?",
+   "code": "def bigger(a, b):\n    if a > b:\n        @@BLANK@@\n    return b\n\nprint(bigger(7, 4))",
+   "options": [
+    {
+     "code": "print(a)"
+    },
+    {
+     "code": "return b"
+    },
+    {
+     "code": "return a"
+    },
+    {
+     "code": "a"
+    }
+   ],
+   "answer": 2,
+   "why": "Если <code>a</code> больше, ответ — <code>a</code>, и его надо именно вернуть. С <code>print</code> функция вернула бы <code>None</code>."
+  },
+  {
+   "type": "theory",
+   "kind": "Теория",
+   "title": "True и False в ответе",
+   "text": [
+    "Функция может возвращать <code>True</code> или <code>False</code>. Тогда её удобно ставить прямо в <code>if</code>."
+   ],
+   "code": "def is_even(n):\n    return n % 2 == 0\n\nfor i in range(1, 5):\n    if is_even(i):\n        print(i, \"чётное\")",
+   "run": true,
+   "tip": "<code>n % 2 == 0</code> — это сравнение, его результат уже <code>True</code> или <code>False</code>. Поэтому его можно сразу вернуть."
+  },
+  {
+   "type": "choice",
+   "kind": "Что выведет программа?",
+   "title": "Что выведет программа?",
+   "code": "def short(w):\n    return len(w) < 5\n\nprint(short(\"кот\"))\nprint(short(\"котлета\"))",
+   "options": [
+    {
+     "out": "True\nFalse"
+    },
+    {
+     "out": "False\nTrue"
+    },
+    {
+     "out": "True\nTrue"
+    },
+    {
+     "out": "False\nFalse"
+    }
+   ],
+   "answer": 0,
+   "why": "Длина «кот» — 3, это меньше 5: <code>True</code>. А в «котлета» 7 букв: <code>False</code>."
+  },
+  {
+   "type": "theory",
+   "kind": "Теория",
+   "title": "Функция внутри выражения",
+   "text": [
+    "Вызов функции с <code>return</code> можно ставить везде, где можно поставить значение: в арифметику, в условие, в аргумент другой функции."
+   ],
+   "code": "def square(n):\n    return n * n\n\nprint(square(square(2)))\nprint(square(3) > 5)",
+   "run": true,
+   "tip": "<code>square(square(2))</code>: сначала внутреннее 2 · 2 = 4, потом 4 · 4 = 16."
+  },
+  {
+   "type": "bug",
+   "kind": "Найди баг",
+   "title": "Функция должна вернуть сумму, но программа выводит None. Где ошибка?",
+   "code": "def add(a, b):\n    print(a + b)\n\ns = add(2, 3)\nprint(s * 10)",
+   "bug": 2,
+   "why": "<code>print</code> только показывает сумму, а функция ничего не возвращает, поэтому в <code>s</code> попадает <code>None</code>, и умножение падает с ошибкой. Нужно <code>return a + b</code>."
+  },
+  {
+   "type": "bug",
+   "kind": "Найди баг",
+   "title": "Функция должна вернуть «да» для положительных чисел и «нет» для остальных, но всегда возвращает «нет». Где ошибка?",
+   "code": "def pos(n):\n    answer = \"нет\"\n    if n > 0:\n        answer = \"да\"\n    answer = \"нет\"\n    return answer\n\nprint(pos(5))",
+   "bug": 5,
+   "why": "Строка 5 стоит после <code>if</code> и затирает «да» обратно на «нет». Её надо убрать."
+  },
+  {
+   "type": "parsons",
+   "kind": "Расставь строки",
+   "title": "Расставь строки: функция возвращает куб числа, программа печатает куб 3",
+   "lines": [
+    "    return n * n * n",
+    "print(cube(3))",
+    "def cube(n):"
+   ],
+   "expect": "27\n",
+   "why": "Описываем функцию с <code>return</code>, а потом печатаем то, что она вернула.",
+   "expectOut": "27"
+  },
+  {
+   "type": "build",
+   "kind": "Собери код",
+   "title": "Собери программу: функция возвращает среднее двух чисел, выведи среднее 4 и 6",
+   "expect": "5.0\n",
+   "bank": [
+    "def",
+    "avg",
+    "(",
+    "a",
+    ",",
+    "b",
+    ")",
+    ":",
+    "return",
+    "(",
+    "a",
+    "+",
+    "b",
+    ")",
+    "/",
+    "2",
+    "print",
+    "(",
+    "avg",
+    "(",
+    "4",
+    ",",
+    "6",
+    ")",
+    ")",
+    "print"
+   ],
+   "why": "Правильно: <code>def avg(a, b):</code>, с отступом <code>return (a + b) / 2</code>, потом <code>print(avg(4, 6))</code>. Скобки нужны, иначе сначала поделилось бы только <code>b</code>.",
+   "expectOut": "5.0"
+  },
+  {
+   "type": "write",
+   "kind": "Напиши сам",
+   "title": "Модуль числа",
+   "text": "Опиши функцию <code>my_abs(n)</code>, которая возвращает число без минуса: для −7 это 7, для 5 это 5. Встроенный <code>abs</code> не используй. Выведи <code>my_abs(-7)</code>.",
+   "bank": [
+    "def",
+    "my_abs",
+    "my_abs",
+    "n",
+    "n",
+    "n",
+    "n",
+    "(",
+    ")",
+    "(",
+    ")",
+    "if",
+    "<",
+    "0",
+    "return",
+    "return",
+    "-",
+    "-7"
+   ],
+   "reuse": [
+    "print",
+    "(",
+    ")",
+    ":"
+   ],
+   "check": {
+    "lines": 1,
+    "equals": {
+     "1": "7"
+    }
+   },
+   "why": "Например: <code>def my_abs(n):</code>, внутри <code>if n &lt; 0:</code> и <code>return -n</code>, а после условия <code>return n</code>. В конце <code>print(my_abs(-7))</code>.",
+   "expectOut": "7"
+  }
+ ]
+}

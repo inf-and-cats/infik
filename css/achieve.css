@@ -1,0 +1,56 @@
+/* ИНФиК: пиксельные значки достижений и кот (js/achieve.js) */
+.ic svg.px{width:100%;height:100%;display:block;box-sizing:border-box;padding:20%;border-radius:50%;background:#512da8}
+.badge:not(.on) .ic svg.px{filter:grayscale(1);opacity:.45}
+
+/* кот: пиксельная картинка из js (catSrc) */
+.cat{position:relative;width:170px;margin:0 auto;display:grid;place-items:center;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}
+.cat img.cat-px{width:100%;height:auto;display:block;image-rendering:pixelated;image-rendering:crisp-edges}
+.cat.boop{animation:catBoop .25s}
+@keyframes catBoop{50%{transform:scale(.94) rotate(-3deg)}}
+.cat-s0:not(.sm){animation:catBob 3s ease-in-out infinite}
+@keyframes catBob{50%{transform:translateY(-4px)}}
+/* 1: лагает — рывки */
+.cat-s1 img.cat-px{animation:catJit 1.8s steps(1) infinite}
+@keyframes catJit{0%,70%{transform:none}72%{transform:translate(3%,-1%)}75%{transform:translate(-4%,1%)}78%{transform:skewX(8deg)}81%,100%{transform:none}}
+/* 2: крупные серые пиксели */
+.cat-s2:not(.sm){width:140px}
+/* 3: ASCII в терминале */
+.cat-s3:not(.sm){width:220px}
+.cat-s3:not(.sm) img.cat-px{border-radius:14px}
+.cat-cur{position:absolute;right:18px;bottom:16px;width:8px;height:14px;background:#ecf141;animation:catCur 1s steps(1) infinite}
+@keyframes catCur{50%{opacity:0}}
+/* 4: 404 */
+.cat-s4:not(.sm){width:120px}
+/* мордочка в кружке */
+.cat.sm{width:26px;height:26px;border-radius:50%;overflow:hidden;background:var(--surface-2);padding:0;cursor:inherit}
+.cat.sm img.cat-px{width:100%;height:100%;object-fit:contain}
+.cat.sm.cat-s3{background:#12143f}
+.stat.catb{padding-left:3px}
+.cat-card{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:var(--surface);border:2px solid #ff6b9a;border-radius:16px;padding:12px;margin:12px 0;color:var(--ink);font:inherit;cursor:pointer}
+.cat-card .cat.sm{width:52px;height:52px}
+.cat-card b{display:block;font-size:15px}
+.cat-card small{color:var(--ink-soft);font-size:12px}
+.cat-card .go{margin-left:auto;background:#ff6b9a;color:#fff;font-weight:800;border-radius:12px;padding:8px 12px;font-size:13px;white-space:nowrap}
+/* шторка */
+.cat-top{text-align:center;margin-bottom:6px}
+.cat-mood{margin-top:8px}
+.cat-mood b{display:block;font-size:17px}
+.cat-mood small{color:var(--ink-soft);font-size:13px}
+.cat-items{margin-top:16px}
+.cat-items h3{font-size:14px;margin:0 0 8px}
+.cat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.cat-it{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:10px 6px;text-align:center}
+.cat-it span{display:grid;place-items:center;width:46px;height:46px;margin:0 auto 6px;border-radius:50%;background:#512da8}
+.cat-it span svg{width:28px;height:auto}
+.cat-it:not(.on) span svg{filter:grayscale(1);opacity:.35}
+.cat-it small{font-size:11px;color:var(--ink-soft);line-height:1.2;display:block}
+@media (prefers-reduced-motion: reduce){.cat-s1 img.cat-px,.cat-s0:not(.sm),.cat-cur{animation:none}}
+
+/* Практика: картинка модуля у задачи и пиксельные звёзды */
+.pr-art{flex:none;width:44px;height:44px;border-radius:12px;background:var(--lime);display:grid;place-items:center}
+.pr-art svg{width:32px;height:32px;display:block}
+.pr-task.ahead .pr-art svg{filter:grayscale(1);opacity:.6}
+.pr-stars{gap:3px}
+.pr-stars i{width:14px;height:14px;background:currentColor;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 7 7' shape-rendering='crispEdges'%3E%3Cpath d='M3 0h1v2H3zM0 2h7v1H0zM1 3h5v1H1zM2 4h3v1H2zM1 5h2v1H1zM4 5h2v1H4zM0 6h2v1H0zM5 6h2v1H5z'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 7 7' shape-rendering='crispEdges'%3E%3Cpath d='M3 0h1v2H3zM0 2h7v1H0zM1 3h5v1H1zM2 4h3v1H2zM1 5h2v1H1zM4 5h2v1H4zM0 6h2v1H0zM5 6h2v1H5z'/%3E%3C/svg%3E") center/contain no-repeat;image-rendering:pixelated}
+.pr-stars i svg{display:none}
+.pr-stars i:not(.on){color:var(--line)}
