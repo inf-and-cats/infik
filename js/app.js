@@ -70,10 +70,11 @@ function renderPath(app){
     const path=h("div",{class:"path"});
     const offs=[0,-60,-80,-30,40,0];
     PATH.forEach((p,i)=>{
-      const done=!!S.done[p.id]; const open=!done&&(i===0||S.done[PATH[i-1].id]);
-      const n=h("button",{class:"node"+(done?" done":open?" open":"")+(p.boss?" boss":""),type:"button",style:"transform:translateX("+offs[i%offs.length]+"px)"});
-      n.innerHTML=(open?'<span class="start">'+(i===0?"Начать":"Дальше")+'</span>':"")+'<span class="disc">'+lessonDisc(p,done,open)+'</span><span class="lbl">'+(i+1)+'. '+p.title+'</span>';
-      n.onclick=()=>{ if(p.file&&(open||done||DEV)) startLesson(p); else if(open||DEV) toast("Урок в разработке"); else toast("Сначала пройди урок "+i); }; // DEV: любой урок без прохождения предыдущих
+      const done=!!S.done[p.id]; const open=!done&&(isStudent()?i===PATH.findIndex(q=>!S.done[q.id]):(i===0||S.done[PATH[i-1].id])); // у ученика «Дальше» одно — на первом непройденном
+      const free=!done&&!open&&isStudent(); // ученикам курса открыты все уроки; «Дальше» всё равно стоит на следующем по порядку
+      const n=h("button",{class:"node"+(done?" done":open?" open":free?" free":"")+(p.boss?" boss":""),type:"button",style:"transform:translateX("+offs[i%offs.length]+"px)"});
+      n.innerHTML=(open?'<span class="start">'+(i===0?"Начать":"Дальше")+'</span>':"")+'<span class="disc">'+lessonDisc(p,done,open||free)+'</span><span class="lbl">'+(i+1)+'. '+p.title+'</span>';
+      n.onclick=()=>{ if(p.file&&(open||done||free||DEV)){ if(free) toast("Этот урок опирается на урок "+i+". Если что-то непонятно, загляни туда"); startLesson(p); } else if(open||free||DEV) toast("Урок в разработке"); else toast("Сначала пройди урок "+i); }; // DEV: любой урок без прохождения предыдущих
       path.appendChild(n);
     });
     if(!shut) app.appendChild(path);

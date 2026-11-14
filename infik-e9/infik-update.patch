@@ -14260,7 +14260,7 @@ index 0000000..0f76b54
 +}
 \ No newline at end of file
 diff --git a/css/app.css b/css/app.css
-index be25536..091a81a 100644
+index be25536..94f1c13 100644
 --- a/css/app.css
 +++ b/css/app.css
 @@ -263,7 +263,7 @@ h1.page{font-family:var(--f-display);font-size:34px;line-height:1.05;margin:0;te
@@ -14272,7 +14272,7 @@ index be25536..091a81a 100644
  .sec{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;background:var(--surface);border:2px solid var(--line);border-radius:14px;padding:8px 10px;min-width:0}
  .sec small{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft)}
  .sec b{font-size:14px;line-height:1.2;color:var(--ink)}
-@@ -427,3 +427,23 @@ html,textarea,input,button{font-variant-ligatures:none}
+@@ -427,3 +427,27 @@ html,textarea,input,button{font-variant-ligatures:none}
  .cht-list li small{color:var(--ink-soft);font-size:13px}
  .cht .note{text-align:center}
  html{-webkit-text-size-adjust:100%;text-size-adjust:100%} /* Android не должен увеличивать шрифт подсветки отдельно от textarea */
@@ -14296,6 +14296,10 @@ index be25536..091a81a 100644
 +.q code{font-size:.82em;font-weight:700}
 +.def>b code{font-size:13px;text-transform:none;letter-spacing:0;color:var(--purple-ink)}
 +.key code{background:rgba(38,43,105,.12);border-color:rgba(38,43,105,.35);color:#262b69}
++/* урок открыт ученику курса не по порядку: цветной значок, без замка */
++.node.free .disc{color:var(--ink)}
++.node.free .disc>svg[viewBox="0 0 10 10"]{filter:none;opacity:1}
++.node.free .lbl{color:var(--ink)}
 diff --git a/css/demo.css b/css/demo.css
 index bc39bda..dce70ed 100644
 --- a/css/demo.css
@@ -14445,7 +14449,7 @@ index 7e06848..6296402 100644
  <script src="js/app.js"></script>
  <script src="js/materials.js"></script>
 diff --git a/js/app.js b/js/app.js
-index bad6745..4a16f7c 100644
+index bad6745..5e2d539 100644
 --- a/js/app.js
 +++ b/js/app.js
 @@ -44,7 +44,7 @@ function renderPath(app){
@@ -14473,7 +14477,19 @@ index bad6745..4a16f7c 100644
      mod.onclick=e=>{ if(e.target.closest(".mod-tools")) return; fold[M.id]=!shut; try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e){} render(); }; // без save(): сворачивание не прогресс, метку синхронизации не сдвигаем
      const cheat=PATH.filter(p=>S.done[p.id]&&p.file);
      const tools=h("div",{class:"mod-tools"});
-@@ -74,10 +77,40 @@ function renderPath(app){
+@@ -67,17 +70,48 @@ function renderPath(app){
+     const path=h("div",{class:"path"});
+     const offs=[0,-60,-80,-30,40,0];
+     PATH.forEach((p,i)=>{
+-      const done=!!S.done[p.id]; const open=!done&&(i===0||S.done[PATH[i-1].id]);
+-      const n=h("button",{class:"node"+(done?" done":open?" open":"")+(p.boss?" boss":""),type:"button",style:"transform:translateX("+offs[i%offs.length]+"px)"});
+-      n.innerHTML=(open?'<span class="start">'+(i===0?"Начать":"Дальше")+'</span>':"")+'<span class="disc">'+lessonDisc(p,done,open)+'</span><span class="lbl">'+(i+1)+'. '+p.title+'</span>';
+-      n.onclick=()=>{ if(p.file&&(open||done||DEV)) startLesson(p); else if(open||DEV) toast("Урок в разработке"); else toast("Сначала пройди урок "+i); }; // DEV: любой урок без прохождения предыдущих
++      const done=!!S.done[p.id]; const open=!done&&(isStudent()?i===PATH.findIndex(q=>!S.done[q.id]):(i===0||S.done[PATH[i-1].id])); // у ученика «Дальше» одно — на первом непройденном
++      const free=!done&&!open&&isStudent(); // ученикам курса открыты все уроки; «Дальше» всё равно стоит на следующем по порядку
++      const n=h("button",{class:"node"+(done?" done":open?" open":free?" free":"")+(p.boss?" boss":""),type:"button",style:"transform:translateX("+offs[i%offs.length]+"px)"});
++      n.innerHTML=(open?'<span class="start">'+(i===0?"Начать":"Дальше")+'</span>':"")+'<span class="disc">'+lessonDisc(p,done,open||free)+'</span><span class="lbl">'+(i+1)+'. '+p.title+'</span>';
++      n.onclick=()=>{ if(p.file&&(open||done||free||DEV)){ if(free) toast("Этот урок опирается на урок "+i+". Если что-то непонятно, загляни туда"); startLesson(p); } else if(open||free||DEV) toast("Урок в разработке"); else toast("Сначала пройди урок "+i); }; // DEV: любой урок без прохождения предыдущих
        path.appendChild(n);
      });
      if(!shut) app.appendChild(path);

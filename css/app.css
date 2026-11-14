@@ -447,3 +447,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%} /* Android не дол
 .q code{font-size:.82em;font-weight:700}
 .def>b code{font-size:13px;text-transform:none;letter-spacing:0;color:var(--purple-ink)}
 .key code{background:rgba(38,43,105,.12);border-color:rgba(38,43,105,.35);color:#262b69}
+/* урок открыт ученику курса не по порядку: цветной значок, без замка */
+.node.free .disc{color:var(--ink)}
+.node.free .disc>svg[viewBox="0 0 10 10"]{filter:none;opacity:1}
+.node.free .lbl{color:var(--ink)}
