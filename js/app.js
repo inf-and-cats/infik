@@ -45,10 +45,12 @@ function renderPath(app){
   const bar=h("div",{class:"secs",role:"tablist","aria-label":"Разделы курса"});
   SECS.forEach((x,i)=>{
     const tag=x.free&&!isStudent()?'<span class="free">Бесплатно</span>':x.tag&&!isStudent()?'<span class="free">'+esc(x.tag)+'</span>':!hasLessons(x)?'<span class="lk">'+I.lock+'</span>':"";
-    const b=h("button",{class:"sec",role:"tab","aria-selected":String(x===sec),type:"button"},'<small>Раздел '+(i+1)+tag+'</small><b>'+esc(x.title)+'</b>');
+    const isNew=x.new&&!(S.secSeen&&S.secSeen[x.id])&&x!==sec; // значок «новое», пока раздел ни разу не открывали
+    const b=h("button",{class:"sec",role:"tab","aria-selected":String(x===sec),type:"button"},(isNew?'<span class="sec-new">новое</span>':'')+'<small>Раздел '+(i+1)+tag+'</small><b>'+esc(x.title)+'</b>');
     b.onclick=()=>{ S.sec=x.id; save(); render(); }; bar.appendChild(b);
   });
   app.appendChild(bar);
+  if(sec.new&&!(S.secSeen&&S.secSeen[sec.id])){ (S.secSeen||(S.secSeen={}))[sec.id]=1; try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e){} } // открыли раздел — значок больше не показываем
   if(!hasLessons(sec)) app.appendChild(h("section",{class:"sec-soon"},'<span class="ic">'+I.lock+'</span><div><b>'+esc(sec.title)+'</b><p>'+esc(sec.about)+'. Раздел скоро откроется.</p></div>'));
   /* модули сворачиваются: по умолчанию открыт только текущий, выбор ученика запоминаем в S.fold */
   const fold=S.fold||(S.fold={}), curM=sec.modules.find(m=>m.lessons&&m.lessons.some(p=>!S.done[p.id]));

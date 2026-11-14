@@ -451,3 +451,8 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%} /* Android не дол
 .node.free .disc{color:var(--ink)}
 .node.free .disc>svg[viewBox="0 0 10 10"]{filter:none;opacity:1}
 .node.free .lbl{color:var(--ink)}
+/* значок «новое» на переключателе раздела (поле "new":true в course.json) */
+.sec{position:relative}
+.sec-new{position:absolute;top:-9px;right:-6px;z-index:1;background:#ff6b9a;color:#262b69;font-family:"Press Start 2P","Courier New",monospace;font-size:8px;line-height:1;text-transform:uppercase;padding:5px 6px 4px;border:2px solid #262b69;box-shadow:0 2px 0 #262b69;animation:sec-new 2.4s ease-in-out infinite}
+@keyframes sec-new{0%,70%,100%{transform:rotate(4deg) scale(1)}80%{transform:rotate(-3deg) scale(1.12)}90%{transform:rotate(4deg) scale(1)}}
+@media (prefers-reduced-motion:reduce){.sec-new{animation:none;transform:rotate(4deg)}}
