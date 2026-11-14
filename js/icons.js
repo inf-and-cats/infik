@@ -18,6 +18,15 @@ const LESSON_SPR = {
  even:["..........",".LL....LL.",".LL....LL.","..........",".LL....LL.",".LL....LL.","..........",".KK.......",".KK.......",".........."],
  tools:["..........","W........W","W........W","W..L..L..W","W...LL...W","W...LL...W","W..L..L..W","W........W","W........W",".........."],
  compare:["..........","....LL....","...LL.....","..LL..WWWW",".LL.......","..LL..WWWW","...LL.....","....LL....","..........",".........."],
+ /* задание 9 (раздел «Задания ЕГЭ») */
+ cells:["NNNNNNNNNN","NWWNWWNWWN","NWWNWWNWWN","NNNNNNNNNN","NWWNLLNWWN","NWWNLLNWWN","NNNNNNNNNN","NWWNWWNWWN","NWWNWWNWWN","NNNNNNNNNN"],
+ iflag:["..........","..L...WWW.",".LL..W...W","..L..W...W","..L..W...W","..L..W...W","..L..W...W",".LLL..WWW.","..........",".........."],
+ dollar:["....L.....","..LLLLL...",".L..L.....",".L..L.....","..LLLL....","....L.L...","....L..L..",".LLLLLL...","....L.....",".........."],
+ dups:["..........","WWWW..WWWW","WKKW..WKKW","WKKW..WKKW","WWWW..WWWW","..........","..LLLLLL..","..........","..LLLLLL..",".........."],
+ stairs:["........LL","........LL","......WWLL","......WWLL","....WWWWLL","....WWWWLL","..WWWWWWLL","..WWWWWWLL","WWWWWWWWLL","WWWWWWWWLL"],
+ parity:["..........",".LL.....W.",".LL....W..","......W...",".....W....","....W.....","...W......","..W....KK.",".W.....KK.",".........."],
+ trap:["....LL....","....LL....","...LNNL...","...LNNL...","..LLNNLL..","..LLNNLL..",".LLLLLLLL.",".LLLNNLLL.","LLLLLLLLLL",".........."],
+ fx:["..........","...WWW....","..W.......","..W.......",".WWWW.K..K","..W....KK.","..W....KK.","..W...K..K",".W........",".........."],
  branch:["LL......KK","LL......KK",".LL....KK.","..LL..KK..","...LLKK...","....WW....","....WW....","....WW....","....WW....",".........."],
  ladder:["..........","LL.WWWWWWW","LL.WWWWWWW","..........","WW.WWWWW..","WW.WWWWW..","..........","WW.WWWW...","WW.WWWW...",".........."],
  logic:["..........","..........","..WWLLKK..",".WWLLLLKK.",".WWLLLLKK.",".WWLLLLKK.",".WWLLLLKK.","..WWLLKK..","..........",".........."],
@@ -79,6 +88,7 @@ const MOD_ART = {
  m6:["..NNNNNNNNNNNN..","..NDDDDDDDDDDN..","...NWWWWWWWWN...","...NWOOOOOOWN...","....NWOOOOWN....",".....NWOOWN.....","......NWWN......","......NOWN......",".....NWOOWN.....","....NWWOOWWN....","...NWWOOOOWWN...","...NWOOOOOOWN...","...NWOOOOOOWN...","..NDDDDDDDDDDN..","..NNNNNNNNNNNN..","................"],
  m7:["................","................",".NNNNNNNNNNNNNN.","NWWWWWWWWWWWWWWN","NWWDWWDDWWWDDWWN","NWDWDWDWDWDWWWWN","NWDDDWDDWWDWWWWN","NWDWDWDWDWDWWWWN","NWDWDWDDWWWDDWWN","NWWWWWWWWWWWWWWN","NWWWWWWWWWWWWWWN",".NNNNNNNNNNNNNN.","...NNN..........","...N............","................","................"],
  m8:["....NNNNNN......","..NNNWWWWNNN....","..NDNNNNNNDN....","..NDWWWWWWDN....","..NDKKWNNNDN....","..NDKKWWWWDN....","..NDWWWWWWDN....","..NDLLWNNNDN....","..NDLLWWWWDN....","..NDWWWWWWDN....","..NDKKWNNNDN....","..NDKKWWWWDN....","..NDWWWWWWDN....","..NDDDDDDDDN....","..NNNNNNNNNN....","................"],
+ e9:["NNNNNNNNNNNNNNNN","NDDDDDDDDDDDDDDN","NDLLDWWWWWWWWWDN","NDDDDDDDDDDDDDDN","NNNNNNNNNNNNNNNN","NPPNPPPNPPPNPPPN","NPPNWWWNWWWNWWWN","NPPNWWWNWWWNWWWN","NNNNNNNNNNNNNNNN","NPPNWWWNLLLNWWWN","NPPNWWWNLLLKWWWN","NNNNNNNNNNKKNNNN","NPPNWWWNCCCNWWWN","NPPNWWWNCCCNWWWN","NPPNWWWNWWWNWWWN","NNNNNNNNNNNNNNNN"],
  m9:["......NNNN......","......NDDN......","..NN.NDDDDN.NN..","..NDNDDDDDDNDN..","...NDDDDDDDDN...","..NDDDNNNNDDDN..","NNDDDNPPPPNDDDNN","NDDDNPPLLPPNDDDN","NDDDNPPLLPPNDDDN","NNDDDNPPPPNDDDNN","..NDDDNNNNDDDN..","...NDDDDDDDDN...","..NDNDDDDDDNDN..","..NN.NDDDDN.NN..","......NDDN......","......NNNN......"]
 };
 const MOD_ART_C = {P:"#8e6bff",D:"#512da8",N:"#262b69",W:"#ffffff",K:"#ff6b9a",L:"#ecf141",C:"#4fd1e8",O:"#ff9b3d"};

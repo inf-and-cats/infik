@@ -453,37 +453,51 @@
      "lessons": [
       {
        "id": "e9l1",
+       "icon": "cells",
        "title": "Ячейки, формулы и функции",
        "file": "content/e9/l1.json"
       },
       {
        "id": "e9l2",
+       "icon": "iflag",
        "title": "Условия: ЕСЛИ и И",
        "file": "content/e9/l2.json"
       },
       {
        "id": "e9l3",
-       "title": "Все числа разные"
+       "icon": "dollar",
+       "title": "Все числа разные",
+       "file": "content/e9/l3.json"
       },
       {
        "id": "e9l4",
-       "title": "Сколько повторов"
+       "icon": "dups",
+       "title": "Сколько повторов",
+       "file": "content/e9/l4.json"
       },
       {
        "id": "e9l5",
-       "title": "Числа по возрастанию"
+       "icon": "stairs",
+       "title": "Три наименьших и порядок",
+       "file": "content/e9/l5.json"
       },
       {
        "id": "e9l6",
-       "title": "Чётные и нечётные"
+       "icon": "parity",
+       "title": "Чётные и нечётные",
+       "file": "content/e9/l6.json"
       },
       {
        "id": "e9l7",
-       "title": "Ловушки задания 9"
+       "icon": "trap",
+       "title": "Ловушки задания 9",
+       "file": "content/e9/l7.json"
       },
       {
        "id": "e9boss",
+       "icon": "fx",
        "title": "Задача из демоверсии",
+       "file": "content/e9/boss.json",
        "boss": true,
        "offer": true
       }

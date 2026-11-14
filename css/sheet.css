@@ -82,3 +82,15 @@
 .xl-t td.xl-pick{background:var(--xl-mark)}
 .xl-editrow{display:flex;align-items:center;gap:10px;font-family:var(--f-code)}
 .xl-num{width:120px;font-family:var(--f-code);font-size:18px;padding:8px 10px;border:2px solid var(--purple);border-radius:10px;background:var(--xl-bg);color:var(--xl-ink)}
+
+/* «Как это в Calc»: кнопка на шаге и шторка со скриншотом настоящего LibreOffice */
+.xl-calc{align-self:flex-start;display:inline-flex;align-items:center;gap:8px;border:2px solid var(--line);border-bottom-width:4px;background:var(--surface);color:var(--ink);border-radius:12px;padding:6px 12px;font-weight:800;font-size:14px}
+.xl-calc svg{width:20px;height:20px;flex:none}
+.xl-calc:active{transform:translateY(2px);border-bottom-width:2px}
+.xl-shot{margin:0 0 14px;display:flex;flex-direction:column;gap:8px}
+.xl-shot img{display:block;width:100%;height:auto;border-radius:10px;border:2px solid var(--line);background:#fff}
+.xl-shot figcaption{font-size:14px;line-height:1.4}
+.xl-shot figcaption code{font-family:var(--f-code);font-size:.9em;font-weight:600;background:var(--surface-2);border:1.5px solid var(--line);border-radius:6px;padding:0 5px}
+.xl-zoom{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.xl-shot img{cursor:zoom-in}
+.xl-shot.big img{width:220%;max-width:none;cursor:zoom-out}

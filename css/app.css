@@ -263,7 +263,7 @@ h1.page{font-family:var(--f-display);font-size:34px;line-height:1.05;margin:0;te
 .course-cta .main:active{box-shadow:0 2px 0 #9aa01c}
 
 /* разделы курса: переключатель на «Пути» */
-.secs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.secs{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:8px} /* разделы делят всю ширину поровну, сколько бы их ни было */
 .sec{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;background:var(--surface);border:2px solid var(--line);border-radius:14px;padding:8px 10px;min-width:0}
 .sec small{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft)}
 .sec b{font-size:14px;line-height:1.2;color:var(--ink)}
@@ -441,3 +441,9 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%} /* Android не дол
 .key p{margin:0;font-weight:700;font-size:16px;line-height:1.35}
 .key code{background:rgba(38,43,105,.12);color:#262b69}
 
+
+/* формулы везде одинаково: моноширинный шрифт и рамка (в вопросе, теории, вариантах, пояснении, карточках) */
+.q code,.txt code,.opt code,.fb p code,.def code,.key code,.tip p code,.def>b code,.note code{font-family:var(--f-code);font-size:.9em;font-weight:600;background:var(--surface-2);border:1.5px solid var(--line);border-radius:6px;padding:0 5px;color:inherit;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+.q code{font-size:.82em;font-weight:700}
+.def>b code{font-size:13px;text-transform:none;letter-spacing:0;color:var(--purple-ink)}
+.key code{background:rgba(38,43,105,.12);border-color:rgba(38,43,105,.35);color:#262b69}

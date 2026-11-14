@@ -35,11 +35,14 @@ function openDemo(from){
     demoLog("go",from); S.demoAt=Date.now(); save(); demoBar();
     try { if(tg&&tg.openLink){ tg.openLink(url); sh.close(); return; } } catch(e){} window.open(url,"_blank","noopener"); sh.close(); };
 }
-/* плашка над нижним меню: рисуется заново при каждом render() */
+/* пиксельный подарок в правом нижнем углу (вместо широкой плашки): рисуется заново при каждом render() */
+const DM_GIFT=(()=>{ const g=["..KK....KK..",".K..K..K..K.",".K...KK...K.","..KKKKKKKK..","NNNNNKKNNNNN","NLLLLKKLLLLN","NNNNNKKNNNNN",".NLLLKKLLLN.",".NLLLKKLLLN.",".NLLLKKLLLN.",".NLLLKKLLLN.",".NNNNNNNNNN."], C={N:"#262b69",L:"#ecf141",K:"#ff6b9a"};
+  let r=""; g.forEach((row,y)=>[...row].forEach((c,x)=>{ if(c!==".") r+='<rect x="'+x+'" y="'+y+'" width="1" height="1" fill="'+C[c]+'"/>'; }));
+  return '<svg viewBox="0 0 12 12" shape-rendering="crispEdges" aria-hidden="true">'+r+'</svg>'; })();
 function demoBar(){
   let bar=$("#demobar");
   if(!demoBarOn()){ if(bar) bar.remove(); document.body.classList.remove("has-demo"); return; }
-  if(!bar){ bar=h("button",{id:"demobar",class:"dm-bar",type:"button"},'<span class="dm-gift">🎁</span><span class="dm-tx"><b>Бесплатный урок ЕГЭ</b><small>с преподавателем, задание №7</small></span><span class="dm-go">Забрать →</span>'); bar.onclick=()=>openDemo("bar_"+S.tab); document.body.appendChild(bar); }
+  if(!bar){ bar=h("button",{id:"demobar",class:"dm-fab",type:"button","aria-label":"Бесплатный урок ЕГЭ с преподавателем"},DM_GIFT); bar.onclick=()=>openDemo("bar_"+S.tab); document.body.appendChild(bar); }
   document.body.classList.add("has-demo"); document.body.classList.toggle("demo-new",!S.demoSeen);
 }
 /* карточка вместо «Купить курс»: после урока, на Пути, после задачи */

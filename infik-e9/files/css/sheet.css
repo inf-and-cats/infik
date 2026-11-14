@@ -1,0 +1,96 @@
+/* Электронная таблица в уроках ЕГЭ (js/sheet.js) */
+:root{ --xl-bg:#ffffff; --xl-head:#eeedf8; --xl-grid:#d9d6f3; --xl-ink:#262b69; --xl-f:#f6f9c4; --xl-sel:#512da8; --xl-mark:#e3dcfb; }
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --xl-bg:#1c1f4f; --xl-head:#262a63; --xl-grid:#33387a; --xl-ink:#ecebff; --xl-f:#3a3d2a; --xl-sel:#b9a2ff; --xl-mark:#3b2f7a; } }
+:root[data-theme="dark"]{ --xl-bg:#1c1f4f; --xl-head:#262a63; --xl-grid:#33387a; --xl-ink:#ecebff; --xl-f:#3a3d2a; --xl-sel:#b9a2ff; --xl-mark:#3b2f7a; }
+
+.xl{border:2px solid var(--line);border-radius:14px;overflow:hidden;background:var(--xl-bg);color:var(--xl-ink)}
+.xl-bar{display:flex;align-items:center;gap:8px;min-height:40px;padding:6px 10px;border-bottom:1px solid var(--xl-grid);background:var(--xl-head);font-family:var(--f-code);font-size:14px}
+.xl-addr{flex:none;min-width:38px;font-weight:800;color:var(--xl-ink);background:var(--xl-bg);border:1px solid var(--xl-grid);border-radius:8px;padding:3px 6px;text-align:center}
+.xl-addr:empty{visibility:hidden}
+.xl-fx{flex:none;font-style:italic;color:var(--ink-soft);font-family:Georgia,serif}
+.xl-src{flex:1;min-width:0;overflow-wrap:anywhere;line-height:1.5;background:var(--xl-bg);border:1px solid var(--xl-grid);border-radius:8px;padding:3px 8px;min-height:30px;font-size:15px;font-weight:600}
+.xl-src.xl-has-f{color:var(--purple-ink);border:2px solid var(--purple);background:var(--xl-f)}
+:root{--xl-flash:#ecf141}
+.xl-src.xl-flash{animation:xl-flash .6s ease-out}
+@keyframes xl-flash{from{box-shadow:0 0 0 4px var(--xl-flash)}to{box-shadow:0 0 0 0 transparent}}
+@media (prefers-reduced-motion: reduce){ .xl-src.xl-flash{animation:none} }
+.xl-bar{position:relative}
+.xl-src.xl-edit{font-weight:400;color:var(--xl-ink);background:var(--xl-bg);border:2px solid var(--purple);border-radius:8px;padding:3px 6px;min-height:30px;display:flex;flex-wrap:wrap;align-items:center;gap:2px}
+.xl-ph{color:var(--ink-soft);font-family:var(--f-body);font-size:13px}
+.xl-tok{border:0;background:var(--surface-2);color:var(--xl-ink);border-radius:5px;padding:1px 3px;font-family:var(--f-code);font-size:14px;line-height:1.5}
+.xl-input{flex:1;width:100%;border:0;outline:none;background:transparent;color:var(--xl-ink);font-family:var(--f-code);font-size:16px;padding:2px 0}
+.xl-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.xl-t{border-collapse:collapse;font-family:var(--f-code);font-size:13px;min-width:100%}
+@media (max-width:400px){ .xl-t{font-size:12px} .xl-t th,.xl-t td{padding:0 4px} .xl-t td{min-width:30px} }
+.xl.no-bar .xl-bar{display:none}
+.xl-t th,.xl-t td{border:1px solid var(--xl-grid);height:30px;padding:0 5px;white-space:nowrap}
+.xl-t thead th{background:var(--xl-head);color:var(--ink-soft);font-weight:600;font-size:12px;height:24px;min-width:34px}
+.xl-t tbody th{background:var(--xl-head);color:var(--ink-soft);font-weight:600;font-size:12px;min-width:28px;text-align:center}
+.xl-t th.xl-corner{min-width:28px}
+.xl-t td{text-align:left;min-width:34px}
+.xl-t td.xl-n{text-align:right}
+.xl-t td.xl-f{background:var(--xl-f)}
+.xl-t td.xl-err{color:var(--bad);font-weight:600}
+.xl-t .xl-gap{min-width:8px;width:8px;padding:0;font-size:0}
+.xl-t td.xl-sel{outline:2px solid var(--xl-sel);outline-offset:-2px}
+.xl-t tr.xl-more td,.xl-t tr.xl-more th{height:22px;text-align:center;color:var(--ink-soft);background:var(--xl-head)}
+.xl-t tbody th[role="button"]{cursor:pointer}
+.xl-t tr.xl-mark td,.xl-t tr.xl-mark th{background:var(--xl-mark)}
+.xl-t tr.xl-mark th{color:var(--purple-ink)}
+.xl-t tr.xl-ok td,.xl-t tr.xl-ok th{background:var(--good-bg)}
+.xl-t tr.xl-no td,.xl-t tr.xl-no th{background:var(--bad-bg)}
+.xl-t tr.xl-miss td,.xl-t tr.xl-miss th{background:var(--good-bg);box-shadow:inset 0 0 0 1px var(--good)}
+.xl-t td.xl-pop{animation:xl-pop .35s ease-out both}
+@keyframes xl-pop{from{background:var(--lime);color:transparent}to{}}
+@media (prefers-reduced-motion: reduce){ .xl-t td.xl-pop{animation:none} }
+.xl-foot{padding:6px 10px;font-size:12px;color:var(--ink-soft);border-top:1px solid var(--xl-grid);background:var(--xl-head)}
+.xl-msg{margin:0;font-size:13px;color:var(--bad);font-weight:700}
+.xl-entry{display:flex;flex-direction:column;gap:12px}
+.xl-keys{border-radius:12px;border:0}
+.tool.xl-fill{background:var(--purple);border-color:var(--purple);color:#fff;font-weight:800}
+.tool.xl-fill:disabled{opacity:.45}
+
+/* закрытые задания ЕГЭ: сетка плиток */
+.ege-head{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin:6px 2px -4px}
+.ege-head b{font-family:var(--f-display);font-size:22px;text-transform:uppercase}
+.ege-head small{font-size:13px;color:var(--ink-soft);white-space:nowrap}
+.ege-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.ege-tile{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;min-height:84px;background:var(--surface);border:1px dashed var(--line);border-radius:14px;padding:10px;color:var(--ink-soft)}
+.ege-tile b{font-family:var(--f-display);font-size:26px;line-height:1;color:var(--ink)}
+.ege-tile span{font-size:12px;line-height:1.25}
+.ege-tile svg{position:absolute;top:9px;right:9px;width:16px;height:16px}
+.ege-lock{display:flex;flex-direction:column;gap:12px}
+.ege-lock p{margin:0}
+.ege-lock .demo-alt{border:2px solid var(--line);border-bottom-width:4px;background:var(--surface);color:var(--ink);border-radius:14px;padding:12px;font-weight:800;font-size:15px}
+.ege-lock small{color:var(--ink-soft);font-size:13px;line-height:1.35}
+
+/* маркер заполнения: квадратик в правом нижнем углу выбранной ячейки (зона нажатия больше самого квадратика) */
+.xl-t td{position:relative}
+.xl-handle{position:absolute;right:-5px;bottom:-5px;width:11px;height:11px;background:var(--xl-sel);border:2px solid var(--xl-bg);border-radius:2px;z-index:2;touch-action:none;cursor:crosshair;animation:xl-pulse 1.4s ease-in-out infinite}
+.xl-handle::before{content:"";position:absolute;inset:-14px}
+@keyframes xl-pulse{50%{transform:scale(1.35)}}
+@media (prefers-reduced-motion: reduce){ .xl-handle{animation:none} }
+.xl-dragging .xl-handle{animation:none;transform:scale(1.4)}
+.xl-t td.xl-drag{box-shadow:inset 0 0 0 2px var(--xl-sel);background:var(--xl-mark)}
+.xl-t tr:last-child td .xl-handle{bottom:-1px}
+.xl-t td:last-child .xl-handle{right:-1px}
+.xl-hint{display:flex;gap:10px;align-items:flex-start;margin:0;font-size:14px;line-height:1.4;background:var(--surface);border:2px solid var(--purple);border-radius:12px;padding:10px 12px}
+.xl-hq{flex:none;width:12px;height:12px;margin-top:4px;background:var(--xl-sel);border-radius:2px}
+.xl-hint.xl-nudge{animation:xl-nudge .4s}
+@keyframes xl-nudge{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.xl-t td.xl-goal{box-shadow:inset 0 0 0 3px var(--lime-2)}
+.xl-t td.xl-pick{background:var(--xl-mark)}
+.xl-editrow{display:flex;align-items:center;gap:10px;font-family:var(--f-code)}
+.xl-num{width:120px;font-family:var(--f-code);font-size:18px;padding:8px 10px;border:2px solid var(--purple);border-radius:10px;background:var(--xl-bg);color:var(--xl-ink)}
+
+/* «Как это в Calc»: кнопка на шаге и шторка со скриншотом настоящего LibreOffice */
+.xl-calc{align-self:flex-start;display:inline-flex;align-items:center;gap:8px;border:2px solid var(--line);border-bottom-width:4px;background:var(--surface);color:var(--ink);border-radius:12px;padding:6px 12px;font-weight:800;font-size:14px}
+.xl-calc svg{width:20px;height:20px;flex:none}
+.xl-calc:active{transform:translateY(2px);border-bottom-width:2px}
+.xl-shot{margin:0 0 14px;display:flex;flex-direction:column;gap:8px}
+.xl-shot img{display:block;width:100%;height:auto;border-radius:10px;border:2px solid var(--line);background:#fff}
+.xl-shot figcaption{font-size:14px;line-height:1.4}
+.xl-shot figcaption code{font-family:var(--f-code);font-size:.9em;font-weight:600;background:var(--surface-2);border:1.5px solid var(--line);border-radius:6px;padding:0 5px}
+.xl-zoom{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.xl-shot img{cursor:zoom-in}
+.xl-shot.big img{width:220%;max-width:none;cursor:zoom-out}

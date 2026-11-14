@@ -42,6 +42,7 @@ function showStep(){
   const st=LS.queue[LS.pos], b=$("#lbody"); b.innerHTML=""; b.scrollTop=0;
   b.appendChild(h("div",{class:"kind"},st.kind+(st._again?' <span class="again">Повторим</span>':"")));
   b.appendChild(h("h2",{class:"q"},st.title));
+  if(st.calc) b.appendChild(calcBtn(st.calc)); // скриншот настоящего Calc по кнопке (js/sheet.js)
   if(st.input&&st.type!=="theory") b.appendChild(inputBlock(st.input));
   if(st.expectOut) b.appendChild(expectBlock(st.expectOut));
   ({theory,choice,build,bug,indent,parsons,write,sheet:sheetStep})[st.type](st,b);

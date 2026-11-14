@@ -108,7 +108,7 @@ function xlEval(n,ctx,dc,dr){
     case "bad": return XE.name;
     case "ref": { const c=n.ca?n.c:n.c+dc, r=n.ra?n.r:n.r+dr; if(c<0||r<0) return XE.ref; return ctx.get(c,r); }
     case "range": return XE.val; // диапазон сам по себе не число
-    case "neg": try{ return -xlNum(xlEval(n.a,ctx,dc,dr)); }catch(e){ return e instanceof XErr?e:XE.val; }
+    case "neg": { const v=xlEval(n.a,ctx,dc,dr); try{ return -xlNum(v); }catch(e){ return e instanceof XErr?e:XE.val; } }
     case "bin": {
       const a=xlEval(n.a,ctx,dc,dr); if(a instanceof XErr) return a;
       const b=xlEval(n.b,ctx,dc,dr); if(b instanceof XErr) return b;
@@ -182,10 +182,11 @@ Object.assign(XL_FN,{
   "НЕ":(a,c,x,y)=>{ xlArgc(a,1,1); return !xlBool(xlEval(a[0],c,x,y)); },
   "ОСТАТ":(a,c,x,y)=>{ xlArgc(a,2,2); const n=xlNum(xlEval(a[0],c,x,y)), d=xlNum(xlEval(a[1],c,x,y)); if(d===0) throw XE.div; return n-d*Math.floor(n/d); },
   "ABS":(a,c,x,y)=>{ xlArgc(a,1,1); return Math.abs(xlNum(xlEval(a[0],c,x,y))); },
-  "ЦЕЛОЕ":(a,c,x,y)=>{ xlArgc(a,1,1); return Math.floor(xlNum(xlEval(a[0],c,x,y))); }
+  "ЦЕЛОЕ":(a,c,x,y)=>{ xlArgc(a,1,1); return Math.floor(xlNum(xlEval(a[0],c,x,y))); },
+  "СТРОКА":(a,c,x,y)=>{ xlArgc(a,0,1); if(!a.length) return c.cur?c.cur.r+1:1; const n=a[0].k==="range"?a[0].a:a[0]; if(n.k!=="ref") throw XE.val; return (n.ra?n.r:n.r+y)+1; }
 });
 /* английские имена — для тех, у кого Excel на английском */
-Object.entries({SUM:"СУММ",AVERAGE:"СРЗНАЧ",MAX:"МАКС",MIN:"МИН",COUNT:"СЧЕТ",COUNTA:"СЧЕТЗ",PRODUCT:"ПРОИЗВЕД",LARGE:"НАИБОЛЬШИЙ",SMALL:"НАИМЕНЬШИЙ",COUNTIF:"СЧЕТЕСЛИ",SUMIF:"СУММЕСЛИ",IF:"ЕСЛИ",AND:"И",OR:"ИЛИ",NOT:"НЕ",MOD:"ОСТАТ",INT:"ЦЕЛОЕ"}).forEach(([en,ru])=>XL_FN[en]=XL_FN[ru]);
+Object.entries({SUM:"СУММ",AVERAGE:"СРЗНАЧ",MAX:"МАКС",MIN:"МИН",COUNT:"СЧЕТ",COUNTA:"СЧЕТЗ",PRODUCT:"ПРОИЗВЕД",LARGE:"НАИБОЛЬШИЙ",SMALL:"НАИМЕНЬШИЙ",COUNTIF:"СЧЕТЕСЛИ",SUMIF:"СУММЕСЛИ",IF:"ЕСЛИ",AND:"И",OR:"ИЛИ",NOT:"НЕ",MOD:"ОСТАТ",INT:"ЦЕЛОЕ",ROW:"СТРОКА"}).forEach(([en,ru])=>XL_FN[en]=XL_FN[ru]);
 
 /* ---------- лист: данные + формулы ---------- */
 function xlGen(g){ // случайный «файл» по зерну: одинаковый у всех учеников
@@ -195,14 +196,19 @@ function xlGen(g){ // случайный «файл» по зерну: один�
   return rows;
 }
 function xlSheet(data){
-  const F=new Map(); let memo=new Map(); const busy=new Set();
+  const F=new Map(); let memo=new Map(); const busy=new Set(); let depth=0;
+  const DEEP={}; // цепочка ссылок длиннее 800 ячеек (например, O1=СУММ(O2:…) на весь столбец) — как цикл, без переполнения стека
   const key=(c,r)=>c+","+r;
   const sh={data, rows:data.length,
     get(c,r){ const k=key(c,r), f=F.get(k);
       if(!f){ const row=data[r]; const v=row?row[c]:null; return v===undefined?null:v; }
       if(memo.has(k)) return memo.get(k);
       if(busy.has(k)) return XE.cyc;
-      busy.add(k); let v; try{ v=f.err?XE.val:xlEval(f.ast,sh,f.dc,f.dr); } finally{ busy.delete(k); }
+      if(depth>800) throw DEEP;
+      busy.add(k); const was=sh.cur; sh.cur={c,r}; depth++; let v;
+      try{ v=f.err?XE.val:xlEval(f.ast,sh,f.dc,f.dr); }
+      catch(e){ if(e!==DEEP||depth>1) throw e; v=XE.cyc; }
+      finally{ busy.delete(k); sh.cur=was; depth--; }
       memo.set(k,v); return v; },
     formula(c,r){ const f=F.get(key(c,r)); return f?(f.dc||f.dr?xlShiftText(f.src,f.dc,f.dr):f.src):null; },
     has(c,r){ return F.has(key(c,r)); },
@@ -284,7 +290,8 @@ function xlView(sh,opts){
     scroll.innerHTML=html+'</tbody></table>';
     showBar();
     /* выбранная ячейка должна быть видна: на узком экране таблица прокручивается вбок */
-    const sc=scroll.querySelector('.xl-sel'); if(sc){ const l=sc.offsetLeft, r=l+sc.offsetWidth; if(r>scroll.scrollLeft+scroll.clientWidth||l<scroll.scrollLeft) scroll.scrollLeft=Math.max(0,r-scroll.clientWidth+4); }
+    const toSel=()=>{ const sc=scroll.querySelector('.xl-sel'); if(sc){ const l=sc.getBoundingClientRect().left-scroll.getBoundingClientRect().left+scroll.scrollLeft, r=l+sc.offsetWidth; if(r>scroll.scrollLeft+scroll.clientWidth||l<scroll.scrollLeft) scroll.scrollLeft=Math.max(0,r-scroll.clientWidth+4); } };
+    if(w.isConnected) toSel(); else requestAnimationFrame(toSel); // таблицу ещё не вставили на страницу — прокрутим, когда появится
     if(sh.rows>10){ foot.hidden=false; foot.textContent="В файле "+sh.rows+" "+plural(sh.rows,"строка","строки","строк")+". Показаны начало и конец"; }
   };
   scroll.addEventListener("click",e=>{
@@ -321,6 +328,16 @@ function xlView(sh,opts){
   w.draw();
   return w;
 }
+/* кнопка «Как это в Calc»: скриншоты настоящего LibreOffice Calc. calc: {img, cap} или массив таких */
+const XL_CALC_IC='<svg viewBox="0 0 10 10" shape-rendering="crispEdges" aria-hidden="true"><rect x="0" y="1" width="10" height="8" fill="#262b69"/><rect x="1" y="2" width="8" height="6" fill="#f3f2ff"/><rect x="1" y="2" width="8" height="1" fill="#4fae5a"/><rect x="3" y="3" width="1" height="5" fill="#9b98d6"/><rect x="1" y="5" width="8" height="1" fill="#9b98d6"/><rect x="6" y="3" width="1" height="5" fill="#9b98d6"/><rect x="4" y="6" width="2" height="2" fill="#ecf141"/></svg>';
+function calcBtn(calc){
+  const list=Array.isArray(calc)?calc:[calc];
+  const b=h("button",{class:"xl-calc",type:"button"},XL_CALC_IC+"Как это в LibreOffice");
+  b.onclick=()=>{ const box=h("div"); box.appendChild(h("p",{class:"note"},"Скриншоты настоящего LibreOffice Calc. Нажми на картинку, чтобы увеличить, и ещё раз, чтобы уменьшить."));
+    list.forEach(x=>{ const f=h("figure",{class:"xl-shot"}); const z=h("div",{class:"xl-zoom"}); const im=h("img",{src:x.img,alt:"Скриншот LibreOffice Calc",loading:"lazy"}); im.onclick=()=>f.classList.toggle("big"); z.appendChild(im); f.appendChild(z); if(x.cap) f.appendChild(h("figcaption",null,x.cap)); box.appendChild(f); });
+    openSheet("Так это выглядит в Calc",box); };
+  return b;
+}
 /* таблица внутри теории или вопроса с выбором: только смотреть, тап по ячейке показывает адрес и формулу */
 function sheetBlock(sp){ const sh=xlFromSpec(sp); return xlView(sh,{show:sp.show,sel:sp.sel}); }
 
@@ -330,14 +347,17 @@ function sheetBlock(sp){ const sh=xlFromSpec(sp); return xlView(sh,{show:sp.show
    mode "rows": ученик отмечает подходящие строки, answer [номера строк с 1].
    mode "pick": ученик нажимает на ячейку (ячейки), answer ["D2"].
    mode "edit": ученик меняет числа в ячейках edit "A1:E1", чтобы в goal {cell,value} получилось нужное значение.
+   mode "answer": ответ числом в поле, answer — число; таблица (data/gen/pre) по желанию.
    mode "formula": ученик пишет формулу в ячейку cell; solution — эталон; fill "G1:G6" — формулу нужно протянуть
      за квадратик; chips — блоки для сборки (без них только клавиатура). Проверка: значения ученика и эталона
-     совпадают во всех ячейках (и на других числах той же формы — чтобы не подогнать ответ). */
+     совпадают во всех ячейках (и на других числах той же формы — чтобы не подогнать ответ).
+     alt [[строки], …] — свои наборы чисел для проверки, обычно с граничными случаями (равные суммы, ровно 90). */
 function sheetStep(st,b){
   (st.text||[]).forEach(t=>b.appendChild(h("p",{class:"txt"},t)));
   if(st.mode==="rows") return sheetRows(st,b);
   if(st.mode==="pick") return sheetPick(st,b);
   if(st.mode==="edit") return sheetEdit(st,b);
+  if(st.mode==="answer") return sheetAnswer(st,b);
   return sheetFormula(st,b);
 }
 function sheetRows(st,b){
@@ -376,6 +396,17 @@ function sheetEdit(st,b){
   const chk=footer(null,{btn:"Проверить",disabled:true,on:()=>{ done=true; row.hidden=true;
     const got=sh.get(goal.c,goal.r), ok=typeof got==="number"&&Math.abs(got-st.goal.value)<1e-9;
     resolve(ok,st,ok?"":"В "+st.goal.cell+" сейчас «"+xlShow(got)+"», а нужно "+xlShow(st.goal.value)+"."); }});
+}
+/* ответ числом, как в бланке ЕГЭ: таблицу можно смотреть (тап — адрес и формула), ответ вводится в поле */
+function sheetAnswer(st,b){
+  if(st.data||st.gen) b.appendChild(xlView(xlFromSpec(st),{show:st.show,sel:st.sel}));
+  const row=h("div",{class:"xl-editrow"}), inp=h("input",{type:"text",inputmode:"numeric",class:"xl-num xl-ans","aria-label":"Ответ",placeholder:"Ответ",enterkeyhint:"done",autocomplete:"off"});
+  row.append(h("b",{},"Ответ:"),inp); b.appendChild(row);
+  inp.addEventListener("input",()=>{ chk.disabled=!inp.value.trim(); });
+  inp.addEventListener("keydown",e=>{ if(e.key==="Enter"){ e.preventDefault(); inp.blur(); } });
+  const chk=footer(null,{btn:"Проверить",disabled:true,on:()=>{ inp.disabled=true;
+    const t=inp.value.trim().replace(",","."), n=Number(t), ok=t!==""&&isFinite(n)&&Math.abs(n-st.answer)<1e-9;
+    resolve(ok,st,ok?"":"Ты ответил «"+inp.value.trim()+"»."); }});
 }
 function sheetFormula(st,b){
   const sh=xlFromSpec(st), cell=xlAddr(st.cell), fillR=st.fill?xlRange(st.fill):null;
@@ -440,27 +471,33 @@ function sheetFormula(st,b){
     if(fillR&&!covered()){ /* не ошибка, а подсказка: формулу ещё не протянули до конца */
       haptic("warning"); hint.hidden=false; hint.classList.remove("xl-nudge"); void hint.offsetWidth; hint.classList.add("xl-nudge");
       toast(fillTo?"Протянуто только до строки "+(fillTo.r+1)+", а данные идут до "+(fillR.r2+1):"Сначала протяни формулу за квадратик"); return; }
-    done=true;
-    const r=sheetCheck(st,src);
-    v.draw();
-    resolve(r.ok,st,r.msg||"");
+    done=true; chk.disabled=true; chk.textContent="Проверяю…";
+    setTimeout(()=>{ const r=sheetCheck(st,src); v.draw(); resolve(r.ok,st,r.msg||""); },30); // на большом файле проверка занимает секунду-другую
   }});
   drawEntry(); apply();
 }
+const XL_EXP=new WeakMap();
 /* сравнить формулу ученика с эталоном: на числах урока и на других числах той же формы */
 function sheetCheck(st,src){
   try{ xlParse(src); }catch(e){ return {ok:false,msg:"В формуле ошибка: "+e.message+"."}; }
-  const cellsOf=()=>{ const R=xlRange(st.fill||st.cell), a=[]; for(let r=R.r1;r<=R.r2;r++) for(let c=R.c1;c<=R.c2;c++) a.push([c,r]); return a; };
+  const norm=x=>String(x).replace(/\s+/g,"").toUpperCase().replace(/Ё/g,"Е");
+  if(norm(src)===norm(st.solution)) return {ok:true}; // слово в слово как эталон — не пересчитываем большой файл
+  /* на большом файле сверяем первые 3000 строк и последние 100: формула одна на все строки, этого хватает, а телефон не задумывается */
+  const cellsOf=()=>{ const R=xlRange(st.fill||st.cell), a=[]; for(let r=R.r1;r<=R.r2;r++){ if(r-R.r1>=3000&&R.r2-r>=100) continue; for(let c=R.c1;c<=R.c2;c++) a.push([c,r]); } return a; };
   const run=(data,f)=>{ const sh=xlFromSpec(st,data); sh.set(st.cell,f); if(st.fill) sh.fill(st.cell,st.fill); return sh; };
   const base=xlFromSpec(st).data;
   const sets=[base]; if(!st.gen) sets.push(xlAltData(base,11),xlAltData(base,23));
+  const altFrom=sets.length; (st.alt||[]).forEach(d=>sets.push(d)); // наборы с граничными случаями из урока: ловят > вместо >= и т. п.
+  const cells=cellsOf(); let exp=XL_EXP.get(st); if(!exp){ exp=[]; XL_EXP.set(st,exp); }
   for(let k=0;k<sets.length;k++){
-    const a=run(sets[k].map(r=>r.slice()),src), e=run(sets[k].map(r=>r.slice()),st.solution);
-    for(const [c,r] of cellsOf()){
-      const x=a.get(c,r), y=e.get(c,r);
+    const a=run(sets[k].map(r=>r.slice()),src);
+    if(!exp[k]){ const e=run(sets[k].map(r=>r.slice()),st.solution); exp[k]=cells.map(([c,r])=>e.get(c,r)); } // эталон считаем один раз
+    for(let i=0;i<cells.length;i++){ const [c,r]=cells[i];
+      const x=a.get(c,r), y=exp[k][i];
       const same=(x instanceof XErr||y instanceof XErr)?(x instanceof XErr&&y instanceof XErr&&x.code===y.code):(typeof x==="number"&&typeof y==="number"?Math.abs(x-y)<1e-9:x===y||(x==null&&y==null));
       if(!same){
         if(k===0) return {ok:false,msg:"В ячейке "+xlName(c,r)+" получилось «"+xlShow(x)+"», а здесь нужно другое."};
+        if(k>=altFrom) return {ok:false,msg:"На этих числах формула сработала, но ошибается на пограничном случае, когда числа или суммы равны. Проверь, где нужен знак с «равно», а где без."};
         return {ok:false,msg:"На этих числах формула сработала, но на других она даст не то. Похоже, она подогнана под эту таблицу."};
       }
     }
@@ -468,4 +505,4 @@ function sheetCheck(st,src){
   return {ok:true};
 }
 /* для проверки уроков в Node */
-if(typeof module!=="undefined") module.exports={sheetCheck,xlParse,xlTokens,xlEval,xlSheet,xlFromSpec,xlGen,xlShow,xlShiftText,xlAltData,xlAddr,xlRange,xlColName,xlName,XErr};
+if(typeof module!=="undefined") module.exports={calcBtn,sheetCheck,xlParse,xlTokens,xlEval,xlSheet,xlFromSpec,xlGen,xlShow,xlShiftText,xlAltData,xlAddr,xlRange,xlColName,xlName,XErr};
