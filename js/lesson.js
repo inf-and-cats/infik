@@ -44,13 +44,17 @@ function showStep(){
   b.appendChild(h("h2",{class:"q"},st.title));
   if(st.input&&st.type!=="theory") b.appendChild(inputBlock(st.input));
   if(st.expectOut) b.appendChild(expectBlock(st.expectOut));
-  ({theory,choice,build,bug,indent,parsons,write})[st.type](st,b);
+  ({theory,choice,build,bug,indent,parsons,write,sheet:sheetStep})[st.type](st,b);
 }
 
 /* тело карточки теории: абзацы, код с «Запустить», совет котика. Заголовок рисует тот, кто вызывает */
 function theoryCard(st){
   const f=document.createDocumentFragment();
   (st.text||[]).forEach(t=>f.appendChild(h("p",{class:"txt"},t)));
+  /* карточки определений: [{term, text}] */
+  if(st.defs){ const d=h("div",{class:"defs"}); st.defs.forEach(x=>d.appendChild(h("div",{class:"def"},'<b>'+x.term+'</b><p>'+x.text+'</p>'))); f.appendChild(d); }
+  if(st.sheet) f.appendChild(sheetBlock(st.sheet)); // таблица Calc (js/sheet.js)
+  if(st.key) f.appendChild(h("div",{class:"key"},'<small>Главное</small><p>'+st.key+'</p>'));
   if(st.input) f.appendChild(inputBlock(st.input));
   if(st.code) f.appendChild(ideView(st.code,{run:st.run,input:st.input}));
   if(st.tip) f.appendChild(h("div",{class:"tip"},'<img src="'+CAT+'" alt="ИНФиК"><p>'+st.tip+'</p>'));
@@ -70,6 +74,8 @@ function theory(st,b){
   footer(null,{btn:"Дальше",on:()=>{ LS.xp+=0; nextStep(); }});
 }
 function choice(st,b){
+  if(st.text) [].concat(st.text).forEach(t=>b.appendChild(h("p",{class:"txt"},t)));
+  if(st.sheet) b.appendChild(sheetBlock(st.sheet));
   if(st.code){ const v=ideView(st.code,{input:st.input}); b.appendChild(v); if(st.showRun) v.showRun(); }
   const box=h("div",{class:"opts"}); let sel=null, done=false;
   const order=st.options.map((o,i)=>i);
@@ -154,9 +160,12 @@ function finish(){
   b.appendChild(h("div",{class:"fstats"},'<div><b>+'+LS.xp+'</b><small>XP</small></div><div><b>'+acc+'%</b><small>Точность</small></div><div><b>'+Math.floor(sec/60)+':'+String(sec%60).padStart(2,"0")+'</b><small>Время</small></div>'));
   newB.forEach(x=>b.appendChild(h("div",{class:"unlock"},'<span class="ic">'+I[x.ic]+'</span><div><small>Новая награда</small><b>'+x.title+'</b></div>')));
   if(newB.length) b.appendChild(h("p",{class:"note"},"Все награды — по нажатию на ⭐ XP вверху экрана."));
-  b.appendChild(h("div",{class:"story"},'<div class="s1">я теперь программист</div><div class="s2">Написал первую программу на Python</div><svg class="zz" viewBox="0 0 120 24" fill="none" stroke="#ecf141" stroke-width="5" stroke-linejoin="round" aria-hidden="true"><path d="M2 20 20 4l18 16L56 4l18 16L92 4l18 16"/></svg><div class="s3">ИНФиК · урок 1 из 60</div><img src="'+CAT+'" alt="">'));
-  b.appendChild(h("p",{class:"note"},"Такую карточку ученик сможет выложить в сторис. Каждый пост ведёт новых людей в приложение."));
-  b.appendChild(demoCta("lesson_"+p.id,"Понравилось? Попробуй урок ЕГЭ","Преподаватель разберёт задание №7. Бесплатно, нужна только регистрация."));
+  if(!/^e\d/.test(p.id)){ // карточка сторис про Python — не для уроков ЕГЭ
+    b.appendChild(h("div",{class:"story"},'<div class="s1">я теперь программист</div><div class="s2">Написал первую программу на Python</div><svg class="zz" viewBox="0 0 120 24" fill="none" stroke="#ecf141" stroke-width="5" stroke-linejoin="round" aria-hidden="true"><path d="M2 20 20 4l18 16L56 4l18 16L92 4l18 16"/></svg><div class="s3">ИНФиК · урок 1 из 60</div><img src="'+CAT+'" alt="">'));
+    b.appendChild(h("p",{class:"note"},"Такую карточку ученик сможет выложить в сторис. Каждый пост ведёт новых людей в приложение."));
+  }
+  if(p.offer&&typeof egeOffer==="function") b.appendChild(egeOffer("boss_"+p.id)); // после босса задания ЕГЭ: курс или демо
+  else b.appendChild(demoCta("lesson_"+p.id,"Понравилось? Попробуй урок ЕГЭ","Преподаватель разберёт задание №7. Бесплатно, нужна только регистрация."));
   b.classList.remove("shake");
   footer(null,{btn:"На карту",on:()=>{ b.classList.remove("finish"); closeLesson(); }});
 }

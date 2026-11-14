@@ -427,3 +427,17 @@ html,textarea,input,button{font-variant-ligatures:none}
 .cht-list li small{color:var(--ink-soft);font-size:13px}
 .cht .note{text-align:center}
 html{-webkit-text-size-adjust:100%;text-size-adjust:100%} /* Android не должен увеличивать шрифт подсветки отдельно от textarea */
+
+/* акценты в теории: карточки определений и «Главное» */
+.txt b,.def p b,.key p b{font-weight:700;background:var(--surface-2);border-radius:6px;padding:1px 5px;color:inherit;-webkit-box-decoration-break:clone;box-decoration-break:clone} /* выделение как у <code> */
+.key p b{background:rgba(38,43,105,.12)}
+.defs{display:flex;flex-direction:column;gap:8px}
+.def{background:var(--surface);border:2px solid var(--line);border-left:6px solid var(--purple);border-radius:12px;padding:10px 12px}
+.def>b{display:block;font-family:"Press Start 2P","Courier New",monospace;font-size:12px;line-height:1.6;font-weight:400;text-transform:uppercase;color:var(--purple-ink);margin-bottom:6px;letter-spacing:.02em}
+.def p{margin:0;font-size:15px;line-height:1.4}
+.def code,.key code{font-family:var(--f-code);font-size:.9em;background:var(--surface-2);border-radius:6px;padding:1px 5px}
+.key{background:var(--lime);color:#262b69;border-radius:14px;padding:12px 14px;box-shadow:0 4px 0 #9aa01c}
+.key small{display:block;font-family:"Press Start 2P","Courier New",monospace;font-size:9px;font-weight:400;letter-spacing:.04em;margin-bottom:6px;text-transform:uppercase;opacity:.75;margin-bottom:2px}
+.key p{margin:0;font-weight:700;font-size:16px;line-height:1.35}
+.key code{background:rgba(38,43,105,.12);color:#262b69}
+

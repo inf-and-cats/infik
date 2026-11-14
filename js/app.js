@@ -44,7 +44,7 @@ function renderPath(app){
   const sec=SECS.find(x=>x.id===S.sec)||SECS[0];
   const bar=h("div",{class:"secs",role:"tablist","aria-label":"Разделы курса"});
   SECS.forEach((x,i)=>{
-    const tag=x.free&&!isStudent()?'<span class="free">Бесплатно</span>':!hasLessons(x)?'<span class="lk">'+I.lock+'</span>':"";
+    const tag=x.free&&!isStudent()?'<span class="free">Бесплатно</span>':x.tag&&!isStudent()?'<span class="free">'+esc(x.tag)+'</span>':!hasLessons(x)?'<span class="lk">'+I.lock+'</span>':"";
     const b=h("button",{class:"sec",role:"tab","aria-selected":String(x===sec),type:"button"},'<small>Раздел '+(i+1)+tag+'</small><b>'+esc(x.title)+'</b>');
     b.onclick=()=>{ S.sec=x.id; save(); render(); }; bar.appendChild(b);
   });
@@ -52,11 +52,14 @@ function renderPath(app){
   if(!hasLessons(sec)) app.appendChild(h("section",{class:"sec-soon"},'<span class="ic">'+I.lock+'</span><div><b>'+esc(sec.title)+'</b><p>'+esc(sec.about)+'. Раздел скоро откроется.</p></div>'));
   /* модули сворачиваются: по умолчанию открыт только текущий, выбор ученика запоминаем в S.fold */
   const fold=S.fold||(S.fold={}), curM=sec.modules.find(m=>m.lessons&&m.lessons.some(p=>!S.done[p.id]));
+  /* раздел ЕГЭ: закрытые задания — сеткой плиток после открытых модулей; платный модуль для не-ученика тоже закрыт */
+  const egeLocked=sec.ege?sec.modules.filter(M=>!M.lessons||(M.paid&&!isStudent())):[];
   sec.modules.forEach((M,mi)=>{
+    if(egeLocked.includes(M)) return;
     if(!M.lessons){ app.appendChild(h("div",{class:"locked-mod"},I.lock.replace("<svg",'<svg width="26" height="26"')+'<div><small>Модуль '+(mi+1)+'</small><b>'+esc(M.title)+'</b></div>'+(M.ege?'<span class="ege">'+esc(M.ege)+'</span>':""))); return; }
     const PATH=M.lessons, doneN=PATH.filter(p=>S.done[p.id]).length;
     const shut=M.id in fold?fold[M.id]:M!==curM;
-    const mod=h("section",{class:"module"+(shut?" shut":"")},'<button class="fold" type="button" aria-expanded="'+!shut+'" aria-label="'+(shut?"Развернуть":"Свернуть")+' модуль"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button><div class="eyebrow">Модуль '+(mi+1)+' · '+doneN+' из '+PATH.length+'</div><h2>'+esc(M.title)+'</h2><p>'+esc(M.about||"")+'</p><div class="bar"><i style="width:'+(doneN/PATH.length*100)+'%"></i></div>'+moduleArt(M));
+    const mod=h("section",{class:"module"+(shut?" shut":"")},'<button class="fold" type="button" aria-expanded="'+!shut+'" aria-label="'+(shut?"Развернуть":"Свернуть")+' модуль"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button><div class="eyebrow">'+(sec.ege&&M.task?"Задание "+M.task:"Модуль "+(mi+1))+' · '+doneN+' из '+PATH.length+'</div><h2>'+esc(M.title)+'</h2><p>'+esc(M.about||"")+'</p><div class="bar"><i style="width:'+(doneN/PATH.length*100)+'%"></i></div>'+moduleArt(M));
     mod.onclick=e=>{ if(e.target.closest(".mod-tools")) return; fold[M.id]=!shut; try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e){} render(); }; // без save(): сворачивание не прогресс, метку синхронизации не сдвигаем
     const cheat=PATH.filter(p=>S.done[p.id]&&p.file);
     const tools=h("div",{class:"mod-tools"});
@@ -74,9 +77,39 @@ function renderPath(app){
       path.appendChild(n);
     });
     if(!shut) app.appendChild(path);
-    if(mi===0) app.appendChild(demoCta("path_"+sec.id,"Python — это половина ЕГЭ","Вторую половину разбираем с преподавателем. Первый урок бесплатно: задание №7 ЕГЭ."));
+    if(mi===0&&!sec.ege) app.appendChild(demoCta("path_"+sec.id,"Python — это половина ЕГЭ","Вторую половину разбираем с преподавателем. Первый урок бесплатно: задание №7 ЕГЭ."));
   });
+  if(egeLocked.length) egeGrid(app,egeLocked);
   if(!hasLessons(sec)) app.appendChild(courseCta("path_"+sec.id,"Не жди — начни сейчас","На годовом курсе всё это уже есть: разберём все 27 заданий ЕГЭ с преподавателем."));
+}
+/* ---------- раздел ЕГЭ: закрытые задания ---------- */
+function egeGrid(app,list){
+  app.appendChild(h("div",{class:"ege-head"},'<b>Остальные задания</b><small>'+(isStudent()?"скоро":"для учеников курса")+'</small>'));
+  const g=h("div",{class:"ege-grid"});
+  list.forEach(M=>{ const t=h("button",{class:"ege-tile",type:"button","aria-label":"Задание "+M.task+": "+M.title},I.lock+'<b>'+esc(String(M.task))+'</b><span>'+esc(M.title)+'</span>');
+    t.onclick=()=>openEgeLock(M); g.appendChild(t); });
+  app.appendChild(g);
+}
+/* экран замка: главная кнопка — купить курс, вторая — демо с честной подписью, что задания откроет только покупка */
+function egeLockBody(from,lead){
+  const box=h("div",{class:"ege-lock"});
+  box.appendChild(h("p",{class:"txt"},lead));
+  if(COURSE_URL){ const b=h("button",{class:"main",type:"button"},"Открыть все задания — купить курс"); b.onclick=()=>{ haptic("success"); openCourse(from); }; box.appendChild(b); }
+  if(typeof demoOn==="function"&&demoOn()){ const d=h("button",{class:"demo-alt",type:"button"},"Сначала попробовать курс бесплатно"); d.onclick=()=>openDemo(from); box.appendChild(d);
+    box.appendChild(h("small",null,"Демо — это пробный доступ к занятиям курса с преподавателем. Задания ЕГЭ в приложении открываются после покупки курса.")); }
+  return box;
+}
+function openEgeLock(M){
+  if(isStudent()){ toast("Задание "+M.task+" скоро появится"); return; }
+  haptic("warning");
+  openSheet("Задание "+M.task+" — для учеников курса",egeLockBody("lock_ege"+M.task,"«"+M.title+"» и остальные задания ЕГЭ разбираем так же подробно, как задание 9. Они открыты ученикам годового курса."));
+}
+/* в конце босса задания ЕГЭ */
+function egeOffer(from){
+  if(isStudent()) return document.createDocumentFragment();
+  const c=h("section",{class:"course-cta"},'<small>'+esc(COURSE_NAME)+'</small><b>Одно задание ЕГЭ ты уже умеешь</b>');
+  c.appendChild(egeLockBody(from,"Осталось ещё 26. На курсе разбираем их все с преподавателем."));
+  return c;
 }
 /* ---------- шпаргалка модуля: теория всех пройденных уроков ---------- */
 const LESSON_JSON={}; // файлы уроков в памяти, чтобы не качать повторно
