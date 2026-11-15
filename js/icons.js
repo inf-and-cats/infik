@@ -18,6 +18,15 @@ const LESSON_SPR = {
  even:["..........",".LL....LL.",".LL....LL.","..........",".LL....LL.",".LL....LL.","..........",".KK.......",".KK.......",".........."],
  tools:["..........","W........W","W........W","W..L..L..W","W...LL...W","W...LL...W","W..L..L..W","W........W","W........W",".........."],
  compare:["..........","....LL....","...LL.....","..LL..WWWW",".LL.......","..LL..WWWW","...LL.....","....LL....","..........",".........."],
+ /* задание 18 (Робот в таблице) */
+ rcat:["..........",".P......P.",".PP....PP.",".PPPPPPPP.",".PWNPPWNP.",".PPPPPPPP.",".PPPKKPPP.","..PPPPPP..","....LL....","...LLLL..."],
+ rmap:["NNNNNNNNNN","NLLNWWNWWN","NLLNWWNWWN","NNNNNNNNNN","NWWNLLNWWN","NWWNLLNWWN","NNNNNNNNNN","NWWNWWNLLN","NWWNWWNLLN","NNNNNNNNNN"],
+ rmax:["....L.....","...LLL....","..L.L.L...","....L.....","....L.....","..........","WW.WWWW.KK","WW.WWWW.KK","WW.WWWW.KK",".........."],
+ rcopy:["NNNNNN....","NWWNWN....","NNNNNN....","NWWNWN....","NNNNNN....","....LLLLLL","....LWWLWL","....LLLLLL","....LWWLWL","....LLLLLL"],
+ rwall:["......NN..","......NN..","..L...NN..","..LL..NNK.","LLLLL.NNKK","..LL..NNK.","..L...NN..","......NN..","......NN..",".........."],
+ rends:["KK.KK.....","K...K.....","..........","K...K.....","KK.KK.....",".....KK.KK",".....K...K","..........",".....K...K",".....KK.KK"],
+ rturn:["...L......","..LLL.....",".L.L.L....","...L......","...L...W..","...L...WW.","...LWWWWWW","...L...WW.","...L...W..",".........."],
+ rcoin:["...LLLL...","..LLLLLL..",".LLNNNNLL.",".LLNLLLLL.",".LLNNNLLL.",".LLLLLNLL.",".LLNNNNLL.","..LLLLLL..","...LLLL...",".........."],
  /* задание 9 (раздел «Задания ЕГЭ») */
  cells:["NNNNNNNNNN","NWWNWWNWWN","NWWNWWNWWN","NNNNNNNNNN","NWWNLLNWWN","NWWNLLNWWN","NNNNNNNNNN","NWWNWWNWWN","NWWNWWNWWN","NNNNNNNNNN"],
  iflag:["..........","..L...WWW.",".LL..W...W","..L..W...W","..L..W...W","..L..W...W","..L..W...W",".LLL..WWW.","..........",".........."],
@@ -88,6 +97,7 @@ const MOD_ART = {
  m6:["..NNNNNNNNNNNN..","..NDDDDDDDDDDN..","...NWWWWWWWWN...","...NWOOOOOOWN...","....NWOOOOWN....",".....NWOOWN.....","......NWWN......","......NOWN......",".....NWOOWN.....","....NWWOOWWN....","...NWWOOOOWWN...","...NWOOOOOOWN...","...NWOOOOOOWN...","..NDDDDDDDDDDN..","..NNNNNNNNNNNN..","................"],
  m7:["................","................",".NNNNNNNNNNNNNN.","NWWWWWWWWWWWWWWN","NWWDWWDDWWWDDWWN","NWDWDWDWDWDWWWWN","NWDDDWDDWWDWWWWN","NWDWDWDWDWDWWWWN","NWDWDWDDWWWDDWWN","NWWWWWWWWWWWWWWN","NWWWWWWWWWWWWWWN",".NNNNNNNNNNNNNN.","...NNN..........","...N............","................","................"],
  m8:["....NNNNNN......","..NNNWWWWNNN....","..NDNNNNNNDN....","..NDWWWWWWDN....","..NDKKWNNNDN....","..NDKKWWWWDN....","..NDWWWWWWDN....","..NDLLWNNNDN....","..NDLLWWWWDN....","..NDWWWWWWDN....","..NDKKWNNNDN....","..NDKKWWWWDN....","..NDWWWWWWDN....","..NDDDDDDDDN....","..NNNNNNNNNN....","................"],
+ e18:["NNNNNNNNNNNNNNNN", "NPPPPNPPPPNWWWWN", "NPPPPNPPPPNWLLWN", "NPPPPNPPPPNWLLWN", "NPPPPNPPPPNWWWWN", "NNNNNKNNNNKKKKKK", "NWWWWKPPPPNWWWWN", "NWLLWKPPPPNWLLWN", "NWLLWKPPPPNWLLWN", "NWWWWKPPPPNWWWWN", "NNNNNKNNNNNNNNNN", "NWWWWNPPPPNPPPPN", "NWLLWNPPPPNPPPPN", "NWLLWNPPPPNPPPPN", "NWWWWNPPPPNPPPPN", "NNNNNNNNNNNNNNNN"],
  e9:["NNNNNNNNNNNNNNNN","NDDDDDDDDDDDDDDN","NDLLDWWWWWWWWWDN","NDDDDDDDDDDDDDDN","NNNNNNNNNNNNNNNN","NPPNPPPNPPPNPPPN","NPPNWWWNWWWNWWWN","NPPNWWWNWWWNWWWN","NNNNNNNNNNNNNNNN","NPPNWWWNLLLNWWWN","NPPNWWWNLLLKWWWN","NNNNNNNNNNKKNNNN","NPPNWWWNCCCNWWWN","NPPNWWWNCCCNWWWN","NPPNWWWNWWWNWWWN","NNNNNNNNNNNNNNNN"],
  m9:["......NNNN......","......NDDN......","..NN.NDDDDN.NN..","..NDNDDDDDDNDN..","...NDDDDDDDDN...","..NDDDNNNNDDDN..","NNDDDNPPPPNDDDNN","NDDDNPPLLPPNDDDN","NDDDNPPLLPPNDDDN","NNDDDNPPPPNDDDNN","..NDDDNNNNDDDN..","...NDDDDDDDDN...","..NDNDDDDDDNDN..","..NN.NDDDDN.NN..","......NDDN......","......NNNN......"]
 };

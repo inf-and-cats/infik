@@ -146,6 +146,7 @@ function xlNums(args,ctx,dc,dr){
   const out=[];
   args.forEach(a=>{ const x=xlArg(a,ctx,dc,dr);
     if(x.range) x.cells.forEach(v=>{ if(v instanceof XErr) throw v; if(typeof v==="number") out.push(v); else if(typeof v==="boolean") out.push(v?1:0); });
+    else if(a.k==="ref"&&(x.v==null||typeof x.v==="string")){ /* пустая ячейка или текст по ссылке — пропускаем, как Calc: =МИН(A1;B1) при пустой B1 вернёт A1 */ }
     else out.push(xlNum(x.v)); });
   return out;
 }
@@ -230,6 +231,10 @@ function xlFromSpec(sp,dataOverride){
   const data=dataOverride||(sp.gen?xlGen(sp.gen):sp.data.map(r=>r.slice()));
   const sh=xlSheet(data);
   (sp.pre||[]).forEach(p=>{ sh.set(p.cell,p.f); if(p.fill) sh.fill(p.cell,p.fill); });
+  /* оформление для задания 18: стены — толстые рамки справа (R) и снизу (D) от ячеек, заливка paint {g,r,y,x: [диапазоны]}, full — показывать все строки */
+  const set=a=>{ const o=new Set(); (a||[]).forEach(x=>{ const R=xlRange(x); for(let r=R.r1;r<=R.r2;r++) for(let c=R.c1;c<=R.c2;c++) o.add(c+","+r); }); return o; };
+  if(sp.walls||sp.paint||sp.full){ const paint=new Map(); Object.entries(sp.paint||{}).forEach(([k,v])=>set(v).forEach(x=>paint.set(x,k)));
+    sh.deco={R:set(sp.walls&&sp.walls.R),D:set(sp.walls&&sp.walls.D),paint,full:!!sp.full}; }
   return sh;
 }
 /* «другие числа» той же формы: ловим формулы, подогнанные под ответ */
@@ -254,7 +259,7 @@ function xlView(sh,opts){
   w.sheet=sh;
   function cols(){ const R=opts.show?xlRange(opts.show):null; const c2=R?R.c2:Math.max(sh.maxCol(),4); const c1=R?R.c1:0; const a=[]; for(let c=c1;c<=c2;c++) a.push(c); return a; }
   function rows(){ const R=opts.show?xlRange(opts.show):null; const n=sh.rows; const r1=R?R.r1:0, r2=R?Math.min(R.r2,n-1):n-1;
-    const a=[]; if(r2-r1+1<=10){ for(let r=r1;r<=r2;r++) a.push(r); return a; }
+    const a=[]; if(r2-r1+1<=10||(sh.deco&&sh.deco.full)){ for(let r=r1;r<=r2;r++) a.push(r); return a; }
     for(let r=r1;r<r1+6;r++) a.push(r); a.push(-1); a.push(r2); return a; } // большой файл: начало, «⋮» и последняя строка
   function showBar(){
     const ad=bar.querySelector(".xl-addr"), sc=bar.querySelector(".xl-src");
@@ -282,6 +287,7 @@ function xlView(sh,opts){
         if(isSel) cls.push("xl-sel");
         if(goal&&goal.c===c&&goal.r===r) cls.push("xl-goal");
         if(opts.picks&&opts.picks.has(c+","+r)) cls.push("xl-pick");
+        if(sh.deco){ const k=c+","+r, D=sh.deco; if(D.R.has(k)) cls.push("xl-wr"); if(D.D.has(k)) cls.push("xl-wd"); if(D.R.has((c-1)+","+r)) cls.push("xl-wl"); if(D.D.has(c+","+(r-1))) cls.push("xl-wu"); if(D.paint.has(k)) cls.push("xl-c"+D.paint.get(k)); }
         if(anim&&f&&anim.has(c+","+r)) cls.push("xl-pop");
         html+='<td data-c="'+c+'" class="'+cls.join(" ")+'"'+(anim&&anim.has(c+","+r)?' style="animation-delay:'+(Math.min(ri,9)*45)+'ms"':'')+'>'+esc(xlShow(v))+(isSel&&hOn?'<span class="xl-handle" role="button" aria-label="Маркер заполнения: потяни, чтобы протянуть формулу"></span>':'')+'</td>';
       });
@@ -292,7 +298,7 @@ function xlView(sh,opts){
     /* выбранная ячейка должна быть видна: на узком экране таблица прокручивается вбок */
     const toSel=()=>{ const sc=scroll.querySelector('.xl-sel'); if(sc){ const l=sc.getBoundingClientRect().left-scroll.getBoundingClientRect().left+scroll.scrollLeft, r=l+sc.offsetWidth; if(r>scroll.scrollLeft+scroll.clientWidth||l<scroll.scrollLeft) scroll.scrollLeft=Math.max(0,r-scroll.clientWidth+4); } };
     if(w.isConnected) toSel(); else requestAnimationFrame(toSel); // таблицу ещё не вставили на страницу — прокрутим, когда появится
-    if(sh.rows>10){ foot.hidden=false; foot.textContent="В файле "+sh.rows+" "+plural(sh.rows,"строка","строки","строк")+". Показаны начало и конец"; }
+    if(sh.rows>10&&!(sh.deco&&sh.deco.full)){ foot.hidden=false; foot.textContent="В файле "+sh.rows+" "+plural(sh.rows,"строка","строки","строк")+". Показаны начало и конец"; }
   };
   scroll.addEventListener("click",e=>{
     if(e.target.closest(".xl-handle")) return;

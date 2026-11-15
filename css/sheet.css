@@ -94,3 +94,13 @@
 .xl-zoom{overflow-x:auto;-webkit-overflow-scrolling:touch}
 .xl-shot img{cursor:zoom-in}
 .xl-shot.big img{width:220%;max-width:none;cursor:zoom-out}
+
+/* задание 18: стены (толстые рамки) и заливка клеток */
+.xl-t td.xl-wr{border-right:3px solid var(--ink)}
+.xl-t td.xl-wl{border-left:3px solid var(--ink)}
+.xl-t td.xl-wd{border-bottom:3px solid var(--ink)}
+.xl-t td.xl-wu{border-top:3px solid var(--ink)}
+.xl-t td.xl-cg{background:#cdeccf;color:#262b69}
+.xl-t td.xl-cr{background:#f9c9d6;color:#262b69}
+.xl-t td.xl-cy{background:#fff1a8;color:#262b69}
+.xl-t td.xl-cx{background:#c9cad6;color:#262b69}

@@ -603,7 +603,65 @@
      "id": "e18",
      "task": 18,
      "title": "Робот в таблице",
-     "paid": true
+     "paid": true,
+     "about": "Кот собирает монеты: карта лучших сумм, МАКС и МИН в Calc, стены, несколько финишей и закутки.",
+     "lessons": [
+      {
+       "id": "e18l1",
+       "icon": "rcat",
+       "title": "Кот-сборщик",
+       "file": "content/e18/l1.json"
+      },
+      {
+       "id": "e18l2",
+       "icon": "rmap",
+       "title": "Лучшая сумма в клетке",
+       "file": "content/e18/l2.json"
+      },
+      {
+       "id": "e18l3",
+       "icon": "rmax",
+       "title": "МАКС и МИН",
+       "file": "content/e18/l3.json"
+      },
+      {
+       "id": "e18l4",
+       "icon": "rcopy",
+       "title": "Решаем в таблице",
+       "file": "content/e18/l4.json"
+      },
+      {
+       "id": "e18l5",
+       "icon": "rwall",
+       "title": "Стены",
+       "file": "content/e18/l5.json"
+      },
+      {
+       "id": "e18l6",
+       "icon": "rends",
+       "title": "Финиши и закутки",
+       "file": "content/e18/l6.json"
+      },
+      {
+       "id": "e18l7",
+       "icon": "rturn",
+       "title": "Другой робот",
+       "file": "content/e18/l7.json"
+      },
+      {
+       "id": "e18l8",
+       "icon": "trap",
+       "title": "Ловушки задания 18",
+       "file": "content/e18/l8.json"
+      },
+      {
+       "id": "e18boss",
+       "icon": "rcoin",
+       "title": "Задача-босс",
+       "file": "content/e18/boss.json",
+       "boss": true
+      }
+     ]
     },
     {
      "id": "e19",

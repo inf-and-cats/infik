@@ -45,7 +45,7 @@ function showStep(){
   if(st.calc) b.appendChild(calcBtn(st.calc)); // скриншот настоящего Calc по кнопке (js/sheet.js)
   if(st.input&&st.type!=="theory") b.appendChild(inputBlock(st.input));
   if(st.expectOut) b.appendChild(expectBlock(st.expectOut));
-  ({theory,choice,build,bug,indent,parsons,write,sheet:sheetStep})[st.type](st,b);
+  ({theory,choice,build,bug,indent,parsons,write,sheet:sheetStep,robot:robotStep})[st.type](st,b);
 }
 
 /* тело карточки теории: абзацы, код с «Запустить», совет котика. Заголовок рисует тот, кто вызывает */
