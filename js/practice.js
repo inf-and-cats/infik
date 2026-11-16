@@ -77,7 +77,8 @@ async function renderPractice(app){
 /* ---------- экран задачи (поверх приложения, как урок) ---------- */
 const PR_KEYS=[["⇥ Tab","    "],["input()","input()"],["int(","int("],["print(","print("],["(","("],[")",")"],['"','"'],[":",":"],[",",","],["=","="],["==","=="],["%","%"],["//","//"],["if ","if "],["elif ","elif "],["else:","else:"],["and","and"],["or","or"]];
 function openTask(t,o){
-  PR={t,o};
+  PR={t,o,tries:0,t0:Date.now()};
+  track("task_start","pr_"+t.id);
   const el=$("#lesson"); el.hidden=false; document.body.style.overflow="hidden";
   el.innerHTML='<div class="lesson-in"><div class="lhead"><button class="x" type="button" aria-label="Закрыть задачу">'+I.close+'</button><div class="pr-top">'+(o.daily!=null?"Задача дня":esc(modTitle(t.need)))+'</div></div><div class="lbody" id="lbody"></div></div><div class="lfoot" id="lfoot"><div class="lfoot-in" id="lfoot-in"></div></div>';
   el.querySelector(".x").onclick=closeTask;
@@ -96,6 +97,7 @@ function openTask(t,o){
   function check(){
     const r=prCheck(t,ed.code);
     if(r.ok) return prSolved(t,o);
+    PR.tries++;
     haptic("error"); const lb=$("#lbody"); lb.classList.remove("shake"); void lb.offsetWidth; lb.classList.add("shake");
     prFoot("bad",{head:r.head,body:r.body,btn:"Исправить",on:()=>{ idle(); ed.focus(); }});
   }
@@ -130,6 +132,7 @@ function prSolved(t,o){
   const xp=first?(o.daily!=null?PR_DAILY_XP[o.daily]:PR_XP[t.lvl]):0;
   S.pr[key]=1; if(o.daily!=null) S.pr[t.id]=1;
   S.xp+=xp; if(xp) leagueXp(xp,"pr_"+t.id);
+  if(PR) track("task_done","pr_"+t.id,{xp,m:PR.tries,s:Math.round((Date.now()-PR.t0)/1000)});
   const lit=bumpStreak();
   const newB=[]; const give=id=>{ if(!S.badges[id]){ S.badges[id]=true; newB.push(BADGES.find(b=>b.id===id)); } };
   give("task1"); if(o.daily!=null) give("daily"); streakGive(give);

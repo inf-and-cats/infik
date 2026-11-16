@@ -12,6 +12,7 @@ async function startLesson(p){
   el.querySelector(".x").onclick=closeLesson;
   el.querySelector(".book").onclick=openLessonTheory;
   sndBtn(el.querySelector(".snd"));
+  track("lesson_start",p.id); // статистика: js/stats.js
   showStep();
 }
 /* кнопка звука в шапке урока: пиксельный динамик, перечёркнут — звук выключен */
@@ -21,7 +22,7 @@ function sndBtn(b){
   const draw=()=>{ const on=S.sound!==false; b.innerHTML=on?SND_ON:SND_OFF; b.setAttribute("aria-label",on?"Выключить звук":"Включить звук"); b.classList.toggle("off",!on); };
   draw(); b.onclick=()=>{ S.sound=S.sound===false; save(); draw(); if(S.sound) sfx("ok"); toast(S.sound?"Звук включён":"Звук выключен"); };
 }
-function closeLesson(){ $("#lesson").hidden=true; document.body.style.overflow=""; LS=null; render(); }
+function closeLesson(){ if(LS&&!LS.fin) track("lesson_quit",LS.p.id,{s:Math.round((Date.now()-LS.t0)/1000)}); $("#lesson").hidden=true; document.body.style.overflow=""; LS=null; render(); }
 function setProg(){ $("#lesson .prog i").style.width=(LS.pos/LS.queue.length*100)+"%"; }
 
 function footer(state,opts){
@@ -157,6 +158,7 @@ function finish(){
   if(clean) LS.xp+=20;
   S.xp+=LS.xp; S.done[p.id]=true;
   leagueXp(LS.xp,p.id);
+  LS.fin=true; track("lesson_done",p.id,{xp:LS.xp,m:LS.mistakes,s:Math.round((Date.now()-LS.t0)/1000),e:[...LS.redo].join(",")});
   bumpStreak(); // огонёк: js/streak.js
   const newB=[]; function give(id){ if(!S.badges[id]){ S.badges[id]=true; newB.push(BADGES.find(b=>b.id===id)); } }
   give("first"); if(LS.bugFound) give("bug"); if(clean) give("clean"); streakGive(give);
