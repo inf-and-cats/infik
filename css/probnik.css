@@ -1,0 +1,93 @@
+/* «Пробник лайт»: карточка в разделе «Задания ЕГЭ», вход, шапка задачи, итог, «Мой пробник» (js/probnik.js) */
+.pb-ic{width:16px;height:16px;flex:none;vertical-align:-3px}
+.pb-ic .o{fill:var(--lime)}
+.pb-card{position:relative;background:#262b69;color:#f3f2ff;margin:6px 4px 14px;padding:16px;box-shadow:0 -4px 0 #3b3f8f,0 4px 0 #3b3f8f,-4px 0 0 #3b3f8f,4px 0 0 #3b3f8f,0 8px 0 #12143f}
+.pb-card .pb-t{font-family:var(--px-font);font-size:14px;color:var(--lime);text-shadow:2px 2px 0 #512da8;line-height:1.5}
+.pb-card .pb-sub{font-size:14px;line-height:1.35;color:#d9d6f3;margin:6px 0 12px}
+.pb-strip{display:grid;grid-template-columns:repeat(9,1fr);gap:4px;margin-bottom:12px}
+.pb-strip i{font-style:normal;font-family:var(--px-font);font-size:8px;aspect-ratio:1;display:grid;place-items:center;background:#33387a;color:#6d72b3}
+.pb-strip i.on{background:var(--lime);color:#262b69;box-shadow:inset 0 -3px 0 #9aa01c}
+.pb-meta{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:13px;color:#cfd0f5;margin-bottom:12px}
+.pb-meta b{color:var(--lime);font-weight:800}
+.pb-note{font-size:12px;color:#a5a9e3;margin:-4px 0 12px}
+.pb-card .main{background:var(--lime);color:#262b69;box-shadow:0 5px 0 #9aa01c}
+.pb-card .main:active{box-shadow:0 2px 0 #9aa01c}
+.pb-links{display:flex;justify-content:center;gap:16px;flex-wrap:wrap;margin-top:12px}
+.pb-links button{display:flex;align-items:center;gap:6px;background:none;border:0;color:#cfd0f5;font-weight:700;font-size:14px;padding:4px 0}
+.pb-badge{position:absolute;top:14px;right:14px;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;background:#512da8;color:#fff;border-radius:6px;padding:3px 7px}
+/* шапка */
+.pb-hpill{flex:1;min-width:0;display:flex;align-items:center;justify-content:space-between;gap:8px;white-space:nowrap;background:var(--surface-2);border-radius:12px;padding:8px 12px;font-weight:800;font-size:14px}
+.pb-hpill .tm{font-family:var(--px-font);font-size:9px;color:var(--purple-ink);font-weight:400}
+.pb-hpill .tm.over{color:var(--bad)}
+.pb-theory{flex:none;display:flex;align-items:center;gap:6px;border:0;border-radius:12px;padding:9px 11px;background:var(--purple);color:#fff;font-weight:800;font-size:14px}
+.pb-prog{display:none} /* полоска урока не нужна: шаги видны точками под заголовком */
+.pb-cond{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:10px 12px;margin:2px 0 12px;font-size:13.5px;line-height:1.45}
+.pb-cond p{margin:0}
+.pb-cond .tag{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;background:var(--good-bg);color:var(--good);border-radius:6px;padding:2px 7px;margin-bottom:6px}
+.pb-cond .more{display:block;margin-top:4px;padding:2px 0;border:0;background:none;color:var(--purple-ink);font-weight:800;font-size:13.5px}
+.pb-full{margin-top:6px;padding-top:8px;border-top:1px dashed var(--line);color:var(--ink-soft)}
+.pb-full p{margin:0 0 6px}
+.pb-steps{display:flex;gap:4px;margin:6px 0 4px}
+.pb-steps i{flex:1;height:6px;border-radius:3px;background:var(--surface-2)}
+.pb-steps i.d{background:var(--purple)}
+.pb-steps i.c{background:var(--lime);box-shadow:0 0 0 1px #9aa01c}
+.pb-hint{margin:6px 0 0}
+/* вход */
+.pb-h1{font-family:var(--px-font);font-size:16px;line-height:1.5;color:var(--purple-ink);margin:4px 0 10px}
+.pb-box{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px 16px;margin-bottom:12px}
+.pb-box p{margin:0 0 8px;font-size:15px;line-height:1.45}
+.pb-box p:last-child{margin:0}
+.pb-key{background:var(--lime);color:#262b69;border-radius:16px;padding:14px 16px;margin-bottom:12px;font-size:15px;line-height:1.45}
+.pb-key b.k{display:block;font-family:var(--px-font);font-weight:400;font-size:10px;margin-bottom:8px}
+.pb-sec{font-weight:800;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);margin:16px 2px 8px}
+.pb-modes{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.pb-mode{background:var(--surface);color:var(--ink);border:2px solid var(--line);border-radius:16px;padding:12px;text-align:left}
+.pb-mode.sel{border-color:var(--purple);box-shadow:0 4px 0 var(--purple)}
+.pb-mode b{display:flex;align-items:center;gap:8px;font-size:16px;margin-bottom:6px}
+.pb-mode .pb-ic{width:20px;height:20px;color:var(--ink)}
+.pb-mode small{display:block;font-size:13px;line-height:1.35;color:var(--ink-soft)}
+.pb-list{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
+.pb-row{display:flex;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:10px 12px}
+.pb-row.off{opacity:.7}
+.pb-row .n{flex:none;width:38px;height:38px;display:grid;place-items:center;font-family:var(--px-font);font-size:12px;background:var(--lime);color:#262b69}
+.pb-row .n.off{background:var(--surface-2);color:var(--ink-soft)}
+.pb-row>div{flex:1;min-width:0}
+.pb-row b{display:block;font-size:15px}
+.pb-row small{display:block;font-size:13px;color:var(--ink-soft)}
+.pb-row .ok{font-weight:800;color:var(--good);font-size:14px}
+.pb-row .bad{font-weight:800;color:var(--bad);font-size:14px}
+.pb-row>.pb-ic{color:var(--ink-soft)}
+.pb-second{width:100%;margin-bottom:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:14px;padding:11px;font-weight:800;font-size:15px}
+/* итог */
+.pb-score{text-align:center;background:#262b69;color:#f3f2ff;padding:18px;margin:4px 4px 16px;box-shadow:0 -4px 0 #3b3f8f,0 4px 0 #3b3f8f,-4px 0 0 #3b3f8f,4px 0 0 #3b3f8f,0 8px 0 #12143f}
+.pb-score b{display:block;font-family:var(--px-font);font-weight:400;font-size:30px;color:var(--lime);text-shadow:3px 3px 0 #512da8;margin:8px 0 10px}
+.pb-score span{font-size:14px;color:#cfd0f5}
+.pb-score .chips{display:flex;justify-content:center;gap:8px;margin-top:12px;flex-wrap:wrap}
+.pb-score .chips em{font-style:normal;font-size:13px;font-weight:800;background:#33387a;border-radius:8px;padding:4px 9px}
+.pb-stepmarks{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.pb-stepmarks em{font-style:normal;font-size:12px;font-weight:800;border-radius:6px;padding:2px 7px;background:var(--good-bg);color:var(--good)}
+.pb-stepmarks em.x{background:var(--bad-bg);color:var(--bad)}
+.pb-trip{background:var(--bad-bg);border-radius:16px;padding:12px 14px;margin-bottom:12px}
+.pb-trip b{display:block;color:var(--bad);font-size:15px;margin-bottom:4px}
+.pb-trip p{margin:0 0 10px;font-size:14px;line-height:1.4}
+.pb-trip button{border:0;border-radius:10px;padding:8px 12px;font-weight:800;font-size:14px;background:var(--purple);color:#fff}
+/* теория */
+.pb-th h3{font-size:16px;margin:12px 0 6px}
+.pb-th p{font-size:14.5px;line-height:1.45;margin:0 0 8px}
+/* лидеры и история */
+.pb-top{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.pb-top li{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:8px 12px;font-size:14px}
+.pb-top li.me{border-color:var(--purple);box-shadow:0 3px 0 var(--purple)}
+.pb-top .pl{font-family:var(--px-font);font-size:10px;width:22px;color:var(--purple-ink)}
+.pb-top b{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pb-bars{display:flex;flex-direction:column;gap:8px;margin:6px 0 10px}
+.pb-bar{display:grid;grid-template-columns:34px 1fr 44px;align-items:center;gap:8px}
+.pb-bar .n{font-family:var(--px-font);font-size:10px;text-align:center;background:var(--lime);color:#262b69;padding:6px 0}
+.pb-bar>div{height:10px;border-radius:99px;background:var(--surface-2);overflow:hidden}
+.pb-bar i{display:block;height:100%;background:var(--good)}
+.pb-bar b{font-size:13px;text-align:right}
+.pb-bar small{grid-column:2/4;font-size:12px;color:var(--ink-soft);margin-top:-4px}
+.pb-hlist{list-style:none;margin:0 0 6px;padding:0}
+.pb-hlist li{display:grid;grid-template-columns:52px 1fr 44px 52px;gap:6px;padding:6px 2px;border-bottom:1px solid var(--line);font-size:14px}
+.pb-hlist li b{text-align:right}
+.pb-hlist li span:last-child{text-align:right;color:var(--ink-soft)}
