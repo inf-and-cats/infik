@@ -21,16 +21,18 @@ function openDemo(from){
   demoLog("open",from);
   if(!S.demoSeen){ S.demoSeen=true; save(); document.body.classList.remove("demo-new"); }
   const box=h("div",{class:"dm"});
-  box.appendChild(h("div",{class:"dm-hero"},'<img src="'+CAT+'" alt=""><div><small>Бесплатно</small><b>Урок ЕГЭ с преподавателем</b><span>Разберём задание №7: кодирование информации. Урок остаётся у тебя навсегда</span></div>'));
+  const cat=typeof catSrc==="function"?catSrc(0,false,[]):CAT; // пиксельный кот из js/achieve.js
+  box.appendChild(h("div",{class:"dm-hero"},'<img src="'+cat+'" alt=""><div><small>Бесплатно</small><b>Урок ЕГЭ с преподавателем</b><span>Разберём задание №7: кодирование информации. Урок остаётся у тебя навсегда</span></div>'));
   box.appendChild(h("ol",{class:"dm-steps"},
     '<li><span>Нажми кнопку <b>«Получить бесплатно»</b> ниже</span></li>'+
     '<li><span><b>Зарегистрируйся</b> на платформе</span></li>'+
     '<li><span><b>Купи курс за 0 ₽</b>. Платить ничего не нужно</span></li>'));
   box.appendChild(h("figure",{class:"dm-cart"},'<img src="assets/demo-cart.png" alt="Корзина: к оплате 0 ₽"><figcaption>Так выглядит корзина на платформе</figcaption>'));
-  const go=h("button",{class:"main",type:"button"},"Получить бесплатно");
+  const go=h("button",{class:"main",type:"button"},DM_GIFT+"Получить бесплатно");
   box.appendChild(go);
   box.appendChild(h("p",{class:"note"},"Платформа откроется в браузере. Там же можно посмотреть и полный курс."));
   const sh=openSheet("Бесплатный урок",box);
+  const el=box.closest(".sheet"); if(el) el.classList.add("pix");
   go.onclick=()=>{ haptic("success"); const url=demoLink(from);
     demoLog("go",from); S.demoAt=Date.now(); save(); demoBar();
     try { if(tg&&tg.openLink){ tg.openLink(url); sh.close(); return; } } catch(e){} window.open(url,"_blank","noopener"); sh.close(); };
@@ -48,7 +50,7 @@ function demoBar(){
 /* карточка вместо «Купить курс»: после урока, на Пути, после задачи */
 function demoCta(from,title,text){
   if(!demoOn()) return document.createDocumentFragment();
-  const c=h("section",{class:"dm-card"},'<small>🎁 Бесплатно</small><b>'+title+'</b><p>'+text+'</p>');
+  const c=h("section",{class:"dm-card"},'<small>'+DM_GIFT+'Бесплатно</small><b>'+title+'</b><p>'+text+'</p>');
   const b=h("button",{class:"main",type:"button"},"Забрать бесплатный урок"); b.onclick=()=>openDemo(from);
   c.appendChild(b); return c;
 }

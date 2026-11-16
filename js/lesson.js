@@ -8,10 +8,18 @@ async function startLesson(p){
   p=Object.assign({},p,{steps:lesson.steps});
   LS={p, queue:p.steps.map((s,i)=>Object.assign({_i:i},s)), pos:0, mistakes:0, redo:new Set(), xp:0, t0:Date.now(), bugFound:false};
   const el=$("#lesson"); el.hidden=false; document.body.style.overflow="hidden";
-  el.innerHTML='<div class="lesson-in"><div class="lhead"><button class="x" type="button" aria-label="Выйти из урока">'+I.close+'</button><div class="prog"><i></i></div><button class="x book" type="button" aria-label="Теория урока" hidden>'+I.book+'</button></div><div class="lbody" id="lbody"></div></div><div class="lfoot" id="lfoot"><div class="lfoot-in" id="lfoot-in"></div></div>';
+  el.innerHTML='<div class="lesson-in"><div class="lhead"><button class="x" type="button" aria-label="Выйти из урока">'+I.close+'</button><div class="prog"><i></i></div><button class="x book" type="button" aria-label="Теория урока" hidden>'+I.book+'</button><button class="x snd" type="button"></button></div><div class="lbody" id="lbody"></div></div><div class="lfoot" id="lfoot"><div class="lfoot-in" id="lfoot-in"></div></div>';
   el.querySelector(".x").onclick=closeLesson;
   el.querySelector(".book").onclick=openLessonTheory;
+  sndBtn(el.querySelector(".snd"));
   showStep();
+}
+/* кнопка звука в шапке урока: пиксельный динамик, перечёркнут — звук выключен */
+const SND_ON='<svg viewBox="0 0 12 10" shape-rendering="crispEdges" fill="currentColor"><rect x="0" y="3" width="3" height="4"/><rect x="3" y="2" width="1" height="6"/><rect x="4" y="1" width="1" height="8"/><rect x="5" y="0" width="1" height="10"/><rect x="7" y="4" width="1" height="2"/><rect x="8" y="2" width="1" height="1"/><rect x="9" y="3" width="1" height="4"/><rect x="8" y="7" width="1" height="1"/><rect x="10" y="1" width="1" height="1"/><rect x="11" y="2" width="1" height="6"/><rect x="10" y="8" width="1" height="1"/></svg>';
+const SND_OFF='<svg viewBox="0 0 12 10" shape-rendering="crispEdges" fill="currentColor"><rect x="0" y="3" width="3" height="4"/><rect x="3" y="2" width="1" height="6"/><rect x="4" y="1" width="1" height="8"/><rect x="5" y="0" width="1" height="10"/><rect x="7" y="3" width="1" height="1"/><rect x="8" y="4" width="1" height="1"/><rect x="9" y="5" width="1" height="1"/><rect x="10" y="6" width="1" height="1"/><rect x="10" y="3" width="1" height="1"/><rect x="9" y="4" width="1" height="1"/><rect x="8" y="5" width="1" height="1"/><rect x="7" y="6" width="1" height="1"/></svg>';
+function sndBtn(b){
+  const draw=()=>{ const on=S.sound!==false; b.innerHTML=on?SND_ON:SND_OFF; b.setAttribute("aria-label",on?"Выключить звук":"Включить звук"); b.classList.toggle("off",!on); };
+  draw(); b.onclick=()=>{ S.sound=S.sound===false; save(); draw(); if(S.sound) sfx("ok"); toast(S.sound?"Звук включён":"Звук выключен"); };
 }
 function closeLesson(){ $("#lesson").hidden=true; document.body.style.overflow=""; LS=null; render(); }
 function setProg(){ $("#lesson .prog i").style.width=(LS.pos/LS.queue.length*100)+"%"; }
@@ -19,7 +27,7 @@ function setProg(){ $("#lesson .prog i").style.width=(LS.pos/LS.queue.length*100
 function footer(state,opts){
   const f=$("#lfoot"), fi=$("#lfoot-in"); f.className="lfoot"+(state?" "+state:""); fi.innerHTML="";
   if(state){
-    const fb=h("div",{class:"fb"},'<img src="'+CAT+'" alt=""><div><h3>'+opts.head+'</h3>'+(opts.text?'<p>'+opts.text+'</p>':"")+'</div>');
+    const fb=h("div",{class:"fb"},'<img class="px" src="'+catImg()+'" alt=""><div><h3>'+opts.head+'</h3>'+(opts.text?'<p>'+opts.text+'</p>':"")+'</div>');
     fi.appendChild(fb);
   }
   if(DEV && !state && opts.btn==="Проверить"){ // годмод: засчитать задание без ответа
@@ -29,7 +37,7 @@ function footer(state,opts){
 }
 const PRAISE=["Отлично!","Так держать!","Верно!","Мур, правильно!","Супер!"];
 function resolve(ok,step,detail){
-  if(ok){ haptic("success"); if(!step._again) LS.xp+=10; else LS.xp+=5; footer("good",{head:PRAISE[Math.floor(Math.random()*PRAISE.length)],text:step.why,btn:"Дальше",on:nextStep}); }
+  if(ok){ haptic("success"); sfx("ok"); if(!step._again) LS.xp+=10; else LS.xp+=5; footer("good",{head:PRAISE[Math.floor(Math.random()*PRAISE.length)],text:step.why,btn:"Дальше",on:nextStep}); }
   else { haptic("error"); LS.mistakes++; if(!LS.redo.has(step._i)){ LS.redo.add(step._i); LS.queue.push(Object.assign({},step,{_again:true})); setProg(); }
     footer("bad",{head:"Почти!",text:(detail?detail+" ":"")+step.why+(step._again?"":" Вернёмся к этому заданию в конце урока."),btn:"Понятно",on:nextStep});
     const lb=$("#lbody"); lb.classList.remove("shake"); void lb.offsetWidth; lb.classList.add("shake"); }
@@ -58,7 +66,7 @@ function theoryCard(st){
   if(st.key) f.appendChild(h("div",{class:"key"},'<small>Главное</small><p>'+st.key+'</p>'));
   if(st.input) f.appendChild(inputBlock(st.input));
   if(st.code) f.appendChild(ideView(st.code,{run:st.run,input:st.input}));
-  if(st.tip) f.appendChild(h("div",{class:"tip"},'<img src="'+CAT+'" alt="ИНФиК"><p>'+st.tip+'</p>'));
+  if(st.tip) f.appendChild(h("div",{class:"tip"},'<img class="px" src="'+catImg()+'" alt="ИНФиК"><p>'+st.tip+'</p>'));
   return f;
 }
 /* карточка теории с заголовком — для панели «Теория урока» и шпаргалки модуля */
@@ -93,7 +101,7 @@ function bug(st,b){
   let sel=null, done=false;
   const v=ideView(st.code,{input:st.input,onTap:(i,ln)=>{ if(done) return; sel=i; v.lineEls.forEach(x=>x.classList.remove("sel")); ln.classList.add("sel"); chk.disabled=false; }});
   b.appendChild(v);
-  b.appendChild(h("div",{class:"tip"},'<img src="'+CAT+'" alt="ИНФиК"><p>Смотри внимательно на кавычки и скобки. <em>Баги любят прятаться.</em></p>'));
+  b.appendChild(h("div",{class:"tip"},'<img class="px" src="'+catImg()+'" alt="ИНФиК"><p>Смотри внимательно на кавычки и скобки. <em>Баги любят прятаться.</em></p>'));
   const chk=footer(null,{btn:"Проверить",disabled:true,on:()=>{ done=true; const ok=sel+1===st.bug;
     v.lineEls[st.bug-1].classList.remove("sel"); v.lineEls[st.bug-1].classList.add(ok?"goodl":"badl"); if(!ok) v.lineEls[sel].classList.replace("sel","badl");
     v.showRun(); if(ok) LS.bugFound=true; resolve(ok,st); }});
@@ -153,7 +161,7 @@ function finish(){
   const newB=[]; function give(id){ if(!S.badges[id]){ S.badges[id]=true; newB.push(BADGES.find(b=>b.id===id)); } }
   give("first"); if(LS.bugFound) give("bug"); if(clean) give("clean"); streakGive(give);
   if(newB.length) S.newBadge=true; // значок XP мигает, пока ученик не откроет награды
-  save(); haptic("success");
+  save(); haptic("success"); sfx("win");
   const sec=Math.round((Date.now()-LS.t0)/1000), acc=Math.round(100*p.steps.filter(s=>s.type!=="theory").length/Math.max(1,p.steps.filter(s=>s.type!=="theory").length+LS.mistakes));
   $("#lesson .prog i").style.width="100%";
   const b=$("#lbody"); b.innerHTML=""; b.classList.add("finish");
@@ -162,7 +170,7 @@ function finish(){
   newB.forEach(x=>b.appendChild(h("div",{class:"unlock"},'<span class="ic">'+I[x.ic]+'</span><div><small>Новая награда</small><b>'+x.title+'</b></div>')));
   if(newB.length) b.appendChild(h("p",{class:"note"},"Все награды — по нажатию на ⭐ XP вверху экрана."));
   if(!/^e\d/.test(p.id)){ // карточка сторис про Python — не для уроков ЕГЭ
-    b.appendChild(h("div",{class:"story"},'<div class="s1">я теперь программист</div><div class="s2">Написал первую программу на Python</div><svg class="zz" viewBox="0 0 120 24" fill="none" stroke="#ecf141" stroke-width="5" stroke-linejoin="round" aria-hidden="true"><path d="M2 20 20 4l18 16L56 4l18 16L92 4l18 16"/></svg><div class="s3">ИНФиК · урок 1 из 60</div><img src="'+CAT+'" alt="">'));
+    b.appendChild(h("div",{class:"story"},'<div class="s1">я теперь программист</div><div class="s2">Написал первую программу на Python</div><svg class="zz" viewBox="0 0 120 24" fill="none" stroke="#ecf141" stroke-width="5" stroke-linejoin="round" aria-hidden="true"><path d="M2 20 20 4l18 16L56 4l18 16L92 4l18 16"/></svg><div class="s3">ИНФиК · урок 1 из 60</div><img class="px" src="'+catImg()+'" alt="">'));
     b.appendChild(h("p",{class:"note"},"Такую карточку ученик сможет выложить в сторис. Каждый пост ведёт новых людей в приложение."));
   }
   if(p.offer&&typeof egeOffer==="function") b.appendChild(egeOffer("boss_"+p.id)); // после босса задания ЕГЭ: курс или демо

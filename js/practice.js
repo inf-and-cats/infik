@@ -88,7 +88,7 @@ function openTask(t,o){
   const ex=t.tests.slice(0,t.show||1);
   ex.forEach((x,i)=>{ const w=h("div",{class:"pr-ex"}); if(ex.length>1) w.appendChild(h("div",{class:"pr-exh"},"Пример "+(i+1)));
     if(x.in.length) w.appendChild(inputBlock(x.in)); w.appendChild(expectBlock(x.out.replace(/\n$/,""))); b.appendChild(w); });
-  if(t.hint){ const hb=h("button",{class:"reset",type:"button"},"💡 Подсказка"); hb.onclick=()=>{ hb.replaceWith(h("div",{class:"tip"},'<img src="'+CAT+'" alt="ИНФиК"><p>'+t.hint+'</p>')); }; b.appendChild(hb); }
+  if(t.hint){ const hb=h("button",{class:"reset",type:"button"},"💡 Подсказка"); hb.onclick=()=>{ hb.replaceWith(h("div",{class:"tip"},'<img class="px" src="'+catImg()+'" alt="ИНФиК"><p>'+t.hint+'</p>')); }; b.appendChild(hb); }
   const st={kbdOnly:true,input:ex[0]&&ex[0].in,keys:PR_KEYS,start:PR_DRAFT[t.id]||""};
   let chk, ed=null; ed=codeEntry(b,st,()=>{ if(!ed) return; PR_DRAFT[t.id]=ed.code; if(chk) chk.disabled=!ed.code.trim(); });
   b.appendChild(h("p",{class:"note"},"«Запустить» берёт ввод из первого примера. «Проверить» запускает программу на всех тестах. Подсказки в <code>input()</code> писать не нужно."));
@@ -104,7 +104,7 @@ function openTask(t,o){
 function closeTask(){ $("#lesson").hidden=true; document.body.style.overflow=""; PR=null; render(); }
 function prFoot(state,opts){
   const f=$("#lfoot"), fi=$("#lfoot-in"); f.className="lfoot"+(state?" "+state:""); fi.innerHTML="";
-  if(state){ const fb=h("div",{class:"fb"},'<img src="'+CAT+'" alt=""><div><h3>'+opts.head+'</h3></div>'); if(opts.body) fb.lastChild.appendChild(opts.body); fi.appendChild(fb); }
+  if(state){ const fb=h("div",{class:"fb"},'<img class="px" src="'+catImg()+'" alt=""><div><h3>'+opts.head+'</h3></div>'); if(opts.body) fb.lastChild.appendChild(opts.body); fi.appendChild(fb); }
   if(DEV&&!state){ const d=h("button",{class:"dev",type:"button"},"⚡ Засчитать"); d.onclick=()=>prSolved(PR.t,PR.o); fi.appendChild(d); }
   const b=h("button",{class:"main",type:"button"},opts.btn); b.onclick=opts.on; fi.appendChild(b);
   return b;
@@ -134,7 +134,7 @@ function prSolved(t,o){
   const newB=[]; const give=id=>{ if(!S.badges[id]){ S.badges[id]=true; newB.push(BADGES.find(b=>b.id===id)); } };
   give("task1"); if(o.daily!=null) give("daily"); streakGive(give);
   if(newB.length) S.newBadge=true;
-  save(); haptic("success");
+  save(); haptic("success"); sfx("ok");
   const body=h("div",{class:"pr-ok"});
   body.appendChild(h("p",null,(xp?"<b>+"+xp+" XP.</b> ":"Эта задача уже решена, XP второй раз не начисляем. ")+(lit?"Огонёк зажжён: "+S.streak+" "+plural(S.streak,"день","дня","дней")+" подряд 🔥":"")));
   newB.forEach(x=>body.appendChild(h("div",{class:"unlock"},'<span class="ic">'+I[x.ic]+'</span><div><small>Новая награда</small><b>'+x.title+'</b></div>')));

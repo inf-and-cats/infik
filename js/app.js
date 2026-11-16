@@ -10,8 +10,9 @@ const BADGES = [
 
 
 /* ---------- views ---------- */
+const GEAR='<svg viewBox="0 0 12 12" shape-rendering="crispEdges" fill="currentColor" aria-hidden="true"><rect x="5" y="0" width="2" height="2"/><rect x="5" y="10" width="2" height="2"/><rect x="0" y="5" width="2" height="2"/><rect x="10" y="5" width="2" height="2"/><rect x="1" y="1" width="2" height="2"/><rect x="9" y="1" width="2" height="2"/><rect x="1" y="9" width="2" height="2"/><rect x="9" y="9" width="2" height="2"/><rect x="3" y="2" width="6" height="1"/><rect x="2" y="3" width="8" height="6"/><rect x="3" y="9" width="6" height="1"/><rect x="5" y="5" width="2" height="2" fill="var(--surface)"/></svg>';
 function renderTop(){
-  return '<div class="top"><div class="brand">ИНФиК</div><div class="stats">'+
+  return '<div class="top"><div class="top-l"><button class="stat gear" type="button" id="gearbtn" aria-label="Настройки" title="Настройки">'+GEAR+'</button><div class="brand">ИНФиК</div></div><div class="stats">'+
    (CHAT_URL?'<button class="stat chat'+(S.chatSeen?'':' new')+'" type="button" id="chatbtn" aria-label="Чат учеников" title="Чат учеников">'+I.chat+'</button>':'')+
    '<button class="stat fire'+(streakLit()?'':' off')+'" type="button" id="firebtn" aria-label="Огонёк: дней подряд" title="Огонёк">'+I.fire+streakNow()+'</button>'+
    '<button class="stat xp'+(S.newBadge?' new':'')+'" type="button" id="xpbtn" aria-label="Опыт и награды" title="Опыт и награды">'+I.xp+S.xp+' XP</button>'+
@@ -28,13 +29,25 @@ function render(){
   const xb=$("#xpbtn"); if(xb) xb.onclick=openRewards;
   const fb=$("#firebtn"); if(fb) fb.onclick=openStreak;
   const cb=$("#chatbtn"); if(cb) cb.onclick=openChat;
+  const gb=$("#gearbtn"); if(gb) gb.onclick=openSettings;
   if(S.tab==="speed") renderSpeed(app); else if(S.tab==="practice") renderPractice(app); else if(S.tab==="league") renderLeague(app); else if(S.tab==="materials") renderMaterials(app); else if(S.tab==="course") renderCoursePage(app); else renderPath(app);
   const tabs=$("#tabs"); tabs.innerHTML="";
-  [["path","Путь",I.path],["speed","Спидран",I.fire],["practice","Практика",I.code],["materials","Материалы",I.book],["league","Лига",I.trophy],["course","Курс",I.cap]].filter(([id])=>(id!=="speed"||speedOn())&&(id!=="practice"||practiceOn())&&(id!=="course"||courseOn())&&(id!=="materials"||MATERIALS_TAB)).forEach(([id,name,ic])=>{
+  [["path","Путь",tabIcon("path")],["speed","Спидран",tabIcon("fire")],["practice","Практика",tabIcon("code")],["materials","Материалы",tabIcon("book")],["league","Лига",tabIcon("trophy")],["course","Курс",tabIcon("cap")]].filter(([id])=>(id!=="speed"||speedOn())&&(id!=="practice"||practiceOn())&&(id!=="course"||courseOn())&&(id!=="materials"||MATERIALS_TAB)).forEach(([id,name,ic])=>{
     const b=h("button",{role:"tab","aria-selected":String(S.tab===id),type:"button"},ic+name);
     b.onclick=()=>{S.tab=id;save();render();window.scrollTo(0,0);}; tabs.appendChild(b); });
   demoBar();
 }
+/* пиксельные значки нижнего меню 12×12: # — цвет вкладки, o — акцент (жёлтый/розовый у выбранной) */
+const TAB_PX={
+ path:[".###........",".#o#........",".####.......",".....##.....",".......####.","........#o#.",".......####.",".....##.....","....#.......",".####.......",".#o#........",".###........"],
+ fire:[".....#......",".....##.....","....###..#..","....####.#..","...#######..","..########..","..###o#####.",".###ooo####.",".##ooooo###.",".##ooooo###.","..##ooo###..","...######..."],
+ code:["............","############","#..........#","#.#........#","#..#.......#","#...#......#","#..#.......#","#.#..oooo..#","#..........#","############","............","............"],
+ book:["............",".##......##.","#..##..##..#","#.oo.##.oo.#","#....##....#","#.oo.##.oo.#","#....##....#","#.oo.##.oo.#","#....##....#",".##..##..##.","...##..##...","............"],
+ trophy:["............","..########..","#.#o######.#","#.#o######.#",".##o#######.","...######...","....####....",".....##.....",".....##.....","...######...","...######...","............"],
+ cap:["............",".....##.....","...######...",".##########.","############",".##########o","...######..o","...######..o","...######.oo","....####..oo","............","............"]
+};
+function tabIcon(k){ let r=""; TAB_PX[k].forEach((row,y)=>[...row].forEach((c,x)=>{ if(c!==".") r+='<rect'+(c==="o"?' class="ac"':'')+' x="'+x+'" y="'+y+'" width="1" height="1"/>'; }));
+  return '<svg viewBox="0 0 12 12" shape-rendering="crispEdges" fill="currentColor" aria-hidden="true">'+r+'</svg>'; }
 function renderPath(app){
   const d=daysToEge();
   app.appendChild(h("div",{class:"countdown"},'<b>'+d+'</b><span>'+plural(d,"день","дня","дней")+' до ЕГЭ <small style="opacity:.7">(≈ 1 июня)</small><br><em>успеваешь, если по уроку в день</em></span>'));
@@ -149,15 +162,51 @@ function leagueRow(r){
   const n=String(r.name||"?"), c=r.me?" me":" c"+([...n].reduce((s,ch)=>s+ch.charCodeAt(0),0)%3);
   return h("div",{class:"row"+(r.me?" me":"")},'<span class="pos">'+r.rank+'</span><span class="ava'+c+'">'+esc([...n][0].toUpperCase())+'</span><span class="name">'+esc(n)+(r.me?" (ты)":"")+'</span><span class="xp">'+r.xp+' XP</span>');
 }
+/* пьедестал: пиксельные коты трёх расцветок (по имени), корона у первого */
+const PD_PAL=[null,{D:"#a8501f",S:"#d9772f",M:"#f0a050",A:"#f7c48a"},{D:"#4b4f6b",S:"#6e7391",M:"#9599b3",A:"#c3c6da"}];
+const PD_CROWN='<svg class="crown" viewBox="0 0 15 10" shape-rendering="crispEdges" aria-hidden="true"><g fill="#ecf141"><rect x="0" y="2" width="2" height="2"/><rect x="6" y="0" width="3" height="2"/><rect x="13" y="2" width="2" height="2"/><rect x="1" y="4" width="2" height="2"/><rect x="6" y="2" width="3" height="2"/><rect x="12" y="4" width="2" height="2"/><rect x="1" y="6" width="13" height="2"/><rect x="3" y="5" width="9" height="1"/><rect x="5" y="4" width="5" height="1"/></g><g fill="#ff6b9a"><rect x="7" y="6" width="1" height="1"/></g><g fill="#262b69"><rect x="1" y="8" width="13" height="2"/></g><g fill="#a9b62a"><rect x="2" y="8" width="11" height="1"/></g></svg>';
+/* мордочки для мест 1–3: заменяют прямоугольник x 6…23, y 11…21 у кота CAT_PX */
+const PD_FACE={
+ 1:["AAAAAAAAAAAAAAAAAA","AAAAAAAAAAAAAAAAAA","AAANAAAAAAAAANAAAA","AANANAAAAAAANANAAA","ANAAANAAAAANAAANAA","AAAAAAAAAAAAAAAAAA",
+    "KKAAAAAAKAAAAAAKKA","AAAAANNNNNNNAAAAAA","AAAAANKKKKKNAAAAAA","AAAAAANKKKNAAAAAAA","AAAAAAANNNAAAAAAAA"], // счастливый
+ 2:["AAAAAAAAAAAAAAAAAA","AAAAAAAAAAANNNNAAA","AAAAAAAAAANWWNNNAA","ANAAANAAAANWNNNNAA","AANNNAAAAANNNNNNAA","AAAAAAAAAAANNNNAAA",
+    "KKAAAAAAKAAAAAAKKA","AAAAANAANAANAAAAAA","AAAAAANNANNAAAAAAA","AAAAAAAAKKAAAAAAAA","AAAAAAAAAAAAAAAAAA"], // подмигивает
+ 3:["AAAAAAAAAAAAAAAAAA","AANNNNAAAAAANNNNAA","ANWWNNNAAAANWWNNNA","ANWNNNNAAAANWNNNNA","ANNNNNNAAAANNNNNNA","AANNNNAAAAAANNNNAA",
+    "KKAAAAAAKKAAAAAKKA","AAAAAAAANNAAAAAAAA","AAAAAAANAANAAAAAAA","AAAAAAAANNAAAAAAAA","AAAAAAAAAAAAAAAAAA"]  // удивлённый
+};
+const PD_CAT={};
+function podiumCat(v,place){
+  const key=v+"_"+place; if(PD_CAT[key]) return PD_CAT[key];
+  let url=CAT;
+  try { if(typeof CAT_PX==="undefined") return CAT;
+    const W=30,H=26,c=document.createElement("canvas"); c.width=W; c.height=H; const g=c.getContext("2d"), pal=Object.assign({},CAT_PAL,PD_PAL[v]||{}), face=PD_FACE[place];
+    for(let y=0;y<H;y++) for(let x=0;x<W;x++){
+      let ch=(CAT_PX[y]||"")[x];
+      if(face&&y>=11&&y<=21&&x>=6&&x<=23) ch=face[y-11][x-6];
+      if(ch&&ch!=="."&&ch!=="L"&&!(ch==="D"&&x>=22)){ /* L и D справа — кусок таблички с хвоста, на пьедестале не нужен */ g.fillStyle=pal[ch]; g.fillRect(x,y,1,1); } }
+    url=c.toDataURL(); } catch(e){}
+  return PD_CAT[key]=url;
+}
+function podium(top){
+  const box=h("div",{class:"podium"});
+  [2,1,3].forEach(place=>{
+    const r=top.find(x=>x.rank===place);
+    if(!r){ box.appendChild(h("div",{class:"pd empty p"+place},'<span class="nm">&nbsp;</span><span class="pxp">свободно</span><div class="blk">'+place+'</div>')); return; }
+    const n=String(r.name||"?"), v=[...n].reduce((s,ch)=>s+ch.charCodeAt(0),0)%3;
+    box.appendChild(h("div",{class:"pd p"+place+(r.me?" me":"")},(place===1?PD_CROWN:"")+'<img class="ava" src="'+podiumCat(v,place)+'" alt=""><span class="nm">'+esc(n)+(r.me?" (ты)":"")+'</span><span class="pxp">'+r.xp+' XP</span><div class="blk">'+place+'</div>'));
+  });
+  return box;
+}
 function leagueTable(box,st){
   box.innerHTML="";
   box.appendChild(h("div",{class:"lg-left"},I.flame+'<span>'+leagueLeft(st.endsAt-Date.now())+'</span>'+(st.players?'<small>'+st.players+' '+plural(st.players,"участник","участника","участников")+'</small>':"")));
   if(!st.me.rank) box.appendChild(h("div",{class:"sr-note"},"<b>Тебя пока нет в таблице.</b> Пройди урок, чтобы попасть в таблицу этой недели."));
   if(st.leaders.length){
-    const t=h("div",{class:"league"});
-    st.leaders.forEach(r=>t.appendChild(leagueRow(r)));
+    box.appendChild(podium(st.leaders.filter(r=>r.rank<=3)));
+    const t=h("div",{class:"league"}), rest=st.leaders.filter(r=>r.rank>3);
+    rest.forEach(r=>t.appendChild(leagueRow(r)));
     if(st.me.rank&&!st.leaders.some(r=>r.me)){ t.appendChild(h("div",{class:"row gap"},"…")); t.appendChild(leagueRow(Object.assign({me:true},st.me))); }
-    box.appendChild(t);
+    if(t.children.length) box.appendChild(t);
   } else box.appendChild(h("p",{class:"note"},"На этой неделе ещё никто не набрал XP. Стань первым!"));
 }
 async function renderLeague(app){

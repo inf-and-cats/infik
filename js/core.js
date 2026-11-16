@@ -3,7 +3,40 @@ const CAT = "assets/infik.png";
 let COURSE = null; // структура курса из content/course.json
 const tg = window.Telegram && window.Telegram.WebApp;
 if (tg) { try { tg.ready(); tg.expand(); } catch(e){} }
-function haptic(kind){ try { tg && tg.HapticFeedback && tg.HapticFeedback.notificationOccurred(kind); } catch(e){} }
+/* вибро: в Telegram — HapticFeedback, в обычном браузере (Android) — navigator.vibrate. На iPhone вне Telegram вибро нет */
+const HAPTIC_OK = !!(tg && tg.HapticFeedback && tg.isVersionAtLeast && tg.isVersionAtLeast("6.1"));
+const VIBRO = {success:[12,60,18], error:[40,50,40], warning:[25], tap:8};
+function haptic(kind){
+  try { if(HAPTIC_OK){ if(kind==="tap") tg.HapticFeedback.impactOccurred("light"); else tg.HapticFeedback.notificationOccurred(kind); return; } } catch(e){}
+  try { navigator.vibrate && navigator.vibrate(VIBRO[kind]||10); } catch(e){}
+}
+/* лёгкий отклик на любое нажатие кнопки (делегирование на весь документ) */
+document.addEventListener("click", e=>{
+  const b=e.target.closest && e.target.closest('button,a[href],[role="button"],[role="tab"],.opt,.node');
+  if(b && !b.disabled) haptic("tap");
+}, true);
+
+/* звуки: короткие 8-битные мелодии на Web Audio, без файлов. Выключатель — S.sound (кнопка в шапке урока) */
+let AC=null;
+function sfx(kind){
+  if(typeof S!=="undefined" && S.sound===false) return;
+  try {
+    AC = AC || new (window.AudioContext||window.webkitAudioContext)();
+    if(AC.state==="suspended") AC.resume();
+    const NOTES = { ok:[[784,0,.09],[1175,.08,.18]],                     // «дзынь-дзынь»: соль → ре, вверх
+                    win:[[523,0,.1],[659,.1,.1],[784,.2,.1],[1047,.3,.32]], // урок пройден: до-ми-соль-до
+                    no:[[262,0,.12],[220,.11,.2]] };                    // мягкое «бум» вниз (сейчас не используется)
+    const t0=AC.currentTime+.01, out=AC.createGain(); out.gain.value=.16; out.connect(AC.destination);
+    (NOTES[kind]||NOTES.ok).forEach(([f,at,len])=>{
+      const o=AC.createOscillator(), g=AC.createGain(); o.type="square"; o.frequency.value=f;
+      g.gain.setValueAtTime(0,t0+at); g.gain.linearRampToValueAtTime(1,t0+at+.008); g.gain.exponentialRampToValueAtTime(.001,t0+at+len);
+      o.connect(g); g.connect(out); o.start(t0+at); o.stop(t0+at+len+.02);
+      const o2=AC.createOscillator(), g2=AC.createGain(); o2.type="triangle"; o2.frequency.value=f*2; g2.gain.value=0; // звон сверху
+      g2.gain.setValueAtTime(0,t0+at); g2.gain.linearRampToValueAtTime(.35,t0+at+.008); g2.gain.exponentialRampToValueAtTime(.001,t0+at+len*.8);
+      o2.connect(g2); g2.connect(out); o2.start(t0+at); o2.stop(t0+at+len+.02);
+    });
+  } catch(e){}
+}
 
 /* ---------- icons ---------- */
 const I = {
@@ -31,13 +64,22 @@ const KEY = "infik-proto-v1";
 function load(){ try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch(e){ return {}; } }
 /* Progress lives in localStorage and, inside Telegram, also in Telegram CloudStorage (tied to the account, synced across devices). */
 const cloud = (tg && tg.CloudStorage && tg.isVersionAtLeast && tg.isVersionAtLeast("6.9")) ? tg.CloudStorage : null;
-const SYNC_KEYS=["xp","streak","lastDay","done","badges","mode","at","days","best","pr","grade","gradeAsked","demoSeen","demoAt"];
+const SYNC_KEYS=["xp","streak","lastDay","done","badges","mode","at","days","best","pr","grade","gradeAsked","demoSeen","demoAt","sound"];
 function save(){
   S.at=Date.now();
   try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e){}
   if(cloud){ const o={}; SYNC_KEYS.forEach(k=>o[k]=S[k]); try { cloud.setItem("progress", JSON.stringify(o), function(){}); } catch(e){} }
 }
 const S = Object.assign({ xp:0, streak:0, lastDay:null, done:{}, badges:{}, mode:"blocks", tab:"path", at:0 }, load());
+/* тема: S.theme = "auto" | "light" | "dark". Авто внутри Telegram берёт тему Telegram, в браузере — тему телефона */
+function applyTheme(){
+  const m=S.theme||"auto", root=document.documentElement;
+  const t=m!=="auto"?m:(tg&&tg.initData&&tg.colorScheme)?tg.colorScheme:null;
+  if(t) root.dataset.theme=t; else delete root.dataset.theme;
+  try { if(tg&&tg.isVersionAtLeast&&tg.isVersionAtLeast("6.1")){ const bg=getComputedStyle(root).getPropertyValue("--bg").trim(); if(bg){ tg.setHeaderColor(bg); tg.setBackgroundColor(bg); } } } catch(e){}
+}
+applyTheme();
+try { tg && tg.onEvent && tg.onEvent("themeChanged", ()=>{ if((S.theme||"auto")==="auto") applyTheme(); }); } catch(e){}
 const TG_USER = (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) || null;
 /* годмод: разработчик из DEV_IDS в Telegram или локальный запуск (localhost) */
 const DEV = (TG_USER && DEV_IDS.includes(TG_USER.id)) || ["localhost","127.0.0.1"].includes(location.hostname);
@@ -48,6 +90,8 @@ if(cloud){ try { cloud.getItem("progress", function(err,val){
 
 
 /* ---------- helpers ---------- */
+/* пиксельный кот (js/achieve.js), пока он не загрузился — старая картинка */
+function catImg(){ return typeof catSrc==="function"?catSrc(0,false,[]):CAT; }
 const $=s=>document.querySelector(s);
 function h(tag,attrs,html){ const e=document.createElement(tag); if(attrs) for(const k in attrs){ if(k==="class") e.className=attrs[k]; else if(k.startsWith("on")) e.addEventListener(k.slice(2),attrs[k]); else e.setAttribute(k,attrs[k]); } if(html!=null) e.innerHTML=html; return e; }
 let toastT; function toast(msg){ const t=$("#toast"); t.textContent=msg; t.hidden=false; clearTimeout(toastT); toastT=setTimeout(()=>t.hidden=true,2200); }

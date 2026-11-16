@@ -68,7 +68,7 @@ function maybeAskGrade(){
 function askGrade(){
   if(S.grade||S.gradeAsked||LS||PR) return;
   S.gradeAsked=true; save(); // спрашиваем один раз, даже если закрыли без ответа
-  const box=h("div",{class:"grade"},'<img src="'+CAT+'" alt=""><p>Спрошу один раз. Так я пойму, какие задачи и материалы тебе нужнее.</p>');
+  const box=h("div",{class:"grade"},'<img class="px" src="'+catImg()+'" alt=""><p>Спрошу один раз. Так я пойму, какие задачи и материалы тебе нужнее.</p>');
   const g=h("div",{class:"grade-list"}); let sh;
   GRADES.forEach(([v,t])=>{ const b=h("button",{type:"button","aria-label":t},v==="out"?t:v+"<small>класс</small>"); b.onclick=()=>{ S.grade=v; save(); haptic("success"); sh.close(); toast("Мур, спасибо! 🐱");
     if(streakSrv()) api("streak_grade",{grade:v},2).catch(()=>{}); }; g.appendChild(b); });

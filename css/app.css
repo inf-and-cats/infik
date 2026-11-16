@@ -415,17 +415,52 @@ html,textarea,input,button{font-variant-ligatures:none}
 .stat.chat svg{width:22px;height:20px}
 .stat.chat.new::after{content:"";position:absolute;top:-2px;right:-2px;width:10px;height:10px;border-radius:50%;background:var(--bad);border:2px solid var(--bg)}
 .sheet.fit{height:auto;max-height:90vh;max-height:90dvh}
-.cht{display:flex;flex-direction:column;gap:14px}
-.cht-hero{display:flex;align-items:center;gap:14px;background:var(--lime);color:#262b69;border-radius:18px;padding:14px 16px}
-.cht-hero img{width:72px;height:72px;flex:none;object-fit:contain}
-.cht-hero b{display:block;font-family:var(--f-display);font-size:24px;line-height:1.05;text-transform:uppercase}
+/* шторка чата в пиксельном стиле: «ступенчатые» углы через box-shadow, шрифт Press Start 2P */
+:root{--px-font:"Press Start 2P","Courier New",monospace}
+.sheet.pix .sheet-head h2{font-family:var(--px-font);font-size:15px;line-height:1.5;letter-spacing:.02em}
+.cht{display:flex;flex-direction:column;gap:18px;padding:4px}
+.cht-hero{display:flex;align-items:center;gap:14px;background:var(--lime);color:#262b69;padding:14px 16px;margin:0 4px;
+  box-shadow:0 -4px 0 #ecf141,0 4px 0 #ecf141,-4px 0 0 #ecf141,4px 0 0 #ecf141,0 8px 0 #9aa01c,4px 4px 0 #9aa01c,-4px 4px 0 #9aa01c}
+.cht-hero img{width:64px;height:auto;flex:none;image-rendering:pixelated}
+.cht-hero b{display:block;font-family:var(--px-font);font-weight:400;font-size:13px;line-height:1.5;text-transform:uppercase;margin-bottom:6px}
 .cht-hero span{font-size:14px;font-weight:700;line-height:1.3}
-.cht-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
-.cht-list li{display:flex;gap:12px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:10px 14px;font-size:15px;line-height:1.3}
-.cht-list li i{font-style:normal;font-size:22px;width:28px;text-align:center;flex:none}
-.cht-list li b{display:block}
+.cht-list{list-style:none;margin:6px 0 0;padding:0 4px;display:flex;flex-direction:column;gap:14px}
+.cht-list li{display:flex;gap:12px;align-items:center;background:var(--surface);padding:10px 12px;font-size:15px;line-height:1.3;
+  box-shadow:0 -3px 0 var(--line),0 3px 0 var(--line),-3px 0 0 var(--line),3px 0 0 var(--line)}
+.cht-list li i{flex:none;width:40px;height:40px;display:grid;place-items:center;background:var(--surface-2)}
+.cht-list li i svg{width:30px;height:30px}
+.cht-list li b{display:block;font-family:var(--px-font);font-weight:400;font-size:10px;line-height:1.6;text-transform:uppercase;margin-bottom:2px}
 .cht-list li small{color:var(--ink-soft);font-size:13px}
+.cht .main{display:flex;align-items:center;justify-content:center;gap:10px;border-radius:0;margin:4px 4px 6px;width:calc(100% - 8px);
+  font-family:var(--px-font);font-weight:400;font-size:12px;letter-spacing:.04em;padding:15px 12px 14px;
+  box-shadow:0 -4px 0 var(--purple),-4px 0 0 var(--purple),4px 0 0 var(--purple),0 4px 0 #2f1873,4px 4px 0 #2f1873,-4px 4px 0 #2f1873,0 8px 0 #2f1873}
+.cht .main:active{transform:translateY(4px);box-shadow:0 -4px 0 var(--purple),-4px 0 0 var(--purple),4px 0 0 var(--purple),0 4px 0 #2f1873}
+.cht .main svg{width:20px;height:18px;flex:none}
+.cht .main svg g:first-child{fill:#ecf141}.cht .main svg g:last-child{fill:#512da8}
 .cht .note{text-align:center}
+.cht .note svg{display:inline-block;width:14px;height:12px;vertical-align:-1px;margin-left:2px}
+
+/* звук в шапке урока */
+.lhead .snd svg{width:26px;height:22px}
+.lhead .snd.off{opacity:.55}
+
+/* пьедестал «Лиги недели»: 2 — 1 — 3 */
+.podium{display:grid;grid-template-columns:1fr 1fr 1fr;align-items:end;gap:8px;padding:18px 12px 0;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.pd{display:flex;flex-direction:column;align-items:center;min-width:0;text-align:center}
+.pd .crown{width:30px;height:20px;margin-bottom:2px;animation:bob 1.6s ease-in-out infinite}
+.pd .ava{width:60px;height:auto;image-rendering:pixelated;margin-bottom:4px}
+.pd.p1 .ava{width:72px}
+.pd .nm{max-width:100%;font-weight:800;font-size:14px;line-height:1.2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pd .pxp{font-size:12px;font-weight:700;color:var(--ink-soft);margin-bottom:8px;font-variant-numeric:tabular-nums}
+.pd .blk{width:100%;display:grid;place-items:start center;padding-top:10px;font-family:var(--px-font);font-size:22px;color:#262b69;
+  clip-path:polygon(0 6px,6px 6px,6px 0,calc(100% - 6px) 0,calc(100% - 6px) 6px,100% 6px,100% 100%,0 100%);
+  box-shadow:inset 0 6px 0 rgba(255,255,255,.35),inset -6px 0 0 rgba(0,0,0,.12)}
+.pd.p1 .blk{height:96px;background:var(--lime);font-size:28px}
+.pd.p2 .blk{height:72px;background:var(--lilac)}
+.pd.p3 .blk{height:54px;background:#ff8fb0}
+.pd.empty .blk{opacity:.35}
+.pd.me .nm{color:var(--purple-ink)}
+
 html{-webkit-text-size-adjust:100%;text-size-adjust:100%} /* Android не должен увеличивать шрифт подсветки отдельно от textarea */
 
 /* акценты в теории: карточки определений и «Главное» */
@@ -456,3 +491,31 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%} /* Android не дол
 .sec-new{position:absolute;top:-9px;right:-6px;z-index:1;background:#ff6b9a;color:#262b69;font-family:"Press Start 2P","Courier New",monospace;font-size:8px;line-height:1;text-transform:uppercase;padding:5px 6px 4px;border:2px solid #262b69;box-shadow:0 2px 0 #262b69;animation:sec-new 2.4s ease-in-out infinite}
 @keyframes sec-new{0%,70%,100%{transform:rotate(4deg) scale(1)}80%{transform:rotate(-3deg) scale(1.12)}90%{transform:rotate(4deg) scale(1)}}
 @media (prefers-reduced-motion:reduce){.sec-new{animation:none;transform:rotate(4deg)}}
+
+/* пиксельный кот в подсказках, ответах и вопросе про класс */
+img.px{image-rendering:pixelated}
+
+/* шторка «Настройки» (шестерёнка слева вверху) */
+.rw-set{display:flex;flex-direction:column;gap:18px;padding:4px 4px 8px}
+.rw-set .set-row{background:var(--surface);padding:12px 14px;box-shadow:0 -3px 0 var(--line),0 3px 0 var(--line),-3px 0 0 var(--line),3px 0 0 var(--line)}
+.rw-set .note{text-align:center}
+.top-l{display:flex;align-items:center;gap:10px;min-width:0}
+.stat.gear{cursor:pointer;padding:6px;color:var(--ink-soft);font:inherit}
+.stat.gear svg{width:20px;height:20px}
+.set-row{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;font-weight:700}
+.seg{display:flex;gap:6px}
+.seg button{border:0;border-radius:0;padding:9px 10px 8px;font-family:var(--px-font);font-size:10px;color:var(--ink-soft);background:var(--surface);
+  box-shadow:0 -2px 0 var(--line),0 2px 0 var(--line),-2px 0 0 var(--line),2px 0 0 var(--line)}
+.seg button[aria-checked="true"]{background:var(--purple);color:#ecf141;box-shadow:0 -2px 0 var(--purple),-2px 0 0 var(--purple),2px 0 0 var(--purple),0 2px 0 #2f1873,0 4px 0 #2f1873}
+
+/* пиксельные значки нижнего меню */
+:root{--tab-acc:#ff6b9a}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--tab-acc:#ecf141}}
+:root[data-theme="dark"]{--tab-acc:#ecf141}
+.tabs button svg[viewBox="0 0 12 12"]{width:24px;height:24px}
+.tabs button svg .ac{opacity:.5}
+.tabs button[aria-selected="true"] svg .ac{fill:var(--tab-acc);opacity:1}
+.tabs button{font-family:var(--px-font);font-weight:400;font-size:8px;letter-spacing:.02em;gap:6px;padding:8px 2px 7px}
+.tabs button[aria-selected="true"]{border-radius:0;box-shadow:0 -3px 0 var(--surface-2),0 3px 0 var(--surface-2),-3px 0 0 var(--surface-2),3px 0 0 var(--surface-2)}
+@media (max-width:360px){.top{gap:6px}.top-l{gap:6px}.stat.gear{padding:4px;border:0;background:none}.stat.gear svg{width:18px;height:18px}.top .brand{font-size:22px}}
+@media (max-width:340px){.top .brand{display:none}} /* очень узкие экраны: шапке не хватает места, остаётся шестерёнка */

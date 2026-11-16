@@ -41,3 +41,24 @@ body.demo-new .dm-fab::after{content:"";position:absolute;top:-5px;right:-5px;wi
 @keyframes dm-blink{0%,80%,100%{transform:none;filter:none}86%{transform:scale(1.12) rotate(-6deg);filter:brightness(1.25)}92%{transform:scale(1) rotate(4deg);filter:none}96%{transform:none}}
 @media (prefers-reduced-motion:reduce){.dm-fab{animation:none}}
 .lesson:not([hidden])~.dm-fab,.sheet-wrap~.dm-fab{display:none}
+
+/* шторка «Бесплатный урок» в пиксельном стиле, как чат (шрифт --px-font и заголовок .sheet.pix — в app.css) */
+.dm-card small{display:flex;align-items:center;gap:6px}
+.dm-card small svg{width:18px;height:18px}
+.sheet.pix .dm{gap:18px;padding:4px}
+.sheet.pix .dm-hero{border-radius:0;margin:0 4px;box-shadow:0 -4px 0 #ecf141,0 4px 0 #ecf141,-4px 0 0 #ecf141,4px 0 0 #ecf141,0 8px 0 #9aa01c,4px 4px 0 #9aa01c,-4px 4px 0 #9aa01c}
+.sheet.pix .dm-hero img{width:64px;height:auto;object-fit:initial;image-rendering:pixelated}
+.sheet.pix .dm-hero small{font-family:var(--px-font);font-weight:400;font-size:9px;letter-spacing:.04em}
+.sheet.pix .dm-hero b{font-family:var(--px-font);font-weight:400;font-size:13px;line-height:1.5;margin:6px 0}
+.sheet.pix .dm-steps{gap:14px;padding:0 4px;margin-top:6px}
+.sheet.pix .dm-steps li{border:0;border-radius:0;box-shadow:0 -3px 0 var(--line),0 3px 0 var(--line),-3px 0 0 var(--line),3px 0 0 var(--line)}
+.sheet.pix .dm-steps li::before{border-radius:0;width:30px;height:30px;font-family:var(--px-font);font-weight:400;font-size:12px;color:#ecf141;padding-top:2px;
+  box-shadow:inset -3px -3px 0 #2f1873}
+.sheet.pix .dm-cart{border:0;border-radius:0;margin:6px 4px 0;box-shadow:0 -4px 0 var(--surface),0 4px 0 var(--surface),-4px 0 0 var(--surface),4px 0 0 var(--surface),0 10px 0 var(--line)}
+.sheet.pix .dm-cart img{border-radius:0}
+.sheet.pix .dm .main{display:flex;align-items:center;justify-content:center;gap:10px;border-radius:0;margin:4px 4px 6px;width:calc(100% - 8px);
+  font-family:var(--px-font);font-weight:400;font-size:12px;letter-spacing:.04em;padding:15px 12px 14px;
+  box-shadow:0 -4px 0 var(--purple),-4px 0 0 var(--purple),4px 0 0 var(--purple),0 4px 0 #2f1873,4px 4px 0 #2f1873,-4px 4px 0 #2f1873,0 8px 0 #2f1873}
+.sheet.pix .dm .main:active{transform:translateY(4px);box-shadow:0 -4px 0 var(--purple),-4px 0 0 var(--purple),4px 0 0 var(--purple),0 4px 0 #2f1873}
+.sheet.pix .dm .main svg{width:22px;height:22px;flex:none}
+.sheet.pix .dm .note{text-align:center}

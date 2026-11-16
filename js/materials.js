@@ -101,6 +101,23 @@ function openVideo(M){
 }
 
 /* ---------- награды: шторка по нажатию на XP ---------- */
+/* шторка «Настройки» по шестерёнке в левом верхнем углу: тема и звук */
+function openSettings(){
+  const box=h("div",{class:"rw-set"});
+  function seg(label,opts,get,set){
+    const row=h("div",{class:"set-row"},'<span>'+label+'</span>'), sg=h("div",{class:"seg",role:"radiogroup","aria-label":label});
+    opts.forEach(([v,t])=>{ const b=h("button",{type:"button",role:"radio"},t);
+      const mark=()=>sg.querySelectorAll("button").forEach((x,i)=>x.setAttribute("aria-checked",String(opts[i][0]===get())));
+      b.onclick=()=>{ set(v); mark(); }; sg.appendChild(b); });
+    row.appendChild(sg); box.appendChild(row);
+    sg.querySelectorAll("button").forEach((x,i)=>x.setAttribute("aria-checked",String(opts[i][0]===get())));
+  }
+  seg("Тема",[["auto","Авто"],["light","Светлая"],["dark","Тёмная"]],()=>S.theme||"auto",v=>{ S.theme=v; save(); applyTheme(); });
+  seg("Звук",[[true,"Вкл"],[false,"Выкл"]],()=>S.sound!==false,v=>{ S.sound=v; save(); if(v) sfx("ok"); });
+  box.appendChild(h("p",{class:"note"},"«Авто» — тема как в Telegram. Звук играет за верные ответы и в конце урока."));
+  openSheet("Настройки",box);
+  const el=box.closest(".sheet"); if(el) el.classList.add("fit","pix");
+}
 function openRewards(){
   S.newBadge=false; S.hintRewards=true; save(); render();
   const box=h("div",{class:"rw"});

@@ -159,7 +159,7 @@ function srShow(){
       const r=await api("answer",{day:SR.day,n:q.n,choice});
       if(q._btns){ q._btns.forEach((x,i)=>{ if(q.opts[i]===r.correct) x.classList.add("ok"); else if(q.opts[i]===choice&&!r.ok) x.classList.add("no"); }); }
       if(r.ok) SR.right++;
-      haptic(r.ok?"success":"error");
+      haptic(r.ok?"success":"error"); if(r.ok) sfx("ok");
       const text=(r.ok?"":"Верный ответ: <b>"+esc(r.correct)+"</b>. ")+esc(r.explain||"")+(r.ege?'<span class="ege-line">'+esc(r.ege)+'</span>':"");
       footer(r.ok?"good":"bad",{head:r.ok?"+"+r.points+" очков!":"Мимо",text,btn:"Дальше",on:()=>{ SR.pos++; srShow(); }});
     }catch(e){ delete chk.dataset.busy; chk.disabled=false; chk.textContent="Проверить"; toast(e.message||"Нет связи. Попробуй ещё раз"); }
