@@ -499,7 +499,6 @@ img.px{image-rendering:pixelated}
 .rw-set{display:flex;flex-direction:column;gap:18px;padding:4px 4px 8px}
 .rw-set .set-row{background:var(--surface);padding:12px 14px;box-shadow:0 -3px 0 var(--line),0 3px 0 var(--line),-3px 0 0 var(--line),3px 0 0 var(--line)}
 .rw-set .note{text-align:center}
-.top-l{display:flex;align-items:center;gap:10px;min-width:0}
 .stat.gear{cursor:pointer;padding:6px;color:var(--ink-soft);font:inherit}
 .stat.gear svg{width:20px;height:20px}
 .set-row{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;font-weight:700}
@@ -517,5 +516,5 @@ img.px{image-rendering:pixelated}
 .tabs button[aria-selected="true"] svg .ac{fill:var(--tab-acc);opacity:1}
 .tabs button{font-family:var(--px-font);font-weight:400;font-size:8px;letter-spacing:.02em;gap:6px;padding:8px 2px 7px}
 .tabs button[aria-selected="true"]{border-radius:0;box-shadow:0 -3px 0 var(--surface-2),0 3px 0 var(--surface-2),-3px 0 0 var(--surface-2),3px 0 0 var(--surface-2)}
-@media (max-width:360px){.top{gap:6px}.top-l{gap:6px}.stat.gear{padding:4px;border:0;background:none}.stat.gear svg{width:18px;height:18px}.top .brand{font-size:22px}}
+@media (max-width:380px){.top{gap:6px}.stat.gear{padding:4px 2px;border:0;background:none}.stat.gear svg{width:18px;height:18px}.top .brand{font-size:24px}}
 @media (max-width:340px){.top .brand{display:none}} /* очень узкие экраны: шапке не хватает места, остаётся шестерёнка */

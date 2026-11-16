@@ -12,10 +12,11 @@ const BADGES = [
 /* ---------- views ---------- */
 const GEAR='<svg viewBox="0 0 12 12" shape-rendering="crispEdges" fill="currentColor" aria-hidden="true"><rect x="5" y="0" width="2" height="2"/><rect x="5" y="10" width="2" height="2"/><rect x="0" y="5" width="2" height="2"/><rect x="10" y="5" width="2" height="2"/><rect x="1" y="1" width="2" height="2"/><rect x="9" y="1" width="2" height="2"/><rect x="1" y="9" width="2" height="2"/><rect x="9" y="9" width="2" height="2"/><rect x="3" y="2" width="6" height="1"/><rect x="2" y="3" width="8" height="6"/><rect x="3" y="9" width="6" height="1"/><rect x="5" y="5" width="2" height="2" fill="var(--surface)"/></svg>';
 function renderTop(){
-  return '<div class="top"><div class="top-l"><button class="stat gear" type="button" id="gearbtn" aria-label="Настройки" title="Настройки">'+GEAR+'</button><div class="brand">ИНФиК</div></div><div class="stats">'+
+  return '<div class="top"><div class="brand">ИНФиК</div><div class="stats">'+
    (CHAT_URL?'<button class="stat chat'+(S.chatSeen?'':' new')+'" type="button" id="chatbtn" aria-label="Чат учеников" title="Чат учеников">'+I.chat+'</button>':'')+
    '<button class="stat fire'+(streakLit()?'':' off')+'" type="button" id="firebtn" aria-label="Огонёк: дней подряд" title="Огонёк">'+I.fire+streakNow()+'</button>'+
    '<button class="stat xp'+(S.newBadge?' new':'')+'" type="button" id="xpbtn" aria-label="Опыт и награды" title="Опыт и награды">'+I.xp+S.xp+' XP</button>'+
+   '<button class="stat gear" type="button" id="gearbtn" aria-label="Настройки" title="Настройки">'+GEAR+'</button>'+
    (S.hintRewards||!S.xp?'':'<span class="xp-hint" aria-hidden="true">Награды теперь здесь 👆</span>')+'</div></div>';
 }
 /* «Спидран» скрыт, если сервер сказал speedrun:false (ученики платного курса); без ответа — виден.
