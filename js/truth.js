@@ -112,12 +112,18 @@ function ttMatch(st,b){
   const grid=h("div",{class:"tt-grid frag"}); grid.style.setProperty("--cols",n+1);
   const heads=[]; for(let i=0;i<n;i++){ const d=h("div",{class:"tt-h col"},"?"); heads.push(d); grid.appendChild(d); }
   grid.appendChild(h("div",{class:"tt-h fcol"},"F"));
-  const cells=frag.map(row=>row.map((c,i)=>{ const d=h("div",{class:"tt-c"+(i===n?" fcol":"")+(c===""?" empty":"")},c); grid.appendChild(d); return d; }));
+  /* пустые клетки — для своих пометок: нажатие 0 → 1 → пусто, на проверку не влияет */
+  const cells=frag.map(row=>row.map((c,i)=>{ const d=h("div",{class:"tt-c"+(i===n?" fcol":"")+(c===""?" empty note":"")},c);
+    if(c==="") d.onclick=()=>{ if(done) return; d.textContent=d.textContent===""?"0":d.textContent==="0"?"1":""; d.classList.toggle("noted",d.textContent!==""); haptic("tap"); };
+    grid.appendChild(d); return d; }));
   const marks=frag.map(()=>h("div",{class:"tt-mark"}));
   const wrap=h("div",{class:"tt-wrap frag-wrap"}); const side=h("div",{class:"tt-marks"}); side.appendChild(h("div",{class:"tt-mark head"})); marks.forEach(m=>side.appendChild(m));
   wrap.append(grid,side); b.appendChild(wrap);
   if(st.mode==="answer"){
-    heads.forEach((d,i)=>d.textContent="Перем. "+(i+1));
+    /* шапка в бланке: нажатием можно подписать догадку буквой (только пометка) */
+    heads.forEach((d,i)=>{ d.textContent="Перем. "+(i+1); d.classList.add("note"); let k=-1;
+      d.onclick=()=>{ if(done) return; k=k+1>=vars.length?-1:k+1; d.textContent=k<0?"Перем. "+(i+1):vars[k]; d.classList.toggle("noted",k>=0); haptic("tap"); }; });
+    b.appendChild(h("p",{class:"note"},"Для пометок: нажимай на пустую клетку, чтобы поставить 0 или 1, и на шапку столбца, чтобы подписать букву. На ответ это не влияет."));
     const inp=h("input",{class:"tt-ans",type:"text",autocomplete:"off",autocapitalize:"off",spellcheck:"false",placeholder:"Ответ, например "+vars.slice().reverse().join("")});
     b.appendChild(inp);
     const chk=footer(null,{btn:"Проверить",disabled:true,on:()=>{ const v=inp.value.trim().toLowerCase();
@@ -142,6 +148,7 @@ function ttMatch(st,b){
     chk.disabled=perm.some(x=>x==null);
   }
   function restore(){ /* пустые клетки фрагмента: восстановленные значения, лаймом */
+    cells.flat().forEach(d=>d.classList.remove("noted")); heads.forEach(d=>d.classList.remove("noted"));
     const p=right.split(""), fit=ttFit(f,vars,p,frag,sets);
     const pickRows=(i,used)=>{ if(i===frag.length) return []; for(const o of fit.cand[i]){ if(used.has(o)) continue; const rest=pickRows(i+1,new Set(used).add(o)); if(rest) return [o].concat(rest); } return null; };
     const chosen=pickRows(0,new Set()); if(!chosen) return;

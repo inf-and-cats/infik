@@ -2,6 +2,7 @@
 if(Date.now()<new Date(2026,10,3).getTime() && speedOn()) S.tab="speed"; // во время акции открываемся на «Спидране»
 render();
 setTimeout(maybeAskGrade,1500); // один раз спрашиваем класс (js/streak.js)
+setTimeout(wnMaybe,2600); // «Что нового» один раз (js/whatsnew.js), если не открыта другая шторка
 /* доступ: ученикам платного курса «Спидран» не показываем. Ответ сервера главнее сохранённого; ошибки молча пропускаем */
 if(API_URL && tg && tg.initData) api("access").then(a=>{
   const was=speedOn(), wasStudent=isStudent();

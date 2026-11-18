@@ -101,6 +101,15 @@ function pbIntro(){
       const m=h("button",{class:"pb-mode"+(mode===id?" sel":""),type:"button","aria-pressed":String(mode===id)},'<b>'+pbIcon(ic)+t+'</b><small>'+d+'</small>');
       m.onclick=()=>{ mode=id; modes.querySelectorAll(".pb-mode").forEach(x=>{ x.classList.toggle("sel",x===m); x.setAttribute("aria-pressed",String(x===m)); }); upd(); }; modes.appendChild(m); });
     b.appendChild(modes);
+    /* тренировка: все номера или один */
+    const pickBox=h("div",{class:"pb-pickwrap"});
+    pickBox.appendChild(h("div",{class:"pb-sec"},"Что тренируем"));
+    const picks=h("div",{class:"pb-picks"});
+    [[0,"Все номера"]].concat(pbAvail().map(t=>[t.task,"№"+t.task+" · "+t.title])).forEach(([k,t])=>{
+      const on=(st.trainOnly||0)===k, x=h("button",{class:"pb-pick"+(on?" sel":""),type:"button","aria-pressed":String(on)},esc(t));
+      x.onclick=()=>{ st.trainOnly=k||null; save(); picks.querySelectorAll(".pb-pick").forEach(y=>{ y.classList.toggle("sel",y===x); y.setAttribute("aria-pressed",String(y===x)); }); haptic("tap"); upd(); };
+      picks.appendChild(x); });
+    pickBox.appendChild(picks); if(pbAvail().length>1) b.appendChild(pickBox);
   }
   b.appendChild(h("div",{class:"pb-sec"},"В пробнике"));
   const list=h("div",{class:"pb-list"});
@@ -113,12 +122,16 @@ function pbIntro(){
     if(st.cur){ const fi=$("#lfoot-in"); fi.innerHTML="";
       const again=h("button",{class:"pb-second",type:"button"},"Начать заново"); again.onclick=()=>{ st.cur=null; save(); pbIntro(); };
       const go=h("button",{class:"main",type:"button"},"Продолжить"); go.onclick=()=>pbResume(); fi.append(again,go); return; }
-    footer(null,{btn:mode==="exam"?"Начать · "+total+" мин":"Начать тренировку",on:()=>pbStart(mode)});
+    const pb=b.querySelector(".pb-pickwrap"); if(pb) pb.hidden=mode!=="train";
+    const only=pbTrainTask();
+    footer(null,{btn:mode==="exam"?"Начать · "+total+" мин":"Начать тренировку"+(only?" · №"+only.task:""),on:()=>pbStart(mode)});
   }
   upd();
 }
 
 /* ---------- банк и выбор задач ---------- */
+/* тренировка по одному номеру: S.pb.trainOnly = номер задания (null — все) */
+const pbTrainTask=()=>{ const k=pbSt().trainOnly; return k?pbAvail().find(t=>t.task===k)||null:null; };
 async function pbBank(t){
   if(PB_BANK[t.task]) return PB_BANK[t.task];
   const r=await fetch(t.file,{cache:"no-cache"}); if(!r.ok) throw new Error(r.status);
@@ -129,7 +142,8 @@ function pbSteps(v){ const out=[], pre=[]; v.steps.forEach((s,i)=>{ const st=Obj
 async function pbStart(mode){
   const st=pbSt(); st.lastMode=mode;
   const fi=$("#lfoot-in"); if(fi) fi.innerHTML='<div class="sr-loading"><i></i>Собираем вариант</div>';
-  let banks; try{ banks=await Promise.all(pbAvail().map(pbBank)); }catch(e){ toast("Не получилось загрузить задачи. Проверь интернет"); pbIntro(); return; }
+  const only=mode==="train"?pbTrainTask():null;
+  let banks; try{ banks=await Promise.all((only?[only]:pbAvail()).map(pbBank)); }catch(e){ toast("Не получилось загрузить задачи. Проверь интернет"); pbIntro(); return; }
   const wk=pbWeek();
   const ids=banks.map(B=>{
     if(mode==="exam") return B.week[wk.n%B.week.length].id;

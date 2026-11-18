@@ -43,3 +43,7 @@
 .tt-pyhint{color:var(--ide-dim);font-size:14px}
 .tt-pybank .chip.re{border-style:dashed}
 @media (prefers-reduced-motion:reduce){.tt-c{transition:none}}
+.tt-c.empty.note{cursor:pointer}
+.tt-c.noted{background:#fff;color:#8e6bff;font-style:italic}
+.tt-h.note{cursor:pointer}
+.tt-grid .tt-h.noted{color:#8e6bff;font-family:"Press Start 2P",monospace;font-size:12px}
