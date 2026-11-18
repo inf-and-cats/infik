@@ -82,7 +82,7 @@
     }
    ],
    "answer": 1,
-   "why": "Импликация w → y — это w &lt;= y, буквы в том же порядке. Каждая импликация и эквивалентность в скобках, not рядом с ними тоже. Без скобок Python посчитает сравнения раньше, чем and и or."
+   "why": "Импликация <code>w → y</code> пишется как <span class=\"nw\"><code>w &lt;= y</code>,</span> буквы в том же порядке. Каждая импликация и эквивалентность в скобках, <code>not</code> рядом с ними тоже. Без скобок Python посчитает сравнения раньше, чем <code>and</code> и <span class=\"nw\"><code>or</code>.</span>"
   },
   {
    "type": "write",
@@ -152,7 +152,7 @@
      "1": "0 0 1 0"
     }
    },
-   "why": "Шаблон: product с repeat=4, строка с F, if и print.",
+   "why": "Шаблон: <code>product</code> с <span class=\"nw\"><code>repeat=4</code>,</span> строка с F, <code>if</code> и <span class=\"nw\"><code>print</code>.</span>",
    "expectOut": "0 0 1 0\n0 1 0 1\n0 1 1 0\n1 0 1 0\n1 1 1 0"
   },
   {

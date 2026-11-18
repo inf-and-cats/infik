@@ -5,9 +5,9 @@
   {
    "type": "theory",
    "kind": "Теория",
-   "title": "True и False",
+   "title": "<code>True</code> и <code>False</code>",
    "text": [
-    "В Python для истины и лжи есть тип <code>bool</code> с двумя значениями: <code>True</code> и <code>False</code>. Пишутся с большой буквы.",
+    "В Python для истины и лжи есть тип <code>bool</code> с двумя значениями: <code>True</code> и <span class=\"nw\"><code>False</code>.</span> Пишутся с большой буквы.",
     "Такой результат даёт любое сравнение."
    ],
    "code": "print(5 > 3)\nprint(2 == 3)\nprint(type(True))",
@@ -16,14 +16,14 @@
   {
    "type": "theory",
    "kind": "Теория",
-   "title": "True и False — это 1 и 0",
+   "title": "<code>True</code> и <code>False</code>&nbsp;— это 1 и 0",
    "text": [
-    "Для Python <code>True</code> ведёт себя как 1, а <code>False</code> как 0. Их можно складывать и переводить в <code>int</code>.",
-    "Поэтому переменные алгебры логики мы будем перебирать обычным <code>range(2)</code>, то есть числами 0 и 1."
+    "Для Python <code>True</code> ведёт себя как 1, а <code>False</code> как 0. Их можно складывать и переводить в <span class=\"nw\"><code>int</code>.</span>",
+    "Поэтому переменные алгебры логики мы будем перебирать обычным <span class=\"nw\"><code>range(2)</code>,</span> то есть числами 0 и 1."
    ],
    "code": "print(True + True)\nprint(int(False))\nprint(1 and 0)\nprint(not 1)",
    "run": true,
-   "tip": "<code>and</code> и <code>or</code> возвращают одно из своих значений, поэтому <code>1 and 0</code> выводит 0, а <code>not 1</code> выводит <code>False</code>. Для решения это неважно. А чтобы таблица была из нулей и единиц, результат оборачивают в <code>int()</code>."
+   "tip": "<code>and</code> и <code>or</code> возвращают одно из своих значений, поэтому <code>1 and 0</code> выводит 0, а <code>not 1</code> выводит <span class=\"nw\"><code>False</code>.</span> Для решения это неважно. А чтобы таблица была из нулей и единиц, результат оборачивают в <span class=\"nw\"><code>int()</code>.</span>"
   },
   {
    "type": "choice",
@@ -45,7 +45,7 @@
     }
    ],
    "answer": 0,
-   "why": "True + True + False = 1 + 1 + 0 = 2."
+   "why": "<code>True + True + False</code> = 1 + 1 + 0 = 2."
   },
   {
    "type": "theory",
@@ -69,21 +69,21 @@
     },
     {
      "term": "Импликация",
-     "text": "<code>x → y</code> пишется как <code>x &lt;= y</code>. Для 0 и 1 сравнение «меньше или равно» ложно только при x = 1, y = 0, как и импликация."
+     "text": "<code>x → y</code> пишется как <span class=\"nw\"><code>x &lt;= y</code>.</span> Для 0 и 1 сравнение «меньше или равно» ложно только при x = 1, y = 0, как и импликация."
     },
     {
      "term": "Эквивалентность",
-     "text": "<code>x ≡ y</code> пишется как <code>x == y</code>: значения равны."
+     "text": "<code>x ≡ y</code> пишется как <span class=\"nw\"><code>x == y</code>:</span> значения равны."
     }
    ],
-   "key": "Стрелка → и знак &lt;= смотрят в разные стороны. Запомни так: x → y пишется как x &lt;= y, буквы стоят в том же порядке."
+   "key": "Стрелка <code>→</code> и знак <code>&lt;=</code> смотрят в разные стороны. Запомни так: <code>x → y</code> пишется как <span class=\"nw\"><code>x &lt;= y</code>,</span> буквы стоят в том же порядке."
   },
   {
    "type": "theory",
    "kind": "Теория",
    "title": "Проверим импликацию перебором",
    "text": [
-    "Два вложенных цикла перебирают все наборы x и y, а программа печатает x, y и значение <code>x &lt;= y</code>. Сравни с таблицей импликации: ноль только в строке 1 0."
+    "Два вложенных цикла перебирают все наборы x и y, а программа печатает x, y и значение <span class=\"nw\"><code>x &lt;= y</code>.</span> Сравни с таблицей импликации: ноль только в строке 1 0."
    ],
    "code": "for x in range(2):\n    for y in range(2):\n        print(x, y, int(x <= y))",
    "run": true
@@ -91,7 +91,7 @@
   {
    "type": "choice",
    "kind": "Дополни код",
-   "title": "Как записать x → y на Python?",
+   "title": "Как записать <code>x → y</code> на Python?",
    "options": [
     {
      "code": "x >= y"
@@ -107,12 +107,12 @@
     }
    ],
    "answer": 1,
-   "why": "Буквы в том же порядке, что и в выражении: x → y = x &lt;= y. Если поменять их местами, получится y → x."
+   "why": "Буквы в том же порядке, что и в выражении: <code>x → y</code> пишется как <span class=\"nw\"><code>x &lt;= y</code>.</span> Если поменять их местами, получится <span class=\"nw\"><code>y → x</code>.</span>"
   },
   {
    "type": "choice",
    "kind": "Дополни код",
-   "title": "А A ≡ B?",
+   "title": "А <span class=\"nw\"><code>A ≡ B</code>?</span>",
    "options": [
     {
      "code": "A = B"
@@ -128,15 +128,15 @@
     }
    ],
    "answer": 2,
-   "why": "Эквивалентность проверяет, равны ли значения, а это обычное ==. Одиночное = — это присваивание, оно здесь не подойдёт."
+   "why": "Эквивалентность проверяет, равны ли значения, а это обычное <span class=\"nw\"><code>==</code>.</span> Одиночное <code>=</code>&nbsp;— это присваивание, оно здесь не подойдёт."
   },
   {
    "type": "theory",
    "kind": "Теория",
    "title": "Ловушка 1: Python считает сравнения раньше",
    "text": [
-    "В алгебре логики импликация и эквивалентность выполняются последними. В Python наоборот: <code>&lt;=</code> и <code>==</code> выполняются <b>раньше</b>, чем not, and и or.",
-    "Возьмём (x ∧ y) → z при x = 0, y = 1, z = 0. По таблице 0 → 0 = 1. А Python без скобок выдаёт 0."
+    "В алгебре логики импликация и эквивалентность выполняются последними. В Python наоборот: <code>&lt;=</code> и <code>==</code> выполняются <b>раньше</b>, чем <span class=\"nw\"><code>not</code>,</span> <code>and</code> и <span class=\"nw\"><code>or</code>.</span>",
+    "Возьмём <code>(x ∧ y) → z</code> при x = 0, y = 1, z = 0. По таблице <span class=\"nw\"><code>0 → 0 = 1</code>.</span> А Python без скобок выдаёт 0."
    ],
    "code": "x, y, z = 0, 1, 0\nprint(x and y <= z)\nprint((x and y) <= z)",
    "run": true,
@@ -147,20 +147,26 @@
    "kind": "Вопрос",
    "title": "Что на самом деле посчитал Python в первой строке?",
    "options": [
-    "(x ∧ y) → z",
-    "x ∧ (y → z)",
-    "x → (y ∧ z)",
+    {
+     "html": "<code>(x ∧ y) → z</code>"
+    },
+    {
+     "html": "<code>x ∧ (y → z)</code>"
+    },
+    {
+     "html": "<code>x → (y ∧ z)</code>"
+    },
     "Ничего, это ошибка"
    ],
    "answer": 1,
-   "why": "Сначала сравнение <code>y &lt;= z</code>, то есть y → z, потом and. Получилось совсем другое выражение, и Python ни о чём не предупредил."
+   "why": "Сначала сравнение <span class=\"nw\"><code>y &lt;= z</code>,</span> то есть <span class=\"nw\"><code>y → z</code>,</span> потом <span class=\"nw\"><code>and</code>.</span> Получилось совсем другое выражение, и Python ни о чём не предупредил."
   },
   {
    "type": "theory",
    "kind": "Теория",
    "title": "Ловушка 2: двойное сравнение",
    "text": [
-    "Python умеет записывать двойные сравнения вроде <code>10 &lt;= n &lt;= 99</code>. Поэтому <code>x &lt;= y == z</code> он понимает как <code>x &lt;= y and y == z</code>, а мы хотели (x → y) ≡ z."
+    "Python умеет записывать двойные сравнения вроде <span class=\"nw\"><code>10 &lt;= n &lt;= 99</code>.</span> Поэтому <code>x &lt;= y == z</code> он понимает как <span class=\"nw\"><code>x &lt;= y and y == z</code>,</span> а мы хотели <span class=\"nw\"><code>(x → y) ≡ z</code>.</span>"
    ],
    "code": "x, y, z = 0, 0, 0\nprint(x <= y == z)\nprint((x <= y) == z)",
    "run": true
@@ -168,10 +174,10 @@
   {
    "type": "bug",
    "kind": "Найди баг",
-   "title": "Программа должна посчитать x ≡ ¬y. Где ошибка?",
+   "title": "Программа должна посчитать <span class=\"nw\"><code>x ≡ ¬y</code>.</span> Где ошибка?",
    "code": "x, y = 1, 0\nF = x == not y\nprint(F)",
    "bug": 2,
-   "why": "После == нельзя сразу написать not: Python выдаст SyntaxError. Правильно <code>x == (not y)</code>."
+   "why": "После <code>==</code> нельзя сразу написать <span class=\"nw\"><code>not</code>:</span> Python выдаст SyntaxError. Правильно <span class=\"nw\"><code>x == (not y)</code>.</span>"
   },
   {
    "type": "theory",
@@ -179,14 +185,14 @@
    "title": "Одно правило вместо трёх ловушек",
    "text": [
     "Каждую импликацию и каждую эквивалентность бери в скобки: и левую часть, и правую, и всю операцию целиком.",
-    "Каждое not, которое стоит рядом с <code>&lt;=</code> или <code>==</code>, тоже бери в скобки вместе с тем, к чему оно относится."
+    "Каждое <span class=\"nw\"><code>not</code>,</span> которое стоит рядом с <code>&lt;=</code> или <span class=\"nw\"><code>==</code>,</span> тоже бери в скобки вместе с тем, к чему оно относится."
    ],
    "key": "Лишние скобки никогда не мешают, а пропущенная скобка тихо даёт неправильный ответ без всякой ошибки."
   },
   {
    "type": "choice",
    "kind": "Дополни код",
-   "title": "Какая запись верна для (x → y) ≡ z?",
+   "title": "Какая запись верна для <span class=\"nw\"><code>(x → y) ≡ z</code>?</span>",
    "options": [
     {
      "code": "x <= y == z"
@@ -209,8 +215,8 @@
    "kind": "Теория",
    "title": "Переводим выражение из демоверсии",
    "text": [
-    "Перевод механический. Сохраняем все скобки, ¬ меняем на not, ∧ на and, ∨ на or. Импликацию A → B пишем как (A) &lt;= (B), эквивалентность — как (A) == (B).",
-    "¬y → <code>(not y)</code><br>x ≡ ¬y → <code>(x == (not y))</code><br>¬(w → x) → <code>(not (w &lt;= x))</code><br>вся импликация → <code>((x == (not y)) &lt;= (not (w &lt;= x)))</code><br>и в конце <code>or (not z)</code>.",
+    "Перевод механический. Сохраняем все скобки, <code>¬</code> меняем на <span class=\"nw\"><code>not</code>,</span> <code>∧</code> на <span class=\"nw\"><code>and</code>,</span> <code>∨</code> на <span class=\"nw\"><code>or</code>.</span> Импликацию <code>A → B</code> пишем как <span class=\"nw\"><code>(A) &lt;= (B)</code>,</span> эквивалентность — как <span class=\"nw\"><code>(A) == (B)</code>.</span>",
+    "<code>¬y</code> пишем как <code>(not y)</code><br><code>x ≡ ¬y</code> пишем как <code>(x == (not y))</code><br><code>¬(w → x)</code> пишем как <code>(not (w &lt;= x))</code><br>вся импликация: <code>((x == (not y)) &lt;= (not (w &lt;= x)))</code><br>и в конце <span class=\"nw\"><code>or (not z)</code>.</span>",
     "Проверим на наборе w = 1, x = 0, y = 0, z = 1. В уроке «Порядок действий» мы посчитали его руками и получили F = 1."
    ],
    "code": "w, x, y, z = 1, 0, 0, 1\nF = ((x == (not y)) <= (not (w <= x))) or (not z)\nprint(int(F))",
@@ -219,7 +225,7 @@
   {
    "type": "choice",
    "kind": "Дополни код",
-   "title": "Как записать ¬A ∨ (B → C)?",
+   "title": "Как записать <span class=\"nw\"><code>¬A ∨ (B → C)</code>?</span>",
    "options": [
     {
      "code": "not A or C <= B"
@@ -235,12 +241,12 @@
     }
    ],
    "answer": 1,
-   "why": "Импликация в своих скобках, и буквы в том же порядке: B → C = B &lt;= C. Знак &gt;= или перевёрнутые буквы дают C → B, а в третьем варианте инверсия съела лишнее."
+   "why": "Импликация в своих скобках, и буквы в том же порядке: <code>B → C</code> пишется как <span class=\"nw\"><code>B &lt;= C</code>.</span> Знак <code>&gt;=</code> или перевёрнутые буквы дают <span class=\"nw\"><code>C → B</code>,</span> а в третьем варианте инверсия съела лишнее."
   },
   {
    "type": "build",
    "kind": "Собери код",
-   "title": "Собери программу: посчитай (x ∧ y) → z при x = 1, y = 1, z = 0",
+   "title": "Собери программу: посчитай <code>(x ∧ y) → z</code> при x = 1, y = 1, z = 0",
    "expect": "0\n",
    "bank": [
     "x",
@@ -269,7 +275,7 @@
     ")",
     ">="
    ],
-   "why": "Скобки вокруг <code>x and y</code> обязательны: (1 ∧ 1) → 0 = 1 → 0 = 0.",
+   "why": "Скобки вокруг <code>x and y</code> обязательны: <span class=\"nw\"><code>(1 ∧ 1) → 0 = 1 → 0 = 0</code>.</span>",
    "expectOut": "0"
   }
  ]

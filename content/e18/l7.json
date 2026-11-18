@@ -155,7 +155,7 @@
   {
    "type": "choice",
    "kind": "Вопрос",
-   "title": "Кот ходит влево и вверх, поле в <code>A1:D4</code>, копия в <code>A6:D9</code>. Какая формула максимума в C8?",
+   "title": "Кот ходит влево и вверх, поле в <span class=\"nw\"><code>A1:D4</code>,</span> копия в <span class=\"nw\"><code>A6:D9</code>.</span> Какая формула максимума в C8?",
    "options": [
     {
      "code": "=МАКС(B8;C7)+C3"

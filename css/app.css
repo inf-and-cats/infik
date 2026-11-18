@@ -478,8 +478,12 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%} /* Android не дол
 
 
 /* формулы везде одинаково: моноширинный шрифт и рамка (в вопросе, теории, вариантах, пояснении, карточках) */
-.q code,.txt code,.opt code,.fb p code,.def code,.key code,.tip p code,.def>b code,.note code{font-family:var(--f-code);font-size:.9em;font-weight:600;background:var(--surface-2);border:1.5px solid var(--line);border-radius:6px;padding:0 5px;color:inherit;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+.q code,.txt code,.opt code,.fb p code,.def code,.key code,.tip p code,.def>b code,.note code,.pb-th p code{font-family:var(--f-code);font-size:.9em;font-weight:600;background:var(--surface-2);border:1.5px solid var(--line);border-radius:6px;padding:0 5px;color:inherit;-webkit-box-decoration-break:clone;box-decoration-break:clone}
 .q code{font-size:.82em;font-weight:700}
+.nw{white-space:nowrap}
+/* формула или выражение в тексте не рвётся посередине: целиком переносится на новую строку; если длиннее строки — листается внутри рамки */
+.q code,.txt code,.opt code,.fb p code,.def code,.key code,.tip p code,.note code,.pb-th p code{white-space:nowrap;display:inline-block;max-width:100%;overflow-x:auto;vertical-align:bottom;line-height:1.35;scrollbar-width:none}
+.q code::-webkit-scrollbar,.txt code::-webkit-scrollbar,.opt code::-webkit-scrollbar,.fb p code::-webkit-scrollbar,.def code::-webkit-scrollbar,.key code::-webkit-scrollbar,.tip p code::-webkit-scrollbar,.note code::-webkit-scrollbar,.pb-th p code::-webkit-scrollbar{display:none}
 .def>b code{font-size:13px;text-transform:none;letter-spacing:0;color:var(--purple-ink)}
 .key code{background:rgba(38,43,105,.12);border-color:rgba(38,43,105,.35);color:#262b69}
 /* урок открыт ученику курса не по порядку: цветной значок, без замка */

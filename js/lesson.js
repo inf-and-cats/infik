@@ -92,7 +92,7 @@ function choice(st,b){
   const box=h("div",{class:"opts"}); let sel=null, done=false;
   const order=st.options.map((o,i)=>i);
   const btns=order.map((oi,k)=>{ const o=st.options[oi];
-    const inner=typeof o==="string"?esc(o):o.out!=null?'<pre>'+esc(o.out)+'</pre>':'<code>'+esc(o.code)+'</code>';
+    const inner=typeof o==="string"?esc(o):o.html!=null?o.html:o.out!=null?'<pre>'+esc(o.out)+'</pre>':'<code>'+esc(o.code)+'</code>';
     const btn=h("button",{class:"opt",type:"button","aria-pressed":"false"},'<span class="k">'+(k+1)+'</span><span>'+inner+'</span>');
     btn.onclick=()=>{ if(done) return; sel=oi; btns.forEach(x=>x.setAttribute("aria-pressed","false")); btn.setAttribute("aria-pressed","true"); chk.disabled=false; };
     box.appendChild(btn); return btn; });
