@@ -14,6 +14,8 @@ function PyType(name,call){ this.name=name; this.call=call; }
 function PyBuiltin(name,fn){ this.name=name; this.fn=fn; }
 function PyFunc(def,closure){ this.def=def; this.closure=closure; this.name=def.name; }
 function PyMethod(self,name,fn){ this.self=self; this.name=name; this.fn=fn; }
+function PyModule(name,attrs){ this.name=name; this.attrs=attrs; }
+function PyIterObj(cls,items){ this.cls=cls; this.items=items; this.i=0; }
 const PY_NONE=null;
 
 function tname(v){
@@ -22,6 +24,7 @@ function tname(v){
   if(v instanceof PyList) return "list"; if(v instanceof PyTuple) return "tuple"; if(v instanceof PyRange) return "range";
   if(v instanceof PyType) return "type"; if(v instanceof PyFunc) return "function";
   if(v instanceof PyBuiltin||v instanceof PyMethod) return "builtin_function_or_method";
+  if(v instanceof PyModule) return "module"; if(v instanceof PyIterObj) return v.cls;
   return "object";
 }
 const isInt=v=>typeof v==="bigint"||typeof v==="boolean";
@@ -59,6 +62,8 @@ function pyRepr(v){
   if(v instanceof PyFunc) return "<function "+v.name+" at 0x7f3a2c1b4e00>";
   if(v instanceof PyBuiltin) return "<built-in function "+v.name+">";
   if(v instanceof PyMethod) return "<built-in method "+v.name+" of "+tname(v.self)+" object at 0x7f3a2c1b4e00>";
+  if(v instanceof PyModule) return "<module '"+v.name+"' (built-in)>";
+  if(v instanceof PyIterObj) return "<itertools."+v.cls+" object at 0x7f3a2c1b4e00>";
   return "<object>";
 }
 const pyStr=v=>typeof v==="string"?v:pyRepr(v);
@@ -234,7 +239,17 @@ function parse(src){
       if(t.v==="break"||t.v==="continue"){ next(); if(!loops[loops.length-1]) throw err("'"+t.v+"' "+(t.v==="break"?"outside loop":"not properly in loop"),line); return {k:t.v,line}; }
       if(t.v==="return"){ next(); if(!funcs[funcs.length-1]) throw err("'return' outside function",line); const v=(is("nl")||is("eof")||isOp(";"))?null:exprList(); return {k:"return",v,line}; }
       if(t.v==="global"){ next(); const names=[]; do{ if(!is("name")) throw err("invalid syntax"); names.push(next().v); }while(isOp(",")&&next()); return {k:"global",names,line}; }
-      if(["import","from","class","try","with","lambda","del","raise","assert","yield","nonlocal","while","for","if","def","else","elif","except","finally"].includes(t.v)) throw err("invalid syntax",line);
+      if(t.v==="import"||t.v==="from"){ next();
+        const modName=()=>{ if(!is("name")) throw err("invalid syntax"); let n=next().v; while(isOp(".")){ next(); if(!is("name")) throw err("invalid syntax"); n+="."+next().v; } return n; };
+        const alias=n=>{ if(isKw("as")){ next(); if(!is("name")) throw err("invalid syntax"); return next().v; } return n; };
+        if(t.v==="import"){ const mods=[]; do{ const m=modName(); mods.push({mod:m,as:alias(m)}); }while(isOp(",")&&next()); return {k:"import",mods,line}; }
+        const mod=modName(); if(!isKw("import")) throw err("invalid syntax"); next();
+        const paren=isOp("(")&&next(); const names=[];
+        if(isOp("*")){ next(); names.push({name:"*",as:"*"}); }
+        else do{ if(paren&&isOp(")")) break; if(!is("name")) throw err("invalid syntax"); const n=next().v; names.push({name:n,as:alias(n)}); }while(isOp(",")&&next());
+        if(paren) expectOp(")");
+        return {k:"from",mod,names,line}; }
+      if(["class","try","with","lambda","del","raise","assert","yield","nonlocal","while","for","if","def","else","elif","except","finally"].includes(t.v)) throw err("invalid syntax",line);
     }
     const first=exprList();
     if(first.k==="name"&&first.id==="print"&&startsExpr(peek())&&!isOp("(")&&!isOp("[")&&!isOp("-")&&!isOp("+")) throw err("Missing parentheses in call to 'print'. Did you mean print(...)?",line);
@@ -315,6 +330,7 @@ function parse(src){
     const args=[], kwargs=[];
     while(!isOp(")")){
       if(is("name")&&peek(1).k==="op"&&peek(1).v==="="){ const n=next().v; next(); kwargs.push({name:n,v:expr()}); }
+      else if(isOp("*")){ next(); if(kwargs.length) throw err("iterable argument unpacking follows keyword argument unpacking"); const a=expr(); args.push({k:"star",v:a,line:a.line}); }
       else { if(kwargs.length) throw err("positional argument follows keyword argument"); const a=expr(); args.push(a); if(isOp("=")) throw err('expression cannot contain assignment, perhaps you meant "=="?',a.line); }
       if(isOp(",")){ next(); continue; }
       if(isOp(")")) break;
@@ -497,6 +513,7 @@ function runPy(code,input,opt){
     if(typeof v==="string") return Array.from(v)[Symbol.iterator]();
     if(v instanceof PyList){ let i=0; return {next:()=>i<v.items.length?{value:v.items[i++],done:false}:{done:true},[Symbol.iterator](){return this;}}; }
     if(v instanceof PyTuple) return v.items[Symbol.iterator]();
+    if(v instanceof PyIterObj) return {next:()=>v.i<v.items.length?{value:v.items[v.i++],done:false}:{done:true},[Symbol.iterator](){return this;}};
     if(v instanceof PyRange){ let c=v.a; return {next:()=>((v.s>0n?c<v.b:c>v.b)?{value:(c+=v.s)-v.s,done:false}:{done:true}),[Symbol.iterator](){return this;}}; }
     throw E("TypeError","'"+tname(v)+"' object is not iterable");
   }
@@ -612,6 +629,20 @@ function runPy(code,input,opt){
   const T_type=new PyType("type",a=>{ argc("type",a,1,1); return typeOf(a[0]); });
   const TYPES={int:T_int,float:T_float,str:T_str,bool:T_bool,list:T_list,tuple:T_tuple,range:T_range,NoneType:new PyType("NoneType",()=>null),function:new PyType("function"),type:T_type,builtin_function_or_method:new PyType("builtin_function_or_method")};
   const typeOf=v=>TYPES[tname(v)]||new PyType(tname(v));
+  /* --- модули: только itertools (задание 2 ЕГЭ) --- */
+  function repeatArg(kw,name){ for(const k in kw){ if(k!=="repeat"&&!(name==="permutations"&&k==="r")) throw E("TypeError","'"+k+"' is an invalid keyword argument for "+name+"()"); } }
+  const itertoolsMod=new PyModule("itertools",{
+    product:new PyBuiltin("product",(a,kw)=>{ repeatArg(kw,"product");
+      let rep=1; if("repeat" in kw){ if(!isInt(kw.repeat)) throw E("TypeError","'"+tname(kw.repeat)+"' object cannot be interpreted as an integer"); rep=Number(toBig(kw.repeat)); if(rep<0) throw E("ValueError","repeat argument cannot be negative"); }
+      const pools=[]; const base=a.map(toArray); for(let r=0;r<rep;r++) pools.push(...base);
+      let res=[[]]; for(const pool of pools){ const nx=[]; for(const pre of res) for(const x of pool){ tick(); nx.push([...pre,x]); } res=nx; if(res.length>200000) throw E("MemoryError",""); }
+      return new PyIterObj("product",res.map(r=>new PyTuple(r))); }),
+    permutations:new PyBuiltin("permutations",(a,kw)=>{ repeatArg(kw,"permutations"); argc("permutations",a,1,2);
+      const pool=toArray(a[0]); const r=a.length>1?Number(toBig(a[1])):("r" in kw?Number(toBig(kw.r)):pool.length); const res=[];
+      const rec=(used,cur)=>{ if(cur.length===r){ res.push(new PyTuple(cur.map(i=>pool[i]))); return; } for(let i=0;i<pool.length;i++){ if(used[i]) continue; tick(); used[i]=true; cur.push(i); rec(used,cur); cur.pop(); used[i]=false; } };
+      if(r<=pool.length) rec([],[]); return new PyIterObj("permutations",res); })
+  });
+  function getModule(name){ if(name==="itertools") return itertoolsMod; throw E("ModuleNotFoundError","No module named '"+name+"'"); }
   const B={
     print:(a,kw)=>{ let sep=" ", end="\n";
       for(const k in kw){ if(k!=="sep"&&k!=="end") throw E("TypeError","print() got an unexpected keyword argument '"+k+"'"); }
@@ -693,6 +724,7 @@ function runPy(code,input,opt){
     return new PyMethod(l,name,M[name]);
   }
   function getAttr(obj,name){
+    if(obj instanceof PyModule){ if(name in obj.attrs) return obj.attrs[name]; throw E("AttributeError","module '"+obj.name+"' has no attribute '"+name+"'"); }
     if(typeof obj==="string") return strMethod(obj,name);
     if(obj instanceof PyList) return listMethod(obj,name);
     if(obj instanceof PyTuple){ if(name==="count") return new PyMethod(obj,name,a=>BigInt(obj.items.filter(v=>eq(v,a[0])).length)); if(name==="index") return new PyMethod(obj,name,a=>{ const i=obj.items.findIndex(v=>eq(v,a[0])); if(i<0) throw E("ValueError","tuple.index(x): x not in tuple"); return BigInt(i); }); }
@@ -758,7 +790,7 @@ function runPy(code,input,opt){
       case "bool": { const a=ev(n.a,frame); if(n.op==="and") return truthy(a)?ev(n.b,frame):a; return truthy(a)?a:ev(n.b,frame); }
       case "cmp": { let a=ev(n.first,frame); for(let i=0;i<n.ops.length;i++){ const b=ev(n.rest[i],frame); if(!compare(n.ops[i],a,b)) return false; a=b; } return true; }
       case "ifexp": return truthy(ev(n.test,frame))?ev(n.body,frame):ev(n.orelse,frame);
-      case "call": { const f=ev(n.f,frame); const args=n.args.map(a=>ev(a,frame)); const kw={}; n.kwargs.forEach(k=>kw[k.name]=ev(k.v,frame)); return callValue(f,args,kw); }
+      case "call": { const f=ev(n.f,frame); const args=[]; n.args.forEach(a=>{ if(a.k==="star"){ const v=ev(a.v,frame); if(!(typeof v==="string"||v instanceof PyList||v instanceof PyTuple||v instanceof PyRange||v instanceof PyIterObj)) throw E("TypeError","Value after * must be an iterable, not "+tname(v)); args.push(...toArray(v)); } else args.push(ev(a,frame)); }); const kw={}; n.kwargs.forEach(k=>kw[k.name]=ev(k.v,frame)); return callValue(f,args,kw); }
       case "sub": return index(ev(n.obj,frame),ev(n.idx,frame));
       case "slice": return {k:"sliceval",lo:n.lo?ev(n.lo,frame):null,hi:n.hi?ev(n.hi,frame):null,st:n.st?ev(n.st,frame):null};
       case "attr": return getAttr(ev(n.obj,frame),n.name);
@@ -782,6 +814,10 @@ function runPy(code,input,opt){
           if(s.op==="+"&&cur instanceof PyList){ cur.items.push(...toArray(rhs)); assign(s.target,cur,frame); return; }
           assign(s.target,binop(s.op,cur,rhs,true),frame); return; }
         case "pass": case "global": return;
+        case "import": s.mods.forEach(m=>{ const mod=getModule(m.mod); assignName(m.as===m.mod?m.mod.split(".")[0]:m.as,mod,frame); }); return;
+        case "from": { const mod=getModule(s.mod);
+          if(s.names[0].name==="*"){ for(const k in mod.attrs) assignName(k,mod.attrs[k],frame); return; }
+          s.names.forEach(n=>{ if(!(n.name in mod.attrs)) throw E("ImportError","cannot import name '"+n.name+"' from '"+s.mod+"' (unknown location)"); assignName(n.as,mod.attrs[n.name],frame); }); return; }
         case "break": throw new BreakSig(); case "continue": throw new ContinueSig();
         case "return": throw new ReturnSig(s.v?ev(s.v,frame):null);
         case "if": if(truthy(ev(s.test,frame))) execBlock(s.body,frame); else execBlock(s.orelse,frame); return;
@@ -817,7 +853,7 @@ function runPy(code,input,opt){
 
 /* ---------- подсветка ---------- */
 function esc(s){ return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
-const HL_KW=new Set(["if","else","elif","for","while","in","def","return","and","or","not","True","False","None","import","from","break","continue","pass","global","is","lambda"]);
+const HL_KW=new Set(["if","else","elif","for","while","in","def","return","and","or","not","True","False","None","import","from","as","break","continue","pass","global","is","lambda"]);
 const BI=new Set(["print","input","int","str","float","bool","len","range","sum","min","max","abs","round","type","list","sorted","reversed","enumerate","divmod","ord","chr","bin","pow","tuple","isinstance"]);
 function hl(line){
   const m=line.match(/^( *)/)[1].length; let html="";

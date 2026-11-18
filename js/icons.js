@@ -27,6 +27,14 @@ const LESSON_SPR = {
  rends:["KK.KK.....","K...K.....","..........","K...K.....","KK.KK.....",".....KK.KK",".....K...K","..........",".....K...K",".....KK.KK"],
  rturn:["...L......","..LLL.....",".L.L.L....","...L......","...L...W..","...L...WW.","...LWWWWWW","...L...WW.","...L...W..",".........."],
  rcoin:["...LLLL...","..LLLLLL..",".LLNNNNLL.",".LLNLLLLL.",".LLNNNLLL.",".LLLLLNLL.",".LLNNNNLL.","..LLLLLL..","...LLLL...",".........."],
+ /* задание 2 (Таблицы истинности) */
+ tnot:["..........", "..........", "..........", "LLLLLLLL..", "LLLLLLLL..", "......LL..", "......LL..", "......LL..", "..........", ".........."],
+ timp:["..........", "....L.....", "....LL....", "LLLLLLL...", "LLLLLLLL..", "LLLLLLL...", "....LL....", "....L.....", "..........", ".........."],
+ tprio:["..L....L..", ".L..WW..L.", "L..W..W.L.", "L.....W..L", "L....W...L", "L...W....L", "L..WWWW..L", ".L......L.", "..L....L..", ".........."],
+ ttab:["NNNNNNNNNN", "NWWNWWNLLN", "NWWNWWNLLN", "NNNNNNNNNN", "NWWNLLNWWN", "NWWNLLNWWN", "NNNNNNNNNN", "NLLNWWNKKN", "NLLNWWNKKN", "NNNNNNNNNN"],
+ tloop:["..........", "WWWW.LL...", "..........", "WWWW.LL...", "..........", "WWWW.LL...", "..........", "WWWW.KK...", "..........", ".........."],
+ tmatch:["..LL..WW..", ".L..L.W.W.", "...L..WW..", "..L...W.W.", "..........", "NNNNNNNNNN", "NWWNKKNWWN", "NWWNKKNWWN", "NNNNNNNNNN", ".........."],
+ tboss:["L.L.L.L...", "LLLLLLL...", "LLLLLLL...", "..........", "NNNNNNNNNN", "NWWNWWNLLN", "NWWNWWNLLN", "NNNNNNNNNN", "..........", ".........."],
  /* задание 9 (раздел «Задания ЕГЭ») */
  cells:["NNNNNNNNNN","NWWNWWNWWN","NWWNWWNWWN","NNNNNNNNNN","NWWNLLNWWN","NWWNLLNWWN","NNNNNNNNNN","NWWNWWNWWN","NWWNWWNWWN","NNNNNNNNNN"],
  iflag:["..........","..L...WWW.",".LL..W...W","..L..W...W","..L..W...W","..L..W...W","..L..W...W",".LLL..WWW.","..........",".........."],
@@ -98,6 +106,7 @@ const MOD_ART = {
  m7:["................","................",".NNNNNNNNNNNNNN.","NWWWWWWWWWWWWWWN","NWWDWWDDWWWDDWWN","NWDWDWDWDWDWWWWN","NWDDDWDDWWDWWWWN","NWDWDWDWDWDWWWWN","NWDWDWDDWWWDDWWN","NWWWWWWWWWWWWWWN","NWWWWWWWWWWWWWWN",".NNNNNNNNNNNNNN.","...NNN..........","...N............","................","................"],
  m8:["....NNNNNN......","..NNNWWWWNNN....","..NDNNNNNNDN....","..NDWWWWWWDN....","..NDKKWNNNDN....","..NDKKWWWWDN....","..NDWWWWWWDN....","..NDLLWNNNDN....","..NDLLWWWWDN....","..NDWWWWWWDN....","..NDKKWNNNDN....","..NDKKWWWWDN....","..NDWWWWWWDN....","..NDDDDDDDDN....","..NNNNNNNNNN....","................"],
  e18:["NNNNNNNNNNNNNNNN", "NPPPPNPPPPNWWWWN", "NPPPPNPPPPNWLLWN", "NPPPPNPPPPNWLLWN", "NPPPPNPPPPNWWWWN", "NNNNNKNNNNKKKKKK", "NWWWWKPPPPNWWWWN", "NWLLWKPPPPNWLLWN", "NWLLWKPPPPNWLLWN", "NWWWWKPPPPNWWWWN", "NNNNNKNNNNNNNNNN", "NWWWWNPPPPNPPPPN", "NWLLWNPPPPNPPPPN", "NWLLWNPPPPNPPPPN", "NWWWWNPPPPNPPPPN", "NNNNNNNNNNNNNNNN"],
+ e2:["NNNNNNNNNNNNNNNN", "NDDDDNDDDDNLLLLN", "NDWWDNDWWDNLNNLN", "NDWWDNDWWDNLNNLN", "NDDDDNDDDDNLLLLN", "NNNNNNNNNNNNNNNN", "NWWWWNWWWWNWWWWN", "NWNNWNWWNWNWNNWN", "NWWWWNWWNWNWWWWN", "NNNNNNNNNNNNNNNN", "NWWNWNWNNWNKKKKN", "NWWNWNWNNWNKNNKN", "NWWNWNWWWWNKKKKN", "NNNNNNNNNNNNNNNN", "................", "................"],
  e9:["NNNNNNNNNNNNNNNN","NDDDDDDDDDDDDDDN","NDLLDWWWWWWWWWDN","NDDDDDDDDDDDDDDN","NNNNNNNNNNNNNNNN","NPPNPPPNPPPNPPPN","NPPNWWWNWWWNWWWN","NPPNWWWNWWWNWWWN","NNNNNNNNNNNNNNNN","NPPNWWWNLLLNWWWN","NPPNWWWNLLLKWWWN","NNNNNNNNNNKKNNNN","NPPNWWWNCCCNWWWN","NPPNWWWNCCCNWWWN","NPPNWWWNWWWNWWWN","NNNNNNNNNNNNNNNN"],
  m9:["......NNNN......","......NDDN......","..NN.NDDDDN.NN..","..NDNDDDDDDNDN..","...NDDDDDDDDN...","..NDDDNNNNDDDN..","NNDDDNPPPPNDDDNN","NDDDNPPLLPPNDDDN","NDDDNPPLLPPNDDDN","NNDDDNPPPPNDDDNN","..NDDDNNNNDDDN..","...NDDDDDDDDN...","..NDNDDDDDDNDN..","..NN.NDDDDN.NN..","......NDDN......","......NNNN......"]
 };

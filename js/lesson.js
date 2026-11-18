@@ -54,7 +54,7 @@ function showStep(){
   if(st.calc) b.appendChild(calcBtn(st.calc)); // скриншот настоящего Calc по кнопке (js/sheet.js)
   if(st.input&&st.type!=="theory") b.appendChild(inputBlock(st.input));
   if(st.expectOut) b.appendChild(expectBlock(st.expectOut));
-  ({theory,choice,build,bug,indent,parsons,write,sheet:sheetStep,robot:robotStep})[st.type](st,b);
+  ({theory,choice,build,bug,indent,parsons,write,sheet:sheetStep,robot:robotStep,truth:truthStep})[st.type](st,b);
 }
 
 /* тело карточки теории: абзацы, код с «Запустить», совет котика. Заголовок рисует тот, кто вызывает */
@@ -64,6 +64,7 @@ function theoryCard(st){
   /* карточки определений: [{term, text}] */
   if(st.defs){ const d=h("div",{class:"defs"}); st.defs.forEach(x=>d.appendChild(h("div",{class:"def"},'<b>'+x.term+'</b><p>'+x.text+'</p>'))); f.appendChild(d); }
   if(st.sheet) f.appendChild(sheetBlock(st.sheet)); // таблица Calc (js/sheet.js)
+  if(st.tt) f.appendChild(truthBlock(st.tt)); // таблица истинности (js/truth.js)
   if(st.key) f.appendChild(h("div",{class:"key"},'<small>Главное</small><p>'+st.key+'</p>'));
   if(st.input) f.appendChild(inputBlock(st.input));
   if(st.code) f.appendChild(ideView(st.code,{run:st.run,input:st.input}));
@@ -86,6 +87,7 @@ function theory(st,b){
 function choice(st,b){
   if(st.text) [].concat(st.text).forEach(t=>b.appendChild(h("p",{class:"txt"},t)));
   if(st.sheet) b.appendChild(sheetBlock(st.sheet));
+  if(st.tt) b.appendChild(truthBlock(st.tt));
   if(st.code){ const v=ideView(st.code,{input:st.input}); b.appendChild(v); if(st.showRun) v.showRun(); }
   const box=h("div",{class:"opts"}); let sel=null, done=false;
   const order=st.options.map((o,i)=>i);

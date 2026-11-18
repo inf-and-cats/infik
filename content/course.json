@@ -512,8 +512,66 @@
     {
      "id": "e2",
      "task": 2,
-     "title": "Таблицы истинности",
-     "paid": true
+     "title": "Алгебра логики",
+     "paid": true,
+     "about": "Алгебра логики с нуля: пять операций, порядок действий, таблица истинности, перевод выражений в Python, product из itertools и сопоставление столбцов.",
+     "lessons": [
+      {
+       "id": "e2l1",
+       "icon": "tnot",
+       "title": "Высказывания: НЕ, И, ИЛИ",
+       "file": "content/e2/l1.json"
+      },
+      {
+       "id": "e2l2",
+       "icon": "timp",
+       "title": "Импликация и эквивалентность",
+       "file": "content/e2/l2.json"
+      },
+      {
+       "id": "e2l3",
+       "icon": "tprio",
+       "title": "Порядок действий",
+       "file": "content/e2/l3.json"
+      },
+      {
+       "id": "e2l4",
+       "icon": "ttab",
+       "title": "Таблица истинности",
+       "file": "content/e2/l4.json"
+      },
+      {
+       "id": "e2l5",
+       "icon": "snake",
+       "title": "Логика в Python",
+       "file": "content/e2/l5.json"
+      },
+      {
+       "id": "e2l8",
+       "icon": "convert",
+       "title": "Переводим в Python",
+       "file": "content/e2/l8.json"
+      },
+      {
+       "id": "e2l6",
+       "icon": "tloop",
+       "title": "Таблица программой",
+       "file": "content/e2/l6.json"
+      },
+      {
+       "id": "e2l7",
+       "icon": "tmatch",
+       "title": "Сопоставляем столбцы",
+       "file": "content/e2/l7.json"
+      },
+      {
+       "id": "e2boss",
+       "icon": "tboss",
+       "title": "Задача-босс",
+       "file": "content/e2/boss.json",
+       "boss": true
+      }
+     ]
     },
     {
      "id": "e3",
