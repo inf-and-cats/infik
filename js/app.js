@@ -58,7 +58,7 @@ function renderPath(app){
   const sec=SECS.find(x=>x.id===S.sec)||SECS[0];
   const bar=h("div",{class:"secs",role:"tablist","aria-label":"Разделы курса"});
   SECS.forEach((x,i)=>{
-    const tag=x.free&&!isStudent()?'<span class="free">Бесплатно</span>':x.tag&&!isStudent()?'<span class="free">'+esc(x.tag)+'</span>':!hasLessons(x)?'<span class="lk">'+I.lock+'</span>':"";
+    const tag=(x.free||allFree()&&hasLessons(x))&&!isStudent()?'<span class="free">Бесплатно</span>':x.tag&&!isStudent()?'<span class="free">'+esc(x.tag)+'</span>':!hasLessons(x)?'<span class="lk">'+I.lock+'</span>':"";
     const isNew=x.new&&!(S.secSeen&&S.secSeen[x.id])&&x!==sec; // значок «новое», пока раздел ни разу не открывали
     const b=h("button",{class:"sec",role:"tab","aria-selected":String(x===sec),type:"button"},(isNew?'<span class="sec-new">новое</span>':'')+'<small>Раздел '+(i+1)+tag+'</small><b>'+esc(x.title)+'</b>');
     b.onclick=()=>{ S.sec=x.id; save(); render(); }; bar.appendChild(b);
@@ -69,7 +69,7 @@ function renderPath(app){
   /* модули сворачиваются: по умолчанию открыт только текущий, выбор ученика запоминаем в S.fold */
   const fold=S.fold||(S.fold={}), curM=sec.modules.find(m=>m.lessons&&m.lessons.some(p=>!S.done[p.id]));
   /* раздел ЕГЭ: закрытые задания — сеткой плиток после открытых модулей; платный модуль для не-ученика тоже закрыт */
-  const egeLocked=sec.ege?sec.modules.filter(M=>!M.lessons||(M.paid&&!isStudent())):[];
+  const egeLocked=sec.ege?sec.modules.filter(M=>!M.lessons||(M.paid&&!hasFull())):[];
   sec.modules.forEach((M,mi)=>{
     if(egeLocked.includes(M)) return;
     if(!M.lessons){ app.appendChild(h("div",{class:"locked-mod"},I.lock.replace("<svg",'<svg width="26" height="26"')+'<div><small>Модуль '+(mi+1)+'</small><b>'+esc(M.title)+'</b></div>'+(M.ege?'<span class="ege">'+esc(M.ege)+'</span>':""))); return; }
@@ -101,7 +101,7 @@ function renderPath(app){
 }
 /* ---------- раздел ЕГЭ: закрытые задания ---------- */
 function egeGrid(app,list){
-  app.appendChild(h("div",{class:"ege-head"},'<b>Остальные задания</b><small>'+(isStudent()?"скоро":"для учеников курса")+'</small>'));
+  app.appendChild(h("div",{class:"ege-head"},'<b>Остальные задания</b><small>'+(hasFull()?"скоро":"для учеников курса")+'</small>'));
   const g=h("div",{class:"ege-grid"});
   list.forEach(M=>{ const t=h("button",{class:"ege-tile",type:"button","aria-label":"Задание "+M.task+": "+M.title},I.lock+'<b>'+esc(String(M.task))+'</b><span>'+esc(M.title)+'</span>');
     t.onclick=()=>openEgeLock(M); g.appendChild(t); });
@@ -111,21 +111,22 @@ function egeGrid(app,list){
 function egeLockBody(from,lead){
   const box=h("div",{class:"ege-lock"});
   box.appendChild(h("p",{class:"txt"},lead));
-  if(COURSE_URL){ const b=h("button",{class:"main",type:"button"},"Открыть все задания — купить курс"); b.onclick=()=>{ haptic("success"); openCourse(from); }; box.appendChild(b); }
+  if(COURSE_URL){ const b=h("button",{class:"main",type:"button"},allFree()?"Купить курс":"Открыть все задания — купить курс"); b.onclick=()=>{ haptic("success"); openCourse(from); }; box.appendChild(b); }
   if(typeof demoOn==="function"&&demoOn()){ const d=h("button",{class:"demo-alt",type:"button"},"Сначала попробовать курс бесплатно"); d.onclick=()=>openDemo(from); box.appendChild(d);
-    box.appendChild(h("small",null,"Демо — это пробный доступ к занятиям курса с преподавателем. Задания ЕГЭ в приложении открываются после покупки курса.")); }
+    box.appendChild(h("small",null,"Демо — это пробный доступ к занятиям курса с преподавателем."+(allFree()?"":" Задания ЕГЭ в приложении открываются после покупки курса."))); }
   return box;
 }
 function openEgeLock(M){
   if(isStudent()){ toast("Задание "+M.task+" скоро появится"); return; }
   haptic("warning");
+  if(allFree()){ openSheet("Задание "+M.task+" — скоро",egeLockBody("soon_ege"+M.task,"«"+M.title+"» скоро появится в приложении. На годовом курсе это задание уже разбирают с преподавателем.")); return; }
   openSheet("Задание "+M.task+" — для учеников курса",egeLockBody("lock_ege"+M.task,"«"+M.title+"» и остальные задания ЕГЭ разбираем так же подробно, как задание 9. Они открыты ученикам годового курса."));
 }
 /* в конце босса задания ЕГЭ */
 function egeOffer(from){
   if(isStudent()) return document.createDocumentFragment();
   const c=h("section",{class:"course-cta"},'<small>'+esc(COURSE_NAME)+'</small><b>Одно задание ЕГЭ ты уже умеешь</b>');
-  c.appendChild(egeLockBody(from,"Осталось ещё 26. На курсе разбираем их все с преподавателем."));
+  c.appendChild(egeLockBody(from,allFree()?"На годовом курсе разбираем все 27 заданий с преподавателем.":"Осталось ещё 26. На курсе разбираем их все с преподавателем."));
   return c;
 }
 /* ---------- шпаргалка модуля: теория всех пройденных уроков ---------- */

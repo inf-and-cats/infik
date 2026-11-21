@@ -12,21 +12,21 @@ const WN_CARDS=[
 
 function wnMaybe(){ if(S.wn===WN_ID||LS||SR||document.querySelector(".sheet-wrap,.wn-wrap")) return; openWhatsNew(); }
 function openWhatsNew(){
-  const stud=isStudent(), n=WN_CARDS.length;
+  const n=WN_CARDS.length;
   const wrap=h("div",{class:"wn-wrap",role:"dialog","aria-modal":"true","aria-label":"Что нового"});
   const box=h("div",{class:"wn"});
   box.innerHTML='<div class="wn-top"><b class="wn-h">ЧТО НОВОГО</b><button class="x" type="button" aria-label="Закрыть">'+I.close+'</button></div>'+
     '<p class="wn-sub">Вышли '+n+' задания ЕГЭ. Листай →</p>';
   const track=h("div",{class:"wn-track"});
   WN_CARDS.forEach((c,i)=>{
-    const lock=c.paid&&!stud;
+    const lock=c.paid&&!hasFull();
     const card=h("section",{class:"wn-card"});
     card.innerHTML='<div class="wn-head"><span class="wn-n">ЗАДАНИЕ '+c.task+'</span>'+(lock?'<span class="wn-lock">для учеников</span>':'<span class="wn-new">новое</span>')+'</div>'+
       '<div class="wn-title"><svg viewBox="0 0 16 16" shape-rendering="crispEdges" aria-hidden="true">'+wnArt(c.art)+'</svg><b>'+c.title+'</b></div><p class="wn-lead">'+c.lead+'</p>';
     const demo=h("div",{class:"wn-demo"}); demo.appendChild(h("div",{class:"wn-try"},"👆 попробуй прямо здесь"));
     c.demo(demo); card.appendChild(demo);
     card.appendChild(h("ul",{class:"wn-pts"},c.pts.map(p=>'<li>'+p+'</li>').join("")));
-    if(i===n-1) card.appendChild(h("div",{class:"wn-pb"},'<b>ПРОБНИК ЛАЙТ</b>'+(stud?'Все три номера в формате экзамена: тренировка и вариант недели с лидерами':'Задание 9 в формате экзамена открыто всем, остальные номера — на курсе')));
+    if(i===n-1) card.appendChild(h("div",{class:"wn-pb"},'<b>ПРОБНИК ЛАЙТ</b>'+(hasFull()?'Все три номера в формате экзамена: тренировка и вариант недели с лидерами':'Задание 9 в формате экзамена открыто всем, остальные номера — на курсе')));
     track.appendChild(card);
   });
   box.appendChild(track);
@@ -37,7 +37,7 @@ function openWhatsNew(){
   requestAnimationFrame(()=>wrap.classList.add("on"));
   let cur=0;
   const upd=()=>{ cur=Math.round(track.scrollLeft/track.clientWidth); [...dots.children].forEach((d,i)=>d.classList.toggle("on",i===cur));
-    go.textContent=cur<n-1?"Дальше":(stud?"Открыть задания ЕГЭ":"Попробовать задание 9"); };
+    go.textContent=cur<n-1?"Дальше":(hasFull()?"Открыть задания ЕГЭ":"Попробовать задание 9"); };
   track.addEventListener("scroll",()=>{ clearTimeout(track._t); track._t=setTimeout(upd,60); },{passive:true});
   const close=()=>{ S.wn=WN_ID; save(); wrap.classList.remove("on"); document.body.style.overflow=""; setTimeout(()=>wrap.remove(),220); };
   go.onclick=()=>{ haptic("tap"); if(cur<n-1){ track.scrollTo({left:(cur+1)*track.clientWidth,behavior:"smooth"}); return; }

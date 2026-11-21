@@ -36,7 +36,7 @@ const PB_THEORY={
 };
 let PB=null;                               // текущая попытка (копия лежит в S.pb.cur, чтобы продолжить после закрытия)
 const PB_BANK={};
-const pbAvail=()=>PB_TASKS.filter(t=>t.free||isStudent());
+const pbAvail=()=>PB_TASKS.filter(t=>t.free||hasFull());
 const pbSt=()=>{ S.pb=S.pb||{hist:[],seen:[]}; S.pb.hist=S.pb.hist||[]; S.pb.seen=S.pb.seen||[]; return S.pb; };
 /* неделя по Москве, как в лиге (с понедельника) */
 function pbWeek(){ const msk=new Date(Date.now()+3*3600*1000), back=(msk.getUTCDay()+6)%7;
@@ -60,14 +60,14 @@ function pbCard(){
   const strip='<div class="pb-strip">'+Array.from({length:27},(_,i)=>'<i class="'+(on.includes(i+1)?"on":"")+'">'+(i+1)+'</i>').join("")+'</div>';
   const best=st.hist.filter(x=>x.mode==="exam"&&x.week===pbWeek().key&&x.max===on.length).sort((a,b)=>b.score-a.score||a.sec-b.sec)[0];
   const c=h("section",{class:"pb-card"});
-  c.innerHTML=(isStudent()&&!st.opened?'<span class="pb-badge">новое</span>':'')+'<div class="pb-t">ПРОБНИК<br>ЛАЙТ</div>'+
-    '<p class="pb-sub">'+(isStudent()?"Задачи как в ЕГЭ по номерам, которые уже прошли на курсе. Один номер — одна задача.":"Задачи как в ЕГЭ. Попробуй на задании 9, остальные номера открываются на курсе.")+'</p>'+strip+
-    (isStudent()?'<div class="pb-meta"><span>В пробнике номеров: <b>'+on.length+' из 27</b></span>'+(best?'<span>Зачёт недели: <b>'+best.score+'/'+best.max+' · '+pbTime(best.sec)+'</b></span>':'')+'</div>'
+  c.innerHTML=(hasFull()&&!st.opened?'<span class="pb-badge">новое</span>':'')+'<div class="pb-t">ПРОБНИК<br>ЛАЙТ</div>'+
+    '<p class="pb-sub">'+(hasFull()?"Задачи как в ЕГЭ по номерам, которые уже "+(isStudent()?"прошли на курсе":"есть в приложении")+". Один номер — одна задача.":"Задачи как в ЕГЭ. Попробуй на задании 9, остальные номера открываются на курсе.")+'</p>'+strip+
+    (hasFull()?'<div class="pb-meta"><span>В пробнике номеров: <b>'+on.length+' из 27</b></span>'+(best?'<span>Зачёт недели: <b>'+best.score+'/'+best.max+' · '+pbTime(best.sec)+'</b></span>':'')+'</div>'
       :'<p class="pb-note">Жёлтое — можно решить сейчас, серое — откроется на курсе.</p>');
-  const go=h("button",{class:"main",type:"button"},st.cur?"Продолжить пробник":isStudent()?"Решить пробник":"Решить задание 9"); go.onclick=()=>pbIntro();
+  const go=h("button",{class:"main",type:"button"},st.cur?"Продолжить пробник":hasFull()?"Решить пробник":"Решить задание 9"); go.onclick=()=>pbIntro();
   c.appendChild(go);
   const row=h("div",{class:"pb-links"});
-  if(isStudent()&&API_URL){ const lb=h("button",{type:"button"},pbIcon("trophy")+"Лидеры недели"); lb.onclick=pbLeaders; row.appendChild(lb); }
+  if(hasFull()&&API_URL){ const lb=h("button",{type:"button"},pbIcon("trophy")+"Лидеры недели"); lb.onclick=pbLeaders; row.appendChild(lb); }
   if(st.hist.length){ const hb=h("button",{type:"button"},pbIcon("book")+"Мои результаты"); hb.onclick=()=>openSheet("Мой пробник",pbHistBox(true)); row.appendChild(hb); }
   if(row.children.length) c.appendChild(row);
   return c;
@@ -114,7 +114,7 @@ function pbIntro(){
   b.appendChild(h("div",{class:"pb-sec"},"В пробнике"));
   const list=h("div",{class:"pb-list"});
   pbAvail().forEach(t=>list.appendChild(h("div",{class:"pb-row"},'<span class="n">'+t.task+'</span><div><b>'+esc(t.title)+'</b><small>≈ '+t.min+' минут на экзамене</small></div>')));
-  if(!isStudent()) PB_TASKS.filter(t=>!t.free).forEach(t=>list.appendChild(h("div",{class:"pb-row off"},'<span class="n off">'+t.task+'</span><div><b>'+esc(t.title)+'</b><small>для учеников курса</small></div>'+pbIcon("lock"))));
+  if(!hasFull()) PB_TASKS.filter(t=>!t.free).forEach(t=>list.appendChild(h("div",{class:"pb-row off"},'<span class="n off">'+t.task+'</span><div><b>'+esc(t.title)+'</b><small>для учеников курса</small></div>'+pbIcon("lock"))));
   list.appendChild(h("div",{class:"pb-row"},'<span class="n off">+</span><div><b>Новые номера</b><small>добавятся, когда пройдём их на курсе</small></div>'));
   b.appendChild(list);
   const total=pbAvail().reduce((a,t)=>a+t.min,0);

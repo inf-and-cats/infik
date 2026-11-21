@@ -110,6 +110,9 @@ function openCourse(from){
 }
 /* ученик платного курса (признак приходит с сервера, см. js/main.js) */
 function isStudent(){ return !!(S.access && S.access.student); }
+/* открыты ли платные уроки и номера пробника: ученику курса или всем, пока ALL_FREE = true (config.js). Приглашения на курс по-прежнему смотрят на isStudent() */
+function allFree(){ return typeof ALL_FREE!=="undefined" && !!ALL_FREE; }
+function hasFull(){ return isStudent() || allFree(); }
 /* карточка-приглашение на курс; title и text — заголовок и пояснение под конкретное место */
 function courseCta(from,title,text){
   if(isStudent()) return document.createDocumentFragment();
