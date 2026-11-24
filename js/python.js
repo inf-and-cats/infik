@@ -1,5 +1,5 @@
 /* Мини-Python ИНФиКа: переменные, ввод, условия, циклы, строки, списки, функции. Плюс подсветка синтаксиса.
-   runPy(code, input) -> {out, err}. input — строки, которые «вводит пользователь» (массив или текст через \n).
+   runPy(code, input) -> {out, err, turtle}. turtle — линии и точки, если программа подключала модуль turtle (задание 6). input — строки, которые «вводит пользователь» (массив или текст через \n).
    Как в терминале: подсказка input() и введённый текст попадают в вывод.
    Синтаксическая ошибка находится до запуска, поэтому программа с ней ничего не выводит (как настоящий Python). */
 
@@ -629,7 +629,7 @@ function runPy(code,input,opt){
   const T_type=new PyType("type",a=>{ argc("type",a,1,1); return typeOf(a[0]); });
   const TYPES={int:T_int,float:T_float,str:T_str,bool:T_bool,list:T_list,tuple:T_tuple,range:T_range,NoneType:new PyType("NoneType",()=>null),function:new PyType("function"),type:T_type,builtin_function_or_method:new PyType("builtin_function_or_method")};
   const typeOf=v=>TYPES[tname(v)]||new PyType(tname(v));
-  /* --- модули: только itertools (задание 2 ЕГЭ) --- */
+  /* --- модули: itertools (задание 2 ЕГЭ) и turtle (задание 6) --- */
   function repeatArg(kw,name){ for(const k in kw){ if(k!=="repeat"&&!(name==="permutations"&&k==="r")) throw E("TypeError","'"+k+"' is an invalid keyword argument for "+name+"()"); } }
   const itertoolsMod=new PyModule("itertools",{
     product:new PyBuiltin("product",(a,kw)=>{ repeatArg(kw,"product");
@@ -642,7 +642,37 @@ function runPy(code,input,opt){
       const rec=(used,cur)=>{ if(cur.length===r){ res.push(new PyTuple(cur.map(i=>pool[i]))); return; } for(let i=0;i<pool.length;i++){ if(used[i]) continue; tick(); used[i]=true; cur.push(i); rec(used,cur); cur.pop(); used[i]=false; } };
       if(r<=pool.length) rec([],[]); return new PyIterObj("permutations",res); })
   });
-  function getModule(name){ if(name==="itertools") return itertoolsMod; throw E("ModuleNotFoundError","No module named '"+name+"'"); }
+  /* --- turtle (задание 6 ЕГЭ): команды не рисуют сразу, а пишут линии и точки в TT; рисует окно в js/turtle.js --- */
+  let TT=null;
+  function turtleMod(){
+    if(TT&&TT.mod) return TT.mod;
+    TT={segs:[],dots:[],x:0,y:0,h:0,pen:true,screen:null};
+    const num=(v,fn)=>{ if(isInt(v)) return Number(toBig(v)); if(typeof v==="number") return v; throw E("TypeError","bad operand type for "+fn+"(): '"+tname(v)+"'"); };
+    const rnd=v=>Math.abs(v-Math.round(v))<1e-9?Math.round(v):v;
+    const need=(fn,a,n,m)=>{ if(a.length<n||a.length>m) throw E("TypeError",fn+"() takes "+(n===m?n:"from "+n+" to "+m)+" positional arguments but "+a.length+" were given"); };
+    const moveTo=(x,y)=>{ tick(); x=rnd(x); y=rnd(y); if(TT.pen&&(x!==TT.x||y!==TT.y)){ if(TT.segs.length>=20000) throw E("MemoryError","слишком много линий"); TT.segs.push([TT.x,TT.y,x,y]); } TT.x=x; TT.y=y; };
+    const fd=(fn,sg)=>new PyBuiltin(fn,a=>{ need(fn,a,1,1); const d=sg*num(a[0],fn), r=TT.h*Math.PI/180; moveTo(TT.x+d*Math.cos(r),TT.y+d*Math.sin(r)); return null; });
+    const turn=(fn,sg)=>new PyBuiltin(fn,a=>{ need(fn,a,1,1); TT.h=((TT.h+sg*num(a[0],fn))%360+360)%360; return null; });
+    const pen=(fn,on)=>new PyBuiltin(fn,a=>{ need(fn,a,0,0); TT.pen=on; return null; });
+    const any=fn=>new PyBuiltin(fn,()=>null); // настройки окна и анимации: на рисунок не влияют
+    const goto=new PyBuiltin("goto",a=>{ need("goto",a,1,2); let x,y; if(a.length===1){ const t=a[0]; if(!(t instanceof PyTuple||t instanceof PyList)||t.items.length!==2) throw E("TypeError","goto() missing 1 required positional argument: 'y'"); [x,y]=t.items; } else [x,y]=a; moveTo(num(x,"goto"),num(y,"goto")); return null; });
+    const dot=new PyBuiltin("dot",a=>{ tick(); if(TT.dots.length>=60000) throw E("MemoryError","слишком много точек"); const sz=a.length&&a[0]!==null&&isNum(a[0])?num(a[0],"dot"):5; TT.dots.push([TT.x,TT.y,sz]); return null; });
+    const A={fd:fd("fd",1),forward:fd("forward",1),bk:fd("bk",-1),back:fd("back",-1),backward:fd("backward",-1),
+      rt:turn("rt",-1),right:turn("right",-1),lt:turn("lt",1),left:turn("left",1),
+      up:pen("up",false),penup:pen("penup",false),pu:pen("pu",false),down:pen("down",true),pendown:pen("pendown",true),pd:pen("pd",true),
+      goto,setpos:goto,setposition:goto,dot,
+      setheading:new PyBuiltin("setheading",a=>{ need("setheading",a,1,1); TT.h=((num(a[0],"setheading")%360)+360)%360; return null; }),
+      home:new PyBuiltin("home",a=>{ need("home",a,0,0); moveTo(0,0); TT.h=0; return null; }),
+      xcor:new PyBuiltin("xcor",()=>TT.x), ycor:new PyBuiltin("ycor",()=>TT.y), heading:new PyBuiltin("heading",()=>TT.h),
+      position:new PyBuiltin("position",()=>new PyTuple([TT.x,TT.y])), pos:new PyBuiltin("pos",()=>new PyTuple([TT.x,TT.y])),
+      screensize:new PyBuiltin("screensize",a=>{ if(a.length>=2) TT.screen=[num(a[0],"screensize"),num(a[1],"screensize")]; return null; }),
+      tracer:any("tracer"),update:any("update"),done:any("done"),mainloop:any("mainloop"),exitonclick:any("exitonclick"),setup:any("setup"),speed:any("speed"),
+      hideturtle:any("hideturtle"),ht:any("ht"),showturtle:any("showturtle"),st:any("st"),pensize:any("pensize"),width:any("width"),
+      color:any("color"),pencolor:any("pencolor"),fillcolor:any("fillcolor"),bgcolor:any("bgcolor"),title:any("title")};
+    A.setheading.name="setheading"; A.seth=A.setheading;
+    return TT.mod=new PyModule("turtle",A);
+  }
+  function getModule(name){ if(name==="itertools") return itertoolsMod; if(name==="turtle") return turtleMod(); throw E("ModuleNotFoundError","No module named '"+name+"'"); }
   const B={
     print:(a,kw)=>{ let sep=" ", end="\n";
       for(const k in kw){ if(k!=="sep"&&k!=="end") throw E("TypeError","print() got an unexpected keyword argument '"+k+"'"); }
@@ -844,11 +874,12 @@ function runPy(code,input,opt){
     const prog=parse(code);
     execBlock(prog,null);
   }catch(e){
-    if(e instanceof PyErr) return {out:out.join(""),err:e};
-    if(e instanceof RangeError) return {out:out.join(""),err:new PyErr("RecursionError","maximum recursion depth exceeded",curLine)};
-    return {out:out.join(""),err:new PyErr("SyntaxError","invalid syntax",curLine)};
+    const tt=TT?{segs:TT.segs,dots:TT.dots,x:TT.x,y:TT.y,h:TT.h,pen:TT.pen}:undefined;
+    if(e instanceof PyErr) return {out:out.join(""),err:e,turtle:tt};
+    if(e instanceof RangeError) return {out:out.join(""),err:new PyErr("RecursionError","maximum recursion depth exceeded",curLine),turtle:tt};
+    return {out:out.join(""),err:new PyErr("SyntaxError","invalid syntax",curLine),turtle:tt};
   }
-  return {out:out.join(""),err:null};
+  return {out:out.join(""),err:null,turtle:TT?{segs:TT.segs,dots:TT.dots,x:TT.x,y:TT.y,h:TT.h,pen:TT.pen,screen:TT.screen}:undefined};
 }
 
 /* ---------- подсветка ---------- */

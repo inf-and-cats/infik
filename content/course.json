@@ -594,8 +594,60 @@
     {
      "id": "e6",
      "task": 6,
-     "title": "Исполнитель Черепаха",
-     "paid": true
+     "title": "Черепаха и фигуры",
+     "paid": true,
+     "about": "Черепаха рисует фигуры: команды и «Повтори», перевод алгоритма в Python строка в строку, точки сетки, пересечение и объединение, площадь и периметр.",
+     "lessons": [
+      {
+       "id": "e6l1",
+       "icon": "turt",
+       "title": "Черепаха и команды",
+       "file": "content/e6/l1.json"
+      },
+      {
+       "id": "e6l2",
+       "icon": "trep",
+       "title": "Повтори и прямоугольники",
+       "file": "content/e6/l2.json"
+      },
+      {
+       "id": "e6l3",
+       "icon": "snake",
+       "title": "Черепаха в Python",
+       "file": "content/e6/l3.json"
+      },
+      {
+       "id": "e6l4",
+       "icon": "tdots",
+       "title": "Точки сетки",
+       "file": "content/e6/l4.json"
+      },
+      {
+       "id": "e6l5",
+       "icon": "tcells",
+       "title": "Точки или клетки",
+       "file": "content/e6/l5.json"
+      },
+      {
+       "id": "e6l6",
+       "icon": "tinter",
+       "title": "Пересечение и объединение",
+       "file": "content/e6/l6.json"
+      },
+      {
+       "id": "e6l7",
+       "icon": "tdiag",
+       "title": "Наклонные линии и ловушки",
+       "file": "content/e6/l7.json"
+      },
+      {
+       "id": "e6boss",
+       "icon": "tboss6",
+       "title": "Задача-босс",
+       "file": "content/e6/boss.json",
+       "boss": true
+      }
+     ]
     },
     {
      "id": "e7",

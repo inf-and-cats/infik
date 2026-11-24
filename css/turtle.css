@@ -1,0 +1,54 @@
+/* ИНФиК: Черепаха (задание 6) — поле с точками, запись алгоритма, окно Python Turtle Graphics */
+.tu-view{position:relative;border-radius:10px;overflow:hidden;background:#fff;box-shadow:0 0 0 3px var(--ink);align-self:stretch}
+.tu-cv{display:block;width:100%;touch-action:none;cursor:crosshair}
+.tu-win{border-radius:8px;box-shadow:0 0 0 1px #9a9a9a,0 6px 18px rgba(0,0,0,.18);margin-top:8px}
+.tu-wbar{display:flex;align-items:center;gap:8px;background:#f2f2f2;border-bottom:1px solid #d0d0d0;color:#222;font:13px/1 system-ui,-apple-system,"Segoe UI",sans-serif;padding:7px 10px}
+.tu-wbar span{flex:1}
+.tu-wbar i{width:10px;height:10px;border:1.5px solid #777;display:inline-block}
+.tu-wbar i:nth-child(2){border-width:0 0 1.5px;height:6px}
+.tu-wbar i:last-child{border:0;position:relative}
+.tu-wbar i:last-child::before,.tu-wbar i:last-child::after{content:"";position:absolute;left:4px;top:-1px;width:1.5px;height:12px;background:#777;transform:rotate(45deg)}
+.tu-wbar i:last-child::after{transform:rotate(-45deg)}
+.tu-tools{position:absolute;right:6px;bottom:6px;display:flex;gap:6px}
+.tu-tools button{width:34px;height:34px;border-radius:9px;border:2px solid #262b69;background:#fff;color:#262b69;font:800 18px/1 Nunito,sans-serif;cursor:pointer;box-shadow:0 3px 0 #262b69;padding:0;touch-action:manipulation}
+.tu-tools button:active{transform:translateY(2px);box-shadow:0 1px 0 #262b69}
+.tu-chip{position:absolute;left:6px;top:6px;background:rgba(255,255,255,.9);border-radius:8px;padding:3px 8px;font-size:12px;font-weight:800;color:#262b69}
+.tu-win .tu-chip{top:38px}
+/* запись алгоритма */
+.tu-alg{background:var(--surface);border:2px solid var(--line);border-radius:12px;padding:10px 12px;font-family:var(--f-code);font-size:14px;line-height:1.55;color:var(--ink)}
+.tu-aln+.tu-aln{margin-top:2px}
+.tu-aln{white-space:normal;border-radius:6px;padding:1px 4px;margin:0 -4px}
+.tu-aln.cur{background:var(--surface-2)}
+.tu-aln.tap{cursor:pointer}
+.tu-alg span{white-space:nowrap;border-radius:4px;padding:0 1px;transition:background .15s}
+.tu-alg span.cur{background:var(--lime);color:#262b69;box-shadow:0 0 0 2px var(--lime)}
+.tu-info{font-size:14px;color:var(--ink-soft);text-align:center;line-height:1.4}
+.tu-info b{color:var(--ink);font-family:var(--f-code)}
+.tu-play,.tu-block{display:flex;flex-direction:column;gap:10px}
+.tu-pbtn{display:grid;grid-template-columns:1fr 1.3fr 1fr;gap:8px}
+.tu-pbtn button,.tu-drive button{font:inherit;font-weight:800;font-size:15px;border:0;border-radius:12px;padding:11px 6px;background:var(--surface);color:var(--ink);box-shadow:0 4px 0 var(--line);cursor:pointer;touch-action:manipulation}
+.tu-pbtn button.go{background:var(--purple);color:#fff;box-shadow:0 4px 0 #2f1873}
+.tu-pbtn button:disabled,.tu-drive button:disabled{opacity:.45;cursor:default}
+.tu-pbtn button:active:not(:disabled),.tu-drive button:active:not(:disabled){transform:translateY(3px);box-shadow:0 1px 0 var(--line)}
+/* водим сами */
+.tu-drive{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.tu-drive .wide{grid-column:1/-1;background:var(--surface-2);box-shadow:none}
+.tu-nums{grid-column:1/-1;display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-weight:800;font-size:14px;color:var(--ink-soft)}
+.tu-nums button{min-width:44px;padding:8px 10px;font-family:var(--f-code)}
+.tu-nums button[aria-pressed="true"]{background:var(--lime);color:#262b69;box-shadow:0 4px 0 #a9b62a}
+.tu-log{font-family:var(--f-code);font-size:13px;line-height:1.5;background:var(--surface);border:2px dashed var(--line);border-radius:12px;padding:8px 10px;color:var(--ink);word-break:break-word}
+.tu-log b{font-family:Nunito,sans-serif}
+.tu-log .dim,.tu-count .dim{color:var(--ink-soft);font-family:Nunito,sans-serif}
+.tu-undo{display:block;margin-top:6px;font:inherit;font-family:Nunito,sans-serif;font-weight:800;font-size:13px;border:0;background:none;color:var(--purple-ink);padding:0;cursor:pointer;text-decoration:underline}
+.tu-count{font-size:14px;color:var(--ink);text-align:center}
+.tu-clr{font:inherit;font-weight:800;border:0;background:none;color:var(--purple-ink);text-decoration:underline;cursor:pointer;padding:0 4px}
+.tu-ans{font:inherit;font-family:var(--f-code);font-size:20px;text-align:center;border:2px solid var(--line);border-radius:12px;padding:12px;background:var(--surface);color:var(--ink)}
+.tu-ans.ok{border-color:var(--good);background:var(--good-bg)}.tu-ans.no{border-color:var(--bad);background:var(--bad-bg)}
+/* собери программу */
+.tu-ide .ln.tu-slot{min-height:30px;display:flex;align-items:center;flex-wrap:wrap;gap:2px 0;border-radius:6px}
+.tu-ide .ln.tu-slot.cur{background:rgba(236,241,65,.13);box-shadow:inset 0 0 0 1.5px rgba(236,241,65,.6)}
+.tu-ph{color:var(--ide-dim);font-style:italic;font-size:12px}
+.tu-sep{white-space:pre;color:var(--ide-dim)}
+.tu-sub{font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:-4px}
+.tu-bank .chip{font-family:var(--f-code)}
+.tu-ide .tu-slot .chip{font-size:13px;padding:3px 6px}
