@@ -54,7 +54,7 @@ function showStep(){
   if(st.calc) b.appendChild(calcBtn(st.calc)); // скриншот настоящего Calc по кнопке (js/sheet.js)
   if(st.input&&st.type!=="theory") b.appendChild(inputBlock(st.input));
   if(st.expectOut) b.appendChild(expectBlock(st.expectOut));
-  ({theory,choice,build,bug,indent,parsons,write,sheet:sheetStep,robot:robotStep,truth:truthStep,turtle:turtleStep})[st.type](st,b);
+  ({theory,choice,build,bug,indent,parsons,write,sheet:sheetStep,robot:robotStep,truth:truthStep,turtle:turtleStep,graph:graphStep})[st.type](st,b);
 }
 
 /* тело карточки теории: абзацы, код с «Запустить», совет котика. Заголовок рисует тот, кто вызывает */
@@ -66,6 +66,7 @@ function theoryCard(st){
   if(st.sheet) f.appendChild(sheetBlock(st.sheet)); // таблица Calc (js/sheet.js)
   if(st.tt) f.appendChild(truthBlock(st.tt)); // таблица истинности (js/truth.js)
   if(st.turtle) f.appendChild(tuBlock(st.turtle)); // Черепаха: алгоритм и поле (js/turtle.js)
+  if(st.graph) f.appendChild(grBlock(st.graph)); // схема дорог и весовая таблица (js/graph.js)
   if(st.key) f.appendChild(h("div",{class:"key"},'<small>Главное</small><p>'+st.key+'</p>'));
   if(st.input) f.appendChild(inputBlock(st.input));
   if(st.code) f.appendChild(ideView(st.code,{run:st.run,input:st.input}));
@@ -90,6 +91,7 @@ function choice(st,b){
   if(st.sheet) b.appendChild(sheetBlock(st.sheet));
   if(st.tt) b.appendChild(truthBlock(st.tt));
   if(st.turtle) b.appendChild(tuBlock(st.turtle));
+  if(st.graph) b.appendChild(grBlock(st.graph));
   if(st.code){ const v=ideView(st.code,{input:st.input}); b.appendChild(v); if(st.showRun) v.showRun(); }
   const box=h("div",{class:"opts"}); let sel=null, done=false;
   const order=st.options.map((o,i)=>i);

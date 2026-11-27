@@ -507,7 +507,59 @@
      "id": "e1",
      "task": 1,
      "title": "Графы и таблицы",
-     "paid": true
+     "paid": true,
+     "about": "Схема дорог и весовая таблица: степени вершин, зацепки и соседи, симметрия, кратчайший путь и номера пунктов.",
+     "lessons": [
+      {
+       "id": "e1l1",
+       "icon": "gnode",
+       "title": "Что такое граф",
+       "file": "content/e1/l1.json"
+      },
+      {
+       "id": "e1l2",
+       "icon": "gtable",
+       "title": "Весовая таблица",
+       "file": "content/e1/l2.json"
+      },
+      {
+       "id": "e1l3",
+       "icon": "gdeg",
+       "title": "Степень вершины",
+       "file": "content/e1/l3.json"
+      },
+      {
+       "id": "e1l4",
+       "icon": "gkey",
+       "title": "Редкая степень",
+       "file": "content/e1/l4.json"
+      },
+      {
+       "id": "e1l5",
+       "icon": "glink",
+       "title": "Соседи-зацепки",
+       "file": "content/e1/l5.json"
+      },
+      {
+       "id": "e1l6",
+       "icon": "gsym",
+       "title": "Симметрия",
+       "file": "content/e1/l6.json"
+      },
+      {
+       "id": "e1l7",
+       "icon": "groute",
+       "title": "Другие вопросы",
+       "file": "content/e1/l7.json"
+      },
+      {
+       "id": "e1boss",
+       "icon": "gboss",
+       "title": "Задача-босс",
+       "file": "content/e1/boss.json",
+       "boss": true
+      }
+     ]
     },
     {
      "id": "e2",

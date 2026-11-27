@@ -18,6 +18,15 @@ const LESSON_SPR = {
  even:["..........",".LL....LL.",".LL....LL.","..........",".LL....LL.",".LL....LL.","..........",".KK.......",".KK.......",".........."],
  tools:["..........","W........W","W........W","W..L..L..W","W...LL...W","W...LL...W","W..L..L..W","W........W","W........W",".........."],
  compare:["..........","....LL....","...LL.....","..LL..WWWW",".LL.......","..LL..WWWW","...LL.....","....LL....","..........",".........."],
+ /* задание 1 (Графы и таблицы) */
+ gnode:["..........",".LL....LL.",".LLWWWWLL.","..W....W..","..W....W..","...W..W...","...W..W...","....KK....","....KK....",".........."],
+ gtable:["WWWWWWWWWW","WNNWLLWLLW","WNNWLLWLLW","WWWWWWWWWW","WLLWNNWLLW","WLLWNNWLLW","WWWWWWWWWW","WLLWLLWNNW","WLLWLLWNNW","WWWWWWWWWW"],
+ gdeg:["L.......L.",".W.....W..","..W...W...","...W.W....","....KK....","....KK....","....W.....","....W.....","....W.....","...LLL...."],
+ gkey:["..........",".LLL......","L...L.....","L...LLLLLL","L...L..L.L",".LLL...L.L","..........","..........","..........",".........."],
+ glink:["....LL....","....LL....","...W..W...","..W....W..",".W......W.","KK......KK","KK......KK","..........","..........",".........."],
+ gsym:["....L.....","W...L...W.","WW..L..WW.","WWW.L.WWW.","WWWWLWWWW.","WWW.L.WWW.","WW..L..WW.","W...L...W.","....L.....","....L....."],
+ groute:["LL........","LLW.......","..W.......","..WWWWW...","......W...","......W...","......W...","......WWKK","........KK",".........."],
+ gboss:["L.L.L.L...","LLLLLLL...","LLLLLLL...","..........","..KK..KK..","..KKWWKK..","...W..W...","....KK....","....KK....",".........."],
  /* задание 6 (Исполнитель Черепаха) */
  turt:["....LL....","...LNNL...","..PPPPPP..",".LPWPPWPL.","..PPWWPP..",".LPWPPWPL.","..PPPPPP..","...P..P...","..........",".........."],
  trep:["..........",".WWWWWW...",".W....W...",".W....W...",".W....W.L.",".WWWWWW.L.","........L.","...L....L.","..LLLLLLL.","...L......"],
@@ -113,6 +122,7 @@ const MOD_ART = {
  m6:["..NNNNNNNNNNNN..","..NDDDDDDDDDDN..","...NWWWWWWWWN...","...NWOOOOOOWN...","....NWOOOOWN....",".....NWOOWN.....","......NWWN......","......NOWN......",".....NWOOWN.....","....NWWOOWWN....","...NWWOOOOWWN...","...NWOOOOOOWN...","...NWOOOOOOWN...","..NDDDDDDDDDDN..","..NNNNNNNNNNNN..","................"],
  m7:["................","................",".NNNNNNNNNNNNNN.","NWWWWWWWWWWWWWWN","NWWDWWDDWWWDDWWN","NWDWDWDWDWDWWWWN","NWDDDWDDWWDWWWWN","NWDWDWDWDWDWWWWN","NWDWDWDDWWWDDWWN","NWWWWWWWWWWWWWWN","NWWWWWWWWWWWWWWN",".NNNNNNNNNNNNNN.","...NNN..........","...N............","................","................"],
  m8:["....NNNNNN......","..NNNWWWWNNN....","..NDNNNNNNDN....","..NDWWWWWWDN....","..NDKKWNNNDN....","..NDKKWWWWDN....","..NDWWWWWWDN....","..NDLLWNNNDN....","..NDLLWWWWDN....","..NDWWWWWWDN....","..NDKKWNNNDN....","..NDKKWWWWDN....","..NDWWWWWWDN....","..NDDDDDDDDN....","..NNNNNNNNNN....","................"],
+ e1:["...........NNN..","..NNN.....NWKKN.",".NWLLN..DDNKKKN.",".NLLLNDD..NKKKN.",".NLLLN.....NNN..","..NNND....D.D...","...D..DNNN..D...","...D..NWCCN..D..","..D...NCCCN..D..","..D...NCCCN..D..",".NNN.D.NNNDDNNN.","NWOON......NWLLN","NOOONDDDDDDNLLLN","NOOON......NLLLN",".NNN........NNN.","................"],
  e6:["................","......NNNN......",".....NCCCCN.....",".....NNCCNN.....","..NN.NDDDDN.NN..","..NCNDPPPPDNCN..","..NNDPDDDDPDNN..","...NDPDPPDPDN...","...NDDPPPPDDN...","...NDPDPPDPDN...","..NNDPDDDDPDNN..","..NCNDPPPPDNCN..","..NN.NDDDDN.NN..","......NCCN......",".......NN.......","................"],
  e18:["NNNNNNNNNNNNNNNN", "NPPPPNPPPPNWWWWN", "NPPPPNPPPPNWLLWN", "NPPPPNPPPPNWLLWN", "NPPPPNPPPPNWWWWN", "NNNNNKNNNNKKKKKK", "NWWWWKPPPPNWWWWN", "NWLLWKPPPPNWLLWN", "NWLLWKPPPPNWLLWN", "NWWWWKPPPPNWWWWN", "NNNNNKNNNNNNNNNN", "NWWWWNPPPPNPPPPN", "NWLLWNPPPPNPPPPN", "NWLLWNPPPPNPPPPN", "NWWWWNPPPPNPPPPN", "NNNNNNNNNNNNNNNN"],
  e2:["NNNNNNNNNNNNNNNN", "NDDDDNDDDDNLLLLN", "NDWWDNDWWDNLNNLN", "NDWWDNDWWDNLNNLN", "NDDDDNDDDDNLLLLN", "NNNNNNNNNNNNNNNN", "NWWWWNWWWWNWWWWN", "NWNNWNWWNWNWNNWN", "NWWWWNWWNWNWWWWN", "NNNNNNNNNNNNNNNN", "NWWNWNWNNWNKKKKN", "NWWNWNWNNWNKNNKN", "NWWNWNWWWWNKKKKN", "NNNNNNNNNNNNNNNN", "................", "................"],

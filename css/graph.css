@@ -1,0 +1,57 @@
+/* ИНФиК: графы и весовые таблицы (задание 1) — схема дорог, таблица как в ЕГЭ, подписи и счётчики */
+.gr-block{display:flex;flex-direction:column;gap:10px}
+.gr-view{background:#fff;border-radius:10px;box-shadow:0 0 0 3px var(--ink);padding:2px;align-self:stretch}
+.gr-svg{display:block;width:100%;max-height:260px;font-family:Nunito,system-ui,sans-serif;-webkit-tap-highlight-color:transparent}
+.gr-ln{stroke:#262b69;stroke-width:2.4;stroke-linecap:round}
+.gr-ln.dim{stroke:#b9bbd6}
+.gr-pt{fill:#262b69}
+.gr-icbg{fill:#f3f2ff;stroke:#262b69;stroke-width:2}
+.gr-lab{font-size:17px;font-weight:800;fill:#262b69;text-anchor:middle}
+.gr-lab.nm{font-size:13px}
+.gr-w{font-family:"JetBrains Mono",monospace;font-size:14px;font-weight:600;fill:#512da8;text-anchor:middle}
+.gr-w.hl{fill:#262b69;font-weight:800}
+.gr-hitV{fill:transparent;cursor:pointer}
+.gr-hitE{stroke:transparent;stroke-width:18;cursor:pointer}
+.gr-bd rect{fill:#ecf141;stroke:#262b69;stroke-width:1.5}
+.gr-bd text{font-size:12px;font-weight:800;fill:#262b69;text-anchor:middle}
+.gr-bd.ask rect{fill:#fff;stroke-dasharray:3 2}
+.gr-bd.ask text{fill:#8b8da6}
+.gr-bd.ok rect{fill:#5fd38d}.gr-bd.no rect{fill:#ff6b9a}
+.gr-tag rect{fill:#8e6bff}
+.gr-tag text{font-size:11px;font-weight:800;fill:#fff;text-anchor:middle}
+/* таблица */
+.gr-twrap{overflow-x:auto;align-self:center;max-width:100%;padding:4px}
+.gr-t{border-collapse:collapse;background:#fff;color:#262b69;box-shadow:0 0 0 3px var(--ink);border-radius:4px;font-variant-numeric:tabular-nums;-webkit-tap-highlight-color:transparent}
+.gr-t th,.gr-t td{border:1px solid #9a9cc0;min-width:36px;height:34px;text-align:center;padding:0 2px;font-size:15px}
+.gr-t.wide th,.gr-t.wide td{min-width:30px;font-size:13px}
+.gr-t th.cn-h,.gr-t td.cn{min-width:26px}
+.gr-t th{font-weight:800;font-size:12px;background:#eceaff}
+.gr-t th.c0{background:#fff}
+.gr-t td.dg{background:#b9bbcf}
+.gr-t td{font-family:"JetBrains Mono",monospace;font-weight:600}
+.gr-t.star td{font-size:20px;line-height:1}
+.gr-t .tap{cursor:pointer}
+.gr-t th.rh.tap{text-decoration:underline dotted;text-underline-offset:3px}
+.gr-t th.sel,.gr-t td.sel{box-shadow:inset 0 0 0 3px #8e6bff}
+.gr-t .hl-l{background:#ecf141}.gr-t .hl-k{background:#ffb3cb}.gr-t .hl-c{background:#b5eef8}.gr-t .hl-p{background:#d9ccff}.gr-t .hl-o{background:#ffd3a6}.gr-t .hl-g{background:#b8efcc}
+.gr-t td.ok{background:#b8efcc}.gr-t td.no{background:#ffb3cb}
+.gr-t td.fill{background:#fbfbe6;box-shadow:inset 0 0 0 1.5px #c9c07a}
+.gr-t td.fill.set{background:#f6f9c8}
+.gr-t td.fill.sel{box-shadow:inset 0 0 0 3px #8e6bff}
+.gr-t td.fill.ok{background:#b8efcc}.gr-t td.fill.no{background:#ffb3cb}
+.gr-t td.tg,.gr-t th.tg{min-width:26px;border:0;background:transparent;padding:0 4px 0 0}
+.gr-t td.tg{font-family:Nunito,sans-serif;font-weight:800;font-size:16px;color:#8e6bff;cursor:pointer}
+.gr-t th.cn-h{font-size:10px;background:transparent;border:0;color:#5d628f;padding-left:6px}
+.gr-t td.cn{border:0;background:transparent;font-family:Nunito,sans-serif;font-weight:800;padding-left:6px;color:#262b69}
+.gr-t td.cn.ask{color:#8b8da6;text-decoration:underline dotted}
+.gr-t td.cn.ok{color:#2f9e5b}.gr-t td.cn.no{color:#d6336c}
+.gr-cap{font-size:13px;color:var(--ink-soft);text-align:center;margin:0}
+.gr-clr{align-self:flex-start;font:inherit;font-weight:800;font-size:13px;border:0;background:none;color:var(--purple-ink);text-decoration:underline;cursor:pointer;padding:0}
+.gr-nrow{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--ink-soft)}
+.gr-bank{justify-content:center}
+.gr-bank .chip{min-width:48px}
+.gr-ans{width:100%}
+.gr-ans.ok{border-color:var(--good);background:var(--good-bg)}.gr-ans.no{border-color:var(--bad);background:var(--bad-bg)}
+/* рамка «как в ЕГЭ» для условия задачи */
+.gr-task{display:block;background:var(--surface);border:2px solid var(--line);border-left:6px solid var(--purple);border-radius:12px;padding:10px 12px;font-size:14px;line-height:1.45;color:var(--ink)}
+.gr-task .src{display:block;font-weight:800;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:4px}
